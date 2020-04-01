@@ -1,0 +1,156 @@
+#VRML_SIM R2019b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 1 0 0 4.71238898038469
+  position 2.894806168716813e-16 3.1197850256987656 -1.1235241399100973e-14
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 2 2
+  floorTileSize 0.2 0.2
+  wallHeight 0.05
+}
+WoodenBox {
+  translation 0.23644099999999998 0.09999999999999999 0.35984499999999997
+  name "wooden box(4)"
+  size 0.2 0.2 0.2
+}
+WoodenBox {
+  translation 0.817776 0.1 0.428667
+  name "wooden box(3)"
+  size 0.2 0.2 0.2
+}
+WoodenBox {
+  translation 0.512328 0.1 0.050606
+  name "wooden box(2)"
+  size 0.2 0.2 0.2
+}
+WoodenBox {
+  translation 0.306404 0.09999999999999999 -0.300025
+  name "wooden box(1)"
+  size 0.2 0.2 0.2
+}
+WoodenBox {
+  translation -0.010764 0.09999999999999999 0.026444
+  name "wooden box(7)"
+  size 0.2 0.2 0.2
+}
+WoodenBox {
+  translation 0.85 0.1 -0.252772
+  name "wooden box(5)"
+  size 0.2 0.2 0.2
+}
+E-puck {
+  translation -0.6152369999999999 0 -0.781034
+  controller "e-puck_PSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation -0.097665 0 -0.603843
+  name "e-puck(1)"
+  controller "e-puck_PSO"
+  turretSlot [
+    GPS {
+    }
+    Compass {
+    }
+  ]
+}
+E-puck {
+  translation 0.10551999999999999 0 0.751989
+  name "e-puck(2)"
+  controller "e-puck_PSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation -0.177283 0 0.327598
+  name "e-puck(3)"
+  controller "e-puck_PSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation -0.320158 0 0.727247
+  name "e-puck(4)"
+  controller "e-puck_PSO"
+  turretSlot [
+    GPS {
+    }
+    Compass {
+    }
+  ]
+}
+E-puck {
+  translation -0.769489 0 0.5218349999999999
+  name "e-puck(5)"
+  controller "e-puck_PSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation -0.648318 0 -0.151758
+  name "e-puck(6)"
+  controller "e-puck_PSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation 0.643207 0 -0.737136
+  name "e-puck(7)"
+  controller "e-puck_PSO"
+  turretSlot [
+    GPS {
+    }
+    Compass {
+    }
+  ]
+}
+E-puck {
+  translation 0.071046 0 -0.170701
+  name "e-puck(8)"
+  controller "e-puck_PSO"
+  turretSlot [
+    GPS {
+    }
+    Compass {
+    }
+  ]
+}
+E-puck {
+  translation 0.616617 0 0.7546459999999999
+  name "e-puck(9)"
+  controller "e-puck_PSO"
+  turretSlot [
+    GPS {
+    }
+    Compass {
+    }
+  ]
+}
+Ball {
+  translation 0.852658 0.0325 0.086498
+}
