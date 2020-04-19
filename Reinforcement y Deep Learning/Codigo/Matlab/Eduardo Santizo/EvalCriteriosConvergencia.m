@@ -1,7 +1,7 @@
 function [Criterios, NomCriterios] = EvalCriteriosConvergencia(Coords_Min, Posicion_Actual, Iter, varargin)
 % EVALCRITERIOSCONVERGENCIA Función que determina si se han cumplido alguno
 % de los criterios de convergencia programados.
-% ------------------------------------------------------------------
+% -------------------------------------------------------------------------
 % Inputs:
 %   - Coords_Min: Dims (K,2). K = Número de mínimos en la función. Coord-
 %     enadas X y Y de los puntos de la función de costo donde se encuentran
@@ -16,7 +16,7 @@ function [Criterios, NomCriterios] = EvalCriteriosConvergencia(Coords_Min, Posic
 %   - Criterios: Dims (Y,1). Y = No Criterios. Vector binario donde cada
 %     fila del vector indica si uno de los criterios programados se activó
 %     o no.
-% ------------------------------------------------------------------
+% -------------------------------------------------------------------------
 %
 % Criterios (En orden de prioridad):
 %
