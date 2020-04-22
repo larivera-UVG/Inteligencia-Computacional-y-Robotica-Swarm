@@ -7,11 +7,12 @@ function [Posicion_Actual] = SolveCollisions(Posicion_Actual, RadioPuck)
 DistsEntrePart = getDistsBetweenParticles(Posicion_Actual);                     % Escribir "help getDistsBetweenParticles" para más información
 [ColidingPartMain, ColidingPartAux] = find(DistsEntrePart < 2*RadioPuck);       % Se obtiene el "index" de los pucks sobrepuestos. Los valores NaN se ignoran.
 ColidingPart = [ColidingPartMain ColidingPartAux];                              % Se unen los ID's de los "Main" pucks (Filas con colisiones) y "Aux" pucks (Columnas).
-HayColisiones = ~isempty(ColidingPart);
+HayColisiones = ~isempty(ColidingPart);                                         % Se chequea si el vector con partículas en colisión está vacío 
 
 Iteraciones = 0;
+IteracionesMax = 20;                                                            % 20 parece ser el número de iteraciones que genera los resultados más saisfactorios.
 
-while HayColisiones && (Iteraciones < 20)
+while HayColisiones && (Iteraciones < IteracionesMax)
     
     % Componentes X y Y del vector que conecta el centro de "Main" y
     % "Aux". Luego se obtiene el ángulo de inclinación de dicho vector
@@ -72,10 +73,10 @@ while HayColisiones && (Iteraciones < 20)
     Posicion_Actual(ColidingPart,1) = Posicion_Actual(ColidingPart,1) + (DistAjusteX .* SignoSumaX);
     Posicion_Actual(ColidingPart,2) = Posicion_Actual(ColidingPart,2) + (DistAjusteY .* SignoSumaY);
     
-    DistsEntrePart = getDistsBetweenParticles(Posicion_Actual);
+    DistsEntrePart = getDistsBetweenParticles(Posicion_Actual);                     % Se re-obtienen las distancias entre partículas luego de la primera corrección.
     [ColidingPartMain, ColidingPartAux] = find(DistsEntrePart < 2*RadioPuck);       % Se obtiene el "index" de los pucks sobrepuestos. Los valores NaN se ignoran.
     ColidingPart = [ColidingPartMain ColidingPartAux];                              % Se unen los ID's de los "Main" pucks (Filas con colisiones) y "Aux" pucks (Columnas).
-    HayColisiones = ~isempty(ColidingPart);
+    HayColisiones = ~isempty(ColidingPart);                                         % Se re-evalúa si no hay colisiones.
     
     Iteraciones = Iteraciones + 1;
 end
