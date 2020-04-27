@@ -17,8 +17,8 @@ nodos = nodes(grid_x,grid_y);
 % La matriz de adyacencia es una matriz cuadrada de tamaño cantidad de
 % nodos que hayan en el grafo.
 cant_nodos = grid_x*grid_y;
-tf = 1;
-hormigas = 2;
+tf = 30; % número de iteraciones máx
+hormigas = 30;
 nodo_actual = ones(hormigas,2);
 nodo_dest = [4 2];
 path_k = cell(hormigas,1);
@@ -26,6 +26,8 @@ blocked_nodes = cell(hormigas,cant_nodos);
 alpha = 1;
 L = zeros(hormigas,tf);
 all_path = cell(hormigas,tf);
+rho = 0.5; % rate de evaporación
+epsilon = 5;
 %% Init de la matriz TAU
 
 tau = zeros(cant_nodos);
@@ -75,6 +77,7 @@ next_node = zeros(1,2);
 
 %% ACO loop
 t = 1;
+while (t<=tf)
 for k = 1:hormigas
     fila = 2;
     flagc = 0;
@@ -101,14 +104,38 @@ for k = 1:hormigas
         fila = fila + 1;
     end
     path_k{k,1} = loop_remover(path_k{k,1});
-    L(k,t) = size(path_k{k,1},1);
-    all_path{k,t} = path_k{k,1};
+    L(k,t) = size(path_k{k,1},1)-1; % Equivale a f(x_k(t))
+    all_path{k,t} = path_k{k,1};  % Equivale a x_k(t)
     
 end
 
 %% Evaporación de Feromona
+% TAU_nm en vez de TAU_ij porque están reservadas en Matlab para los números
+% complejos
+for n = 1:cant_nodos % Por cada fila
+    for m = 1:cant_nodos % Por cada columna
+        tau(n,m) = (1-rho)*tau(n,m);
+    end
+end
+%% Update de Feromona
+for k = 1:hormigas
+    dtau = 1/L(k,t);
+    id_path = nodeid(all_path{k,t},nodos);
+    
+    for f = 1:size(id_path,1)-1
+        tau(id_path(f),id_path(f+1)) = tau(id_path(f),id_path(f+1)) + dtau;
+        tau(id_path(f+1),id_path(f)) = tau(id_path(f),id_path(f+1));
+    end
+end
 
 
+t = t + 1;
+end
+%% Best Path Calculation
+% valor_minimo_por_columna,filas_en_donde_estan_los_min
+[minval_col,fil] = min(L);
+[minimo,col] = min(minval_col);
+best_path = all_path{fil(col),col}; % L(k,t)
 %% Gráfica
 figure()
 scatter(nodos(:,1),nodos(:,2),'filled','k')
@@ -116,14 +143,7 @@ grid on;
 hold on;
 nodos_especiales = [path_k{1,1}(1,:);nodo_dest];
 scatter(nodos_especiales(:,1),nodos_especiales(:,2),'r','filled')
-plot(path_k{1,1}(:,1),path_k{1,1}(:,2),'r')
-figure()
-scatter(nodos(:,1),nodos(:,2),'filled','k')
-grid on;
-hold on;
-nodos_especiales = [path_k{1,1}(1,:);nodo_dest];
-scatter(nodos_especiales(:,1),nodos_especiales(:,2),'r','filled')
-plot(path_k{2,1}(:,1),path_k{2,1}(:,2),'b')
+plot(best_path(:,1),best_path(:,2),'b')
 
 
 %% Pruebas
