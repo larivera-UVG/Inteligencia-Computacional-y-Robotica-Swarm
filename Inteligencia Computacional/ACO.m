@@ -83,6 +83,9 @@ for k = 1:hormigas
         path_k{k,1}(fila,:) = nodo_actual(k,:);
         fila = fila + 1;
     end
+    path_k{k,1} = loop_remover(path_k{k,1});
+    L = size(path_k{k,1},1);
+    
 end
 
 %% Gráfica
@@ -93,8 +96,16 @@ hold on;
 nodos_especiales = [path_k{1,1}(1,:);nodo_dest];
 scatter(nodos_especiales(:,1),nodos_especiales(:,2),'r','filled')
 plot(path_k{1,1}(:,1),path_k{1,1}(:,2),'r')
+figure()
+scatter(nodos(:,1),nodos(:,2),'filled','k')
+grid on;
+hold on;
+nodos_especiales = [path_k{1,1}(1,:);nodo_dest];
+scatter(nodos_especiales(:,1),nodos_especiales(:,2),'r','filled')
 plot(path_k{2,1}(:,1),path_k{2,1}(:,2),'b')
 
 
+%% Pruebas
+disp("Sección de pruebas")
 
 
