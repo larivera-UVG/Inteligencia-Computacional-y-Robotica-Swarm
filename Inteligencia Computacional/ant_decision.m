@@ -10,9 +10,13 @@
 % Output:
 % [x y] que denota el siguiente nodo del trayecto
 % Hacer coincidir los id de tau con los feasable nodesb
-function next_node = ant_decision(vecinos,tau,alpha,vecinos_originales)
+function next_node = ant_decision(vecinos,tau,alpha,nodos,id)
     next_node = [];
-    new_tau = tau(nodeid(vecinos,vecinos_originales));
+    id_vecinos = nodeid(vecinos,nodos);
+    new_tau = zeros(size(id_vecinos));
+    for f = 1:size(id_vecinos,1)
+        new_tau(f) = tau(id, id_vecinos(f));
+    end
     r = rand(1);
     s = size(vecinos,1);
     probabilidad = zeros(s,1); % preallocation
@@ -29,3 +33,5 @@ function next_node = ant_decision(vecinos,tau,alpha,vecinos_originales)
        next_node = vecinos(I,:);
     end
 end
+
+

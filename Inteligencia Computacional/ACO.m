@@ -17,15 +17,30 @@ nodos = nodes(grid_x,grid_y);
 % La matriz de adyacencia es una matriz cuadrada de tamaño cantidad de
 % nodos que hayan en el grafo.
 cant_nodos = grid_x*grid_y;
+tf = 1;
 hormigas = 2;
 nodo_actual = ones(hormigas,2);
 nodo_dest = [4 2];
 path_k = cell(hormigas,1);
 blocked_nodes = cell(hormigas,cant_nodos);
 alpha = 1;
+L = zeros(hormigas,tf);
+all_path = cell(hormigas,tf);
+%% Init de la matriz TAU
 
-% tau = ones(cant_nodos)
+tau = zeros(cant_nodos);
+for n = 1:cant_nodos % Por cada columna
+    v = neighbors(nodos(n,:), grid_x, grid_y);
+    columnasvecinos = v(:,2);
+    [~,indx] = ismember(v(any(v,2),:),nodos,'rows');
+    tau(indx,n) = rand(size(indx,1),1);
+end
 
+for n = 1:cant_nodos
+    tau(n,n:end) = tau(n:end,n)';
+end
+
+%%
 % Init de la celda que contiene todos los vecinos y tau de los nodos
 vytau = cell(cant_nodos,2);
 for k=1:cant_nodos
@@ -57,7 +72,9 @@ end
 
 next_node = zeros(1,2);
 % omitir los ceros de los vectores
+
 %% ACO loop
+t = 1;
 for k = 1:hormigas
     fila = 2;
     flagc = 0;
@@ -69,7 +86,7 @@ for k = 1:hormigas
         % Calculamos qué nodos sí tenemos disponibles para viajar
         [feas_nodes{k,id},blocked_nodes{k,1},flag] = tabu(feas_nodes{k,id}, blocked_nodes{k,1}, last_node{k,id});
         % La hormiga toma la decisión de a donde ir
-        next_node = ant_decision(feas_nodes{k,id},vytau{id,2},alpha,vytau{id,1});
+        next_node = ant_decision(feas_nodes{k,id},tau,alpha,nodos,id);
         % Calculamos el id del siguiente nodo
         id = nodeid(next_node,nodos);
         % En la lista del siguiente nodo tenemos que guardar que el nodo
@@ -84,9 +101,13 @@ for k = 1:hormigas
         fila = fila + 1;
     end
     path_k{k,1} = loop_remover(path_k{k,1});
-    L = size(path_k{k,1},1);
+    L(k,t) = size(path_k{k,1},1);
+    all_path{k,t} = path_k{k,1};
     
 end
+
+%% Evaporación de Feromona
+
 
 %% Gráfica
 figure()
@@ -107,5 +128,4 @@ plot(path_k{2,1}(:,1),path_k{2,1}(:,2),'b')
 
 %% Pruebas
 disp("Sección de pruebas")
-
 

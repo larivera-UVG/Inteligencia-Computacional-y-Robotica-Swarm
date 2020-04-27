@@ -1,3 +1,4 @@
+% 26/04/2020
 function corregido = loop_remover(pa)
 
     temp = zeros(size(pa));
