@@ -7,9 +7,9 @@
 % x_lim: límite de 1 a x_lim del grid
 % y_lim: límite de 1 a y_lim del grid
 function vecinos = neighbors(nodo, x_lim, y_lim)
-    movimiento = [1 0;0 1;-1 0;0 -1];
+    movimiento = [1 0;0 1;-1 0;0 -1;-1 1;1 1;-1 -1; 1 -1];
     dir = 0;
-    for direccion = 1:4
+    for direccion = 1:4%size(movimiento,1)
         move_x = nodo(1,1)+movimiento(direccion,1);
         move_y = nodo(1,2)+movimiento(direccion,2);
         if (move_x<= x_lim && move_x>= 1 && move_y<= y_lim && move_y>= 1)

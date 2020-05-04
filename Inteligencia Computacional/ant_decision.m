@@ -23,15 +23,16 @@ function next_node = ant_decision(vecinos,tau,alpha,nodos,id)
     for v = 1:s
         % calcular probabilidad como en ecuación 17.2
         probabilidad(v,1) = new_tau(v,1)^alpha/sum(new_tau.^alpha);
-        if(r <= probabilidad(v,1))
-            next_node = vecinos(v,:);
-            break;
-        end
+        %if(r <= probabilidad(v,1))
+        %    next_node = vecinos(v,:);
+        %    break;
+        %end
     end
-    if(isempty(next_node))
-       [~,I] = max(probabilidad);
+    %if(isempty(next_node))
+    %   [~,I] = max(probabilidad);
+    I = rouletteWheel(probabilidad);
        next_node = vecinos(I,:);
-    end
+    %end
 end
 
 
