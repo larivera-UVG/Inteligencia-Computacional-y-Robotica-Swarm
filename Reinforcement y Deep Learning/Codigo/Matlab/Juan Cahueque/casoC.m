@@ -10,8 +10,8 @@ yw = [-gridsize/2;gridsize/2;gridsize/2;-gridsize/2;-gridsize/2];
 figure(1);hold on
 plot(xw,yw,'r');
 % Inicializacion de obstaculo grande
-xrep = [-6;-6;-5;-5;-6; NaN;-6;-6;-5;-5;-6;NaN;-1;-1;0;0;-1];
-yrep = [-5;-4;-4;-5;-5; NaN;5;4;4;5;5;NaN;-1;0;0;-1;-1];
+xrep = [-6 -6 -5 -5 -6 NaN -6 -6 -5 -5 -6 NaN -1 -1 0  0 -1]';
+yrep = [-5 -4 -4 -5 -5 NaN  5  4  4  5  5 NaN -1  0 0 -1 -1]';
 plot(xrep,yrep,'r');
 %plot(Xrep(in),Yrep(in),'b+') % points inside
 %plot(Xrep(~in),Yrep(~in),'ro') % points outside

@@ -4,11 +4,13 @@ c_g = 500;
 l_g = 3;
 c_o = 500;
 l_o = 0.2;
+
 %Inicializacion de bordes de robotat
 xw = [-gridsize/2;-gridsize/2;gridsize/2;gridsize/2;-gridsize/2];
 yw = [-gridsize/2;gridsize/2;gridsize/2;-gridsize/2;-gridsize/2];
 figure(1);hold on
 plot(xw,yw,'r');
+
 % Inicializacion de obstaculo grande
 xrep = [-2;-2;0;0;-2];
 yrep = [-7;7;7;-7;-7];

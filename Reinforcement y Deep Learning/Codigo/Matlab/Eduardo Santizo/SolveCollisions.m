@@ -10,7 +10,7 @@ ColidingPart = [ColidingPartMain ColidingPartAux];                              
 HayColisiones = ~isempty(ColidingPart);                                         % Se chequea si el vector con partículas en colisión está vacío 
 
 Iteraciones = 0;
-IteracionesMax = 20;                                                            % 20 parece ser el número de iteraciones que genera los resultados más saisfactorios.
+IteracionesMax = 40;                                                            % 20 parece ser el número de iteraciones que genera los resultados más saisfactorios.
 
 while HayColisiones && (Iteraciones < IteracionesMax)
     
@@ -79,6 +79,7 @@ while HayColisiones && (Iteraciones < IteracionesMax)
     HayColisiones = ~isempty(ColidingPart);                                         % Se re-evalúa si no hay colisiones.
     
     Iteraciones = Iteraciones + 1;
+    
 end
 
 end
