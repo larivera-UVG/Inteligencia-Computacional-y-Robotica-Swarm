@@ -11,11 +11,12 @@
 
 clear;                                                      % Se limpian las variables del workspace
 clear ComputeInertia;                                       % Se limpian las variables persistentes presentes dentro de "ComputeInertia.m"
+opengl hardware;
 
 NoParticulas = 10;                                          % No. de partículas
 PartPosDims = 2;                                            % No. de variables a optimizar / No. de dimensiones sobre las que se pueden desplazar las partículas.
 
-CostFunc = "Dropwave";                                      % Función de costo a optimizar. Escribir "help CostFunction" para más información
+CostFunc = "Dropwave";                             % Función de costo a optimizar. Escribir "help CostFunction" para más información
 Multiples_Min = 0;                                          % La función de costo tiene múltiples mínimos? Consultar "help CostFunction" para ver número de mínimos por función.
 
 DimsMesa = 12;                                              % Dimensiones de mesa de simulación (Metros)
@@ -23,11 +24,14 @@ PosMax = DimsMesa / 2;                                      % Posición máx: Valo
 PosMin = -PosMax;                                           % Posición mín: Negativo de la posición máxima
 
 InitTime = 0;                                               % Tiempo de inicio del algoritmo (0s)
-EndTime = 10;                                               % Duración de algoritmo en segundos 
+EndTime = 30;                                               % Duración de algoritmo en segundos 
 dt = 0.01;                                                  % Tiempo de muestreo, diferencial de tiempo o "time step"
 IteracionesMax = ceil((EndTime - InitTime) / dt);           % Iteraciones máximas que podrá llegar a durar la simulación.
 
-RadioPuck = 0.35;                                           % Radio del Cuerpo del EPuck en metros
+RadioLlantasPuck = 0.2;                                     % Radio de las ruedas del E-Puck
+RadioCuerpoPuck = 0.35;                                     % Radio del Cuerpo del E-Puck en metros
+RadioDisomorfismo = RadioCuerpoPuck;                        % Distancia entre centro y punto de disomorfismo
+PuckVelMax = 6;
 %rng(666);                                                  % Se fija la seed a utilizar para la generación aleatoria de números. Hace que los resultados sean replicables.
 %% 
 %% Inicialización de Criterios de Convergencia
@@ -229,28 +233,41 @@ end
 %% 
 %% Inicialización de Posiciones, Velocidades y Costos
 
-% Posición y Velocidad
-Posicion_Actual = unifrnd(PosMin, PosMax, [NoParticulas PartPosDims]);          % Posición (Random) de todas las partículas. Distribución uniforme.     Dims: NoParticulas X VarDims
-Posicion_Previa = Posicion_Actual;                                              % Memoria con la posición previa de todas las partículas.               Dims: NoParticulas X VarDims
-Posicion_LocalBest = Posicion_Actual;                                           % Las posiciones que generaron los mejores costos en las partículas     Dims: NoParticulas X VarDims
-Velocidad = zeros([NoParticulas PartPosDims]);                                  % Velocidad de todas las partículas. Inicialmente 0.                    Dims: NoParticulas X VarDims
+% Posición y Velocidad de Partículas
+PartPosicion_Actual = unifrnd(PosMin, PosMax, [NoParticulas PartPosDims]);      % Posición (Random) de todas las partículas. Distribución uniforme.     Dims: NoParticulas X VarDims
+PartPosicion_Previa = PartPosicion_Actual;                                      % Memoria con la posición previa de todas las partículas.               Dims: NoParticulas X VarDims
+PartPosicion_LocalBest = PartPosicion_Actual;                                   % Las posiciones que generaron los mejores costos en las partículas     Dims: NoParticulas X VarDims
+PartVelocidad = zeros([NoParticulas PartPosDims]);                              % Velocidad de todas las partículas. Inicialmente 0.                    Dims: NoParticulas X VarDims
 
-% Orientación
-Orientacion_Actual = unifrnd(0, 2*pi, [NoParticulas 1]);                        % Orientaciones aleatorias para los pucks. Valores entre 0 y 2pi        Dims: NoParticulas X 1 (Vector Columna)
-CompLineaOrientacion = Posicion_Actual + ...                                    % Se proyecta una linea desde el centro del puck hasta su perímetro
-                       RadioPuck * [cos(Orientacion_Actual) sin(Orientacion_Actual)];
-%Vector_OrientacionX = [Posicion_Actual(:,1)'; CompLineaOrientacion(:,1)'];
-%Vector_OrientacionY = [Posicion_Actual(:,2)'; CompLineaOrientacion(:,2)'];
+% Posición y Velocidad de Pucks
+PuckPosicion_Actual = PartPosicion_Actual;                                      % Posición de los Pucks. Inicialmente igual a la de las partículas.     Dims: NoParticulas X VarDims
+PuckPosicion_Previa = PartPosicion_Previa;                                      % Memoria con la posición previa de todos los pucks.                    Dims: NoParticulas X VarDims
+PuckVelLineal = zeros([NoParticulas PartPosDims]);                              % Velocidad lineal de todos los pucks. Inicialmente 0.                         Dims: NoParticulas X VarDims
+PuckVelAngular = PuckVelLineal;
 
-% Costo 
-Costo_Local = CostFunction(Posicion_Actual, CostFunc);                          % Evaluación del costo en la posición actual de la partícula.           Dims: NoPartículas X 1 (Vector Columna)
-Costo_LocalBest = Costo_Local;
+% Orientación de Pucks
+% La indicación de la orientación es una línea que apunta hacia el frente
+% del Puck. Los componentes (X,Y) de esta linea indicadora se almacenan en 
+% la matriz "CompLineaOrientacion"
+PuckOrientacion_Actual = unifrnd(0, 2*pi, [NoParticulas 1]);                    % Orientaciones aleatorias para los pucks. Valores entre 0 y 2pi        Dims: NoParticulas X 1 (Vector Columna)
+CompLineaOrientacion = RadioCuerpoPuck * [cos(PuckOrientacion_Actual) sin(PuckOrientacion_Actual)];                                             %       Dims: NoParticulas X 2 (Columna por componente: X, Y)
 
-[Costo_GlobalBest, Fila] = min(Costo_LocalBest);                                % "Global best": El costo más pequeño del vector "CostoLocal"           Dims: Escalar
-Posicion_GlobalBest = Posicion_Actual(Fila, :);                                 % "Global best": Posición que genera el costo más pequeño               Dims: 1 X VarDims
+% Costo de partículas
+PartCosto_Local = CostFunction(PartPosicion_Actual, CostFunc);                  % Evaluación del costo en la posición actual de la partícula.           Dims: NoPartículas X 1 (Vector Columna)
+PartCosto_LocalBest = PartCosto_Local;
 
-Costo_History = zeros([IteracionesMax 1]);                                      % Historial de todos los "Costo_Global" o global best de cada iteración
-Costo_History(1) = Costo_GlobalBest;                                            % La primera posición del vector es el primer "Global Best"
+[PartCosto_GlobalBest, Fila] = min(PartCosto_LocalBest);                        % "Global best": El costo más pequeño del vector "CostoLocal"           Dims: Escalar
+PartPosicion_GlobalBest = PartPosicion_Actual(Fila, :);                         % "Global best": Posición que genera el costo más pequeño               Dims: 1 X VarDims
+
+% Costo de E-Pucks
+PuckCosto_Local = PartCosto_Local;                                              % Inicialmente todos los costos son iguales a los de las partículas
+PuckCosto_LocalBest = PartCosto_LocalBest;
+PuckCosto_GlobalBest = PartCosto_GlobalBest;
+
+% Historia de todos los global best
+Costo_History = zeros([IteracionesMax 2]);                                      % Historial de todos los "Costo_Global" o global best de cada iteración
+Costo_History(1,:) = [PartCosto_GlobalBest PuckCosto_GlobalBest];               % La primera fila del vector es el primer "Global Best" de las partículas y los pucks
+%% 
 %% Settings de Gráficación / Setup Gráficos
 
 ModoVisualizacion = "2D";                                                       % Modo de visualización: 2D, 3D o None.
@@ -275,7 +292,7 @@ if ~strcmp(ModoVisualizacion, "None")
         case "2D"
             axis([PosMin PosMax PosMin PosMax]);                                                                                % Limites Plot: Tanto X como Y van de PosMin a PosMax 
             PlotSupCosto = contour(MeshX, MeshY, Altura);                                                                       % Contour Plot: Curvas de nivel de función o superficie de costo
-            hold on; alpha 0.5; grid on;                                                                                        %   Graficar en el mismo plot / Transparencia del 50%
+            hold on; axis manual;  alpha 0.5; grid on;                                                                          %   Graficar en el mismo plot / Transparencia del 50%
             
             % El radio del puck está en metros, pero debe ser reexpresado en puntos
             % para ser utilizado en "scatter()" y "scatter3()"
@@ -286,23 +303,20 @@ if ~strcmp(ModoVisualizacion, "None")
             set(ax, 'Units', old_units);                                            % Se regresa a las unidades originales de los ejes
             DimsMesaPuntos = min(PosAxis(3:4));                                     % Se obtiene el valor mínimo entre el "width" y el "height" de los axes en "points"
             FactorConversion = DimsMesaPuntos / DimsMesa;
-            AreaPuckScatter = pi*(RadioPuck * FactorConversion)^2;
+            AreaPuckScatter = pi*(RadioCuerpoPuck * FactorConversion)^2;
             
-            PlotParticulas = scatter(Posicion_Actual(:,1), Posicion_Actual(:,2), AreaPuckScatter, 'blue', 'LineWidth', 1.5);    % Scatter Plot: Partículas. Puntos azules.
-            PlotPuntoMin = scatter(Coords_Min(:,1), Coords_Min(:,2), 'red', 'x');                                               %   Mín función de costo = Cruz roja
-            
-            S = 0.05 ./ sqrt((CompLineaOrientacion(:,1) /PosMax).^2 + (CompLineaOrientacion(:,2) / PosMax).^2);
-            PlotLineasOrientacion = quiver(Posicion_Actual(:,1), Posicion_Actual(:,2), ...                                      % Plot: Lineas que indican orientación de puck.
-                                           S.*CompLineaOrientacion(:,1), S.*CompLineaOrientacion(:,2), ...
+            PlotParticulas = scatter(PartPosicion_Actual(:,1), PartPosicion_Actual(:,2),[],'black');                                    % Scatter Plot: Partículas. Puntos azules.
+            PlotPucks = scatter(PuckPosicion_Actual(:,1), PuckPosicion_Actual(:,2), AreaPuckScatter, 'blue', 'LineWidth', 1.5);         % Scatter Plot: Pucks. Circulos azules.
+            PlotPuntoMin = scatter(Coords_Min(:,1), Coords_Min(:,2), 'red', 'x');                                                       %   Mín función de costo = Cruz roja
+            PlotLineasOrientacion = quiver(PuckPosicion_Actual(:,1), PuckPosicion_Actual(:,2), ...                                      % Plot: Lineas que indican orientación de puck.
+                                           CompLineaOrientacion(:,1), CompLineaOrientacion(:,2), ...
                                            'r','ShowArrowHead','off','AutoScale','off','LineWidth',1.5);
-            
-            %PlotLineasOrientacion = plot(Vector_OrientacionX, Vector_OrientacionY,'red','LineWidth', 1.5);                      % Plot: Lineas que indican orientación de puck.
-            
+           
         case "3D"
             axis([PosMin PosMax PosMin PosMax], 'vis3d');                                                                       % Limites Plot: X y Y de (PosMin, PosMax). Z de (MinAltura, MaxAltura) 
             PlotSupCosto = surf(MeshX, MeshY, Altura);                                                                          % Surface Plot: Superficie o función de costo 
             hold on; shading interp; alpha 0.5; grid on                                                                         %   Graficar en el mismo plot / Paleta de color "interp" / Transparencia del 50% 
-            PlotParticulas = scatter3(Posicion_Actual(:,1), Posicion_Actual(:,2), Costo_Local, [], 'blue', 'filled');           % Scatter Plot: Partículas. Puntos azules
+            PlotParticulas = scatter3(PartPosicion_Actual(:,1), PartPosicion_Actual(:,2), PartCosto_Local, [], 'blue', 'filled');           % Scatter Plot: Partículas. Puntos azules
             h = rotate3d;
             h.Enable = 'on';                                                                                                    % Se permite que el usuario rote la gráfica    
     end
@@ -314,13 +328,20 @@ if ~strcmp(ModoVisualizacion, "None")
     
     % Subplot 1 (Fila 1, Columna 1): Minimización de Función de Costo
     SubplotCosto = subplot(1, 2, 1);
-    PlotCosto = plot(1, Costo_History(1), 'LineWidth', 2);                                                              % Regular Plot: Historia de los mejores costos obtenidos por el PSO.
-    title({"Minimización de Función de Costo" ; "Iteraciones Actuales: " + num2str(i)});
+    hold on;
+    PlotCostoPart = plot(1, Costo_History(1,1), 'LineWidth', 2);                                             % Regular Plot: Historia de los mejores costos obtenidos por el PSO.
+    PlotCostoPuck = plot(1, Costo_History(1,2), 'LineWidth', 2);                                             % Regular Plot: Historia de los mejores costos obtenidos por los pucks.
+    title({"Costo Global Best" ; "Tiempo de Ejecución: 0 s"});
+    legend("Partículas", "E-Pucks");
     xlabel('Iteración');
-    ylabel('Costo Óptimo');
+    ylabel('Costo');
     grid on;
     
     hold off;
+    
+    fig = uifigure;
+    dd = uidropdown(fig,'Items',{'Red','Yellow','Blue','Green'},...
+                     'Value','Blue');
     
 end
 %% 
@@ -331,48 +352,59 @@ Frame = 0;
 
 for i = 2:IteracionesMax
     
-    R1 = rand([NoParticulas PartPosDims]);                                          % Números normalmente distribuidos entre 0 y 1
+    R1 = rand([NoParticulas PartPosDims]);                                                  % Números normalmente distribuidos entre 0 y 1
     R2 = rand([NoParticulas PartPosDims]);
-        Posicion_Previa = Posicion_Actual;
+        PartPosicion_Previa = PartPosicion_Actual;
     
-    % Actualización de Velocidad
-    Velocidad = Chi * (W * Velocidad ...                                            % Término inercial
-                    + Phi1 * R1 .* (Posicion_LocalBest - Posicion_Actual) ...       % Componente cognitivo
-                    + Phi2 * R2 .* (Posicion_GlobalBest - Posicion_Actual));        % Componente social
+    % Actualización de Velocidad de Partículas
+    PartVelocidad = Chi * (W * PartVelocidad ...                                            % Término inercial
+                  + Phi1 * R1 .* (PartPosicion_LocalBest - PartPosicion_Actual) ...         % Componente cognitivo
+                  + Phi2 * R2 .* (PartPosicion_GlobalBest - PartPosicion_Actual));          % Componente social
     
-    Velocidad = max(Velocidad, VelMin);                                             % Se truncan los valores de velocidad en el valor mínimo y máximo
-    Velocidad = min(Velocidad, VelMax);
+    PartVelocidad = max(PartVelocidad, VelMin);                                             % Se truncan los valores de velocidad en el valor mínimo y máximo
+    PartVelocidad = min(PartVelocidad, VelMax);
     
-    % Actualización de Posición
-    Posicion_Actual = Posicion_Actual + Velocidad * dt;                             % Actualización "discreta" de la posición. El algoritmo de PSO original asume un sampling time = 1s.
-    Posicion_Actual = max(Posicion_Actual, PosMin);                                 % Se truncan los valores de posición en el valor mínimo y máximo
-    Posicion_Actual = min(Posicion_Actual, PosMax);
+    % Actualización de Posición de Partículas
+    PartPosicion_Actual = PartPosicion_Actual + PartVelocidad * dt;                         % Actualización "discreta" de la posición. El algoritmo de PSO original asume un sampling time = 1s.
+    PartPosicion_Actual = max(PartPosicion_Actual, PosMin);                                 % Se truncan los valores de posición en el valor mínimo y máximo
+    PartPosicion_Actual = min(PartPosicion_Actual, PosMax);
     
-    % Chequeo de y corrección de posición por colisiones
-    Posicion_Actual = SolveCollisions(Posicion_Actual,RadioPuck);                   % Escribir "help SolveCollisions" para más información
+    % Corrección de posición de Pucks por colisiones
+    PuckPosicion_Actual = SolveCollisions(PuckPosicion_Actual, RadioCuerpoPuck);            % Escribir "help SolveCollisions" para más información
     
+    % Actualización de velocidad lineal y angular de Pucks usando un
+    % controlador. Escribir "help getControllerOutput" para más info.
+    [PuckVelLineal, PuckVelAngular] = getControllerOutput("TUC-LQI",PartPosicion_Actual,PuckPosicion_Actual,PuckOrientacion_Actual,i,RadioCuerpoPuck,PartPosicion_GlobalBest);
+
     % Actualización de orientación
-    CompLineaOrientacion = Posicion_Actual + ...                                    % Se proyecta una linea desde el centro del puck hasta su perímetro
-                           RadioPuck * [cos(Orientacion_Actual) sin(Orientacion_Actual)];
-    S = 0.05 ./ sqrt((CompLineaOrientacion(:,1) /PosMax).^2 + (CompLineaOrientacion(:,2) / PosMax).^2);
-    %Vector_OrientacionX = [Posicion_Actual(:,1)'; CompLineaOrientacion(:,1)'];
-    %Vector_OrientacionY = [Posicion_Actual(:,2)'; CompLineaOrientacion(:,2)'];
+    CompsPuckVelLineal = [PuckVelLineal.*cos(PuckOrientacion_Actual) PuckVelLineal.*sin(PuckOrientacion_Actual)];
+    PuckPosicion_Actual = PuckPosicion_Actual + CompsPuckVelLineal * dt;
+    PuckOrientacion_Actual = PuckOrientacion_Actual + PuckVelAngular * dt;
+    CompLineaOrientacion = RadioCuerpoPuck * [cos(PuckOrientacion_Actual) sin(PuckOrientacion_Actual)];
     
-    % Actualización de Local y Global Best
-    Costo_Local = CostFunction(Posicion_Actual, CostFunc);                          % Actualización de los valores del costo
-    Costo_LocalBest = min(Costo_LocalBest, Costo_Local);                            % Se sustituyen los costos que son menores al "Local Best" previo
-    Costo_Change = (Costo_Local < Costo_LocalBest);                                 % Vector binario que indica con un 0 cuales son las filas de "Costo_Local" que son menores que las filas de "Costo_LocalBest"
-    Posicion_LocalBest = Posicion_LocalBest .* Costo_Change + Posicion_Actual;      % Se sustituyen las posiciones correspondientes a los costos a cambiar en la linea previa
+    % Actualización de Local y Global Best: Partículas
+    PartCosto_Local = CostFunction(PartPosicion_Actual, CostFunc);                          % Actualización de los valores del costo
+    PartCosto_LocalBest = min(PartCosto_LocalBest, PartCosto_Local);                        % Se sustituyen los costos que son menores al "Local Best" previo
+    Costo_Change = (PartCosto_Local < PartCosto_LocalBest);                                 % Vector binario que indica con un 0 cuales son las filas de "Costo_Local" que son menores que las filas de "PartCosto_LocalBest"
+    PartPosicion_LocalBest = PartPosicion_LocalBest .* Costo_Change + PartPosicion_Actual;  % Se sustituyen las posiciones correspondientes a los costos a cambiar en la linea previa
     
-    [Costo_Global, Fila] = min(Costo_LocalBest);                                    % Valor mínimo de entre los valores de "Costo_Local"
-    
-    if Costo_Global < Costo_GlobalBest                                              % Si el nuevo costo global es menor al "Global Best" entonces
-        Costo_GlobalBest = Costo_Global;                                            % Se actualiza el valor del "Global Best"
-        Posicion_GlobalBest = Posicion_Actual(Fila, :);                             % Y la posición correspondiente al "Global Best"
+    [Actual_GlobalBest, Fila] = min(PartCosto_Local);                                       % Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
+    if Actual_GlobalBest < PartCosto_GlobalBest                                             % Si el "Actual_GlobalBest" es menor al "Global Best" previo 
+        PartCosto_GlobalBest = Actual_GlobalBest;                                           % Se actualiza el valor del "Global Best" (PartCosto_GlobalBest)
+        PartPosicion_GlobalBest = PartPosicion_Actual(Fila, :);                             % Y la posición correspondiente al "Global Best"
     end
     
-    % Actualización del historial de "Best Costs"
-    Costo_History(i) = Costo_GlobalBest;                                            
+    % Actualización de Local y Global Best: E-Pucks
+    PuckCosto_Local = CostFunction(PuckPosicion_Actual, CostFunc);                          % Actualización de los valores del costo
+    PuckCosto_LocalBest = min(PuckCosto_LocalBest, PuckCosto_Local);                        % Se sustituyen los costos que son menores al "Local Best" previo
+    
+    [Actual_GlobalBest, Fila] = min(PuckCosto_Local);                                       % Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
+    if Actual_GlobalBest < PuckCosto_GlobalBest                                             % Si el nuevo costo global es menor al "Global Best" entonces
+        PuckCosto_GlobalBest = Actual_GlobalBest;                                           % Se actualiza el valor del "Global Best"
+    end
+    
+    % Actualización del historial de "Global Bests"
+    Costo_History(i,:) = [PartCosto_GlobalBest PuckCosto_GlobalBest];                                            
     
     % Actualización del coeficiente inercial
     if strcmp(Restriccion, "Inercia") || strcmp(Restriccion, "Mixto")
@@ -385,41 +417,40 @@ for i = 2:IteracionesMax
     % Actualización de los plots utilizando handlers para mejorar "performance"
     switch ModoVisualizacion
         case "2D"
-            PlotParticulas.XData = Posicion_Actual(:,1);
-            PlotParticulas.YData = Posicion_Actual(:,2);
-            PlotCosto.XData = 1:i;
-            PlotCosto.YData = Costo_History(1:i);
+            PlotParticulas.XData = PartPosicion_Actual(:,1);
+            PlotParticulas.YData = PartPosicion_Actual(:,2);
             
-            PlotLineasOrientacion.XData = Posicion_Actual(:,1);
-            PlotLineasOrientacion.YData = Posicion_Actual(:,2);
-            PlotLineasOrientacion.UData = S.*CompLineaOrientacion(:,1);
-            PlotLineasOrientacion.VData = S.*CompLineaOrientacion(:,2);
-            %PlotLineasOrientacion.XData = Vector_OrientacionX;
-            %PlotLineasOrientacion.YData = Vector_OrientacionY;
+            PlotCostoPart.XData = (1:i)*dt;
+            PlotCostoPart.YData = Costo_History(1:i,1);
+            PlotCostoPuck.XData = (1:i)*dt;
+            PlotCostoPuck.YData = Costo_History(1:i,2);
+            
+            PlotPucks.XData = PuckPosicion_Actual(:,1);
+            PlotPucks.YData = PuckPosicion_Actual(:,2);
+            
+            PlotLineasOrientacion.XData = PuckPosicion_Actual(:,1);
+            PlotLineasOrientacion.YData = PuckPosicion_Actual(:,2);
+            PlotLineasOrientacion.UData = CompLineaOrientacion(:,1);
+            PlotLineasOrientacion.VData = CompLineaOrientacion(:,2);
             
         case "3D"
-            PlotParticulas.XData = Posicion_Actual(:,1);
-            PlotParticulas.YData = Posicion_Actual(:,2);
-            PlotParticulas.ZData = Costo_Local;
-            PlotCosto.XData = 1:i;
-            PlotCosto.YData = Costo_History(1:i);        
-            
-        % Se notifica al usuario que las partículas se encuentran
-        % dentro del radio de convergencia. De lo contrario se muestran
-        % las iteraciones.
-        if Criterios(1) == 1
-            set(get(SubplotCosto,'Title'), 'String', {"Condición Alcanzada: " + NomCriterios(1); "Iteraciones Actuales: " + num2str(i)});
-        else
-            set(get(SubplotCosto,'Title'), 'String', {"Minimización de Función de Costo" ; "Iteraciones Actuales: " + num2str(i)});
-        end
+            PlotParticulas.XData = PartPosicion_Actual(:,1);
+            PlotParticulas.YData = PartPosicion_Actual(:,2);
+            PlotParticulas.ZData = PartCosto_Local;
+            PlotCostoPart.XData = 1:i;
+            PlotCostoPart.YData = Costo_History(1:i);        
+        
     end
+    
+    % Actualización del título del subplot del costo
+    set(get(SubplotCosto,'Title'), 'String', {"Costo Global Best" ; "Tiempo de Ejecución: " + num2str(i*dt, '%4.2f') + "s"});
     
     % Evaluación de criterios. Colocar la/las condiciones que darán fin al
     % algoritmo en el siguiente "if". Escribir "help EvalCriteriosConvergencia" 
     % para más información.
-    [Criterios, NomCriterios] = EvalCriteriosConvergencia(Coords_Min, Posicion_Actual, i, NoParticulas, PosMax, PosMin, IteracionesMax, Posicion_Previa);                                 
+    [Criterios, NomCriterios] = EvalCriteriosConvergencia(Coords_Min, PuckPosicion_Actual, i, NoParticulas, PosMax, PosMin, IteracionesMax, PuckPosicion_Previa);                                 
     
-    if sum(Criterios) > 0                              
+    if Criterios(4) == 1                              
         
         % Se detectan los criterios que fueron "activados". Se muestra en el título del gráfico 
         % cual fue la razón de mayor prioridad por la que se detuvo el algoritmo y luego se detiene 
@@ -446,7 +477,7 @@ for i = 2:IteracionesMax
     end
     
     % Actualización gradual de gráficos para mostrar animación
-    pause(dt);
-    break;
-     
+    drawnow limitrate;                                                  % Se mira "stuttery" pero corre en tiempo real
+    %drawnow;                                                           % Se mira suave pero corre lento                                     
+
 end

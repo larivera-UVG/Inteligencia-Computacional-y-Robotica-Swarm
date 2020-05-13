@@ -134,7 +134,7 @@ grid on; grid minor;
 xlabel('X (m)','FontSize',14); ylabel('Y (m)','FontSize',14);
 legend('Funcion de costo Sphere','Trayectoria (X,Y) de robots','Posicion inicial de robots','Location','southeast')
 
-if (plottear)
+
 % ---------------- Calculo de Dispersion de Enjambre ----------------------
 sigma_X = zeros(1,data_length);
 sigma_Y = zeros(1,data_length);
@@ -220,4 +220,3 @@ subplot(1,3,3);
 plot(FG,'k','Linewidth',1);
 grid on; grid minor;
 title('Costo de GB');
-end

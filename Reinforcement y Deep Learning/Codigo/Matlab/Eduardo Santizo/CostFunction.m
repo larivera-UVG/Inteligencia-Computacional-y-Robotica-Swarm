@@ -53,6 +53,9 @@ function Costo = CostFunction(X, FunctionName, varargin)
 %   - Himmelblau: Función con múltiples mínimos globales o absolutos. Útil
 %     para determinar la influencia de la posición inicial de las partículas
 %     sobre la decisión del punto de convergencia final. 4 Mínimos.
+%
+%   - APF: Función creada utilizando artificial potential fields. PARÁMETRO
+%     ADICIONAL DE FUNCIÓN: 
 
     switch FunctionName
         % Paraboloide o Esfera
@@ -105,6 +108,146 @@ function Costo = CostFunction(X, FunctionName, varargin)
         % Himmelblau Function
         case "Himmelblau"
             Costo = (X(:,1).^2 + X(:,2) - 11).^2 + (X(:,1) + X(:,2).^2 - 7).^2;
+        
+        % Función generada utilizando Artificial Potential Fields
+        case "APF"    
+            Modo = varargin{1};
+            Comportamiento = varargin{2};
+            VerticesObsX = varargin{3};
+            VerticesObsY = varargin{4};
+            PosMin = varargin{5};
+            PosMax = varargin{6};
+            Meta = varargin{7};
+            
+            persistent Inicializada CoordsMasCosto NoDecimales
+            
+            % Si el número de puntos es muy alto, se asume que la función
+            % se está inicializando pasándole una matriz de puntos
+            % correspondientes al tablero.
+            if size(X,1) > 1000
+                
+                % Vertices de los obstáculos. Se colocan las coordenadas X
+                % en la primera columna y las Y en la segunda columna.
+                VerticesObs = [VerticesObsX VerticesObsY];
+
+                % Vértices del polígono cuadrado que forma el borde la mesa
+                % Se repite el primer vértice para que la figura cierre
+                VerticesMesa = [PosMin PosMin PosMax PosMax ; ...
+                                PosMin PosMax PosMax PosMin]';
+
+                % Cabe mencionar que los puntos que definen los vértices del polígono
+                % tienen 4 decimales. Los puntos de X pueden tener entre 2 a 4 decimales.
+                % Si se intenta usar inpolygon con esta diferencia en cifras significativas
+                % el sistema encontrará puntos dentro del polígono, pero no en los bordes
+                % ya que busca coincidencias idénticas de puntos y para la función un 0.41005
+                % es distinto de un 0.41, por ejemplo. Para evitar esto, ambos vectores se
+                % redondean a 2 decimales, el valor mínimo.
+                NoDecimales = 1;
+                X = round(X, NoDecimales);
+                VerticesObs = round(VerticesObs, NoDecimales);
+                VerticesMesa = round(VerticesMesa, NoDecimales);
+
+                % Puntos dentro (In) y en el borde (On) de:
+                %   - Los obstáculos (Obs)
+                %   - Los bordes de la mesa (Mesa)
+                [InObs,OnObs] = inpolygon(X(:,1),X(:,2),VerticesObs(:,1),VerticesObs(:,2));
+                [~,OnMesa] = inpolygon(X(:,1),X(:,2),VerticesMesa(:,1),VerticesMesa(:,2));
+
+                % Se obtienen los puntos del mesh que consisten de "bordes"
+                BordesObs = X(OnObs,:);
+                BordesMesa = X(OnMesa,:);
+
+                % Puntos que no consisten de cuerpos sólidos se vuelven en 0
+                PuntosLibres = X .* ~InObs;
+
+                % Traspone y luego repite las coordenadas X y Y, tantas veces 
+                % como hay filas en "BordesObs". Se repite "hacia abajo".
+                MatrizX = repmat(PuntosLibres(:,1)', size(BordesObs,1),1);                
+                MatrizY = repmat(PuntosLibres(:,2)', size(BordesObs,1),1);
+
+                % A las matrices se les restan los vectores columna con las
+                % coordenadas de los bordes
+                CambioX = min(MatrizX - BordesObs(:,1),[],1);
+                CambioY = min(MatrizY - BordesObs(:,2),[],1);
+
+                % Se calculan las distancias al obstáculo más cercano
+                DistsAObs = sqrt(CambioX'.^2 + CambioY'.^2) .* ~InObs;
+
+                % Se le agrega un valor de 0.1 a puntos que forman parte del
+                % cuerpo del obstáculo
+                DistsAObs = DistsAObs + InObs * 0.1;
+
+                % Threshold para ignorar obstáculos lejanos
+                Qi = 5;
+
+                % Se ignoran puntos muy lejanos al obstáculo
+                LejosObs = DistsAObs < Qi;
+
+                % Se repite el proceso previo pero ahora para los puntos que
+                % forman parte de los bordes de la mesa
+                PuntosDentroMesa = X .* ~OnMesa;
+                MatrizX = repmat(PuntosDentroMesa(:,1)', size(BordesMesa,1),1);                 
+                MatrizY = repmat(PuntosDentroMesa(:,2)', size(BordesMesa,1),1);
+                CambioX = min(MatrizX - BordesMesa(:,1),[],1);
+                CambioY = min(MatrizY - BordesMesa(:,2),[],1);
+                DistsABordes = sqrt(CambioX'.^2 + CambioY'.^2) .* OnMesa;
+                DistsABordes = DistsABordes + ~OnMesa * 0.1;
+                LejosBordesMesa = DistsABordes < Qi;
+
+                switch Modo
+                    case "Choset"
+                        Eta = 10;
+                        Zeta = 5;
+                        DStar = 2;
+                        PotRepulsorMesa = 0.5 * Eta * (1./DistsABordes - 1/Qi) .^2 .* LejosBordesMesa;
+                        PotRepulsorObs = 0.5 * Eta * (1./DistsAObs - 1/Qi) .^2 .* LejosObs;
+                        PotRepulsor = PotRepulsorMesa + PotRepulsorObs;
+
+                        PotAtractorA = 0.5 * Zeta * sum((X - Meta).^2, 2);
+                        PotAtractorB = DStar * Zeta * sqrt(sum((X - Meta).^2, 2)) - 0.5 * Zeta * DStar^2;
+                        DistsAMeta = sqrt(sum((X - Meta).^2, 2));
+
+                        LejosMeta = DistsAMeta <= DStar;
+                        PotAtractor = PotAtractorA .* LejosMeta + PotAtractorB .* ~LejosMeta;
+                    otherwise
+                        Co = 500; Lo = 0.2;
+                        Cg = 500; Lg = 3;                                               % Distancia de intensidad / Distancia de correlación para migración grupal
+                        PotRepulsorMesa = Co * exp(-(DistsABordes .^2) / Lo^2);
+                        PotRepulsorObs = Co * exp(-(DistsAObs .^2) / Lo^2);
+                        PotRepulsor = PotRepulsorMesa + PotRepulsorObs;
+
+                        PotAtractor = Cg * (1 - exp(-(vecnorm(X - Meta).^2) / Lg^2));
+                end
+
+                switch Comportamiento
+                    case "Multiplicativo"
+                        if strcmp(Modo,"Choset")
+                            PotTotal = PotRepulsor .* PotAtractor + PotAtractor;
+                        else
+                            PotTotal = PotRepulsor / Cg .* PotAtractor + PotAtractor;
+                        end
+                    case "Aditivo"
+                        PotTotal = PotRepulsor + PotAtractor;
+                end
+                
+                Inicializada = 1;
+                Costo = PotTotal;
+                CoordsMasCosto = [X PotTotal];
+                
+            % Si la función se inicializó previamente y el número de filas
+            % de X (Puntos a analizar) es pequeño (Menor a 1000);
+            elseif (size(X,1) < 1000 || Inicializada == 1)
+                
+                X = round(X,NoDecimales);
+                [~,CoincidenciaFilas] = ismember(X,CoordsMasCosto(:,1:2),'rows');
+                Costo = CoordsMasCosto(CoincidenciaFilas,3);
+                
+            else
+                ErrorMsg = 'Error. No se inicializó el artificial potential field. Si se desea inicializar, llamar a la función pasándole un vector X con más de 1000 puntos o filas.';
+                error(ErrorMsg);
+            end
+            
+            
     end
 
 % NOTA: En caso se deseen agregar más funciones, simplemente se debe agregar

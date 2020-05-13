@@ -24,7 +24,7 @@ x = linspace(-gridsize/2,gridsize/2,step);
 y = linspace(-gridsize/2,gridsize/2,step);
 
 %Se realiza un grid de las coordenadas a evaluar en el campo de potencial
-[Xrep,Yrep] = meshgrid(x,y);
+[Xrep,Yrep] = meshgrid(x,y)
 
 %Se definen los puntos dentro y en el borde del obstaculo
 [in,on]= inpolygon(round(Xrep,rounding),round(Yrep,rounding),xrep,yrep);
@@ -32,9 +32,9 @@ y = linspace(-gridsize/2,gridsize/2,step);
 
 on_total = on | onw;
 %Se identifican en un grid los puntos sobre el borde del obstaculo
-edges = [Xrep(on),Yrep(on)];
-edgesw = [Xrep(onw),Yrep(onw)];
-%plot(Xrep(on),Yrep(on),'bo')
+edges = [Xrep(on),Yrep(on)]
+edgesw = [Xrep(onw),Yrep(onw)]
+plot(Xrep(on),Yrep(on),'bo')
 
 
 %Se identifican en el grid de puntos reales los que no son obstaculo

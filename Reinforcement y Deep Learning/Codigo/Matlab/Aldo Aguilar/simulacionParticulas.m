@@ -326,62 +326,62 @@ end
 
 %% Graficacion de Evolucion de centro y dispersion de enjambre 
 
-% % Inicializacion de figura con dimensiones y render EPS adecuado
-% h2 = figure; clf;
-% set(h2,'units','points','position',[60,95,1020,420]);
-% set(h2,'color','w');
-% set(h2,'renderer','Painters');
-% 
-% subplot(1,2,1);
-% % Creacion de barras de error por cada medicion de desviacion estandar en X
-% xx = linspace(0,length(mean_vect(1,:))-1,length(mean_vect(1,:)));
-% f1 = fill([xx;flipud(xx)],[mean_vect(1,:)-sigma_vect(1,:);flipud(mean_vect(1,:)+sigma_vect(1,:))],'b');
-% set(f1,'EdgeColor','b');
-% set(f1,'EdgeAlpha',.5);
-% hold on;
-% % Extra para lograr cambiar el color de la leyenda de dispersion en X
-% a1 = area([0.0001 0.0002],[0.0001 0.0002],'FaceColor','b','FaceAlpha',.3,'EdgeAlpha',.3,'ShowBaseLine','off');
-% hold on;
-% % Graficacion de movimiento de centro de enjambre respecto al tiempo
-% p1 = plot(mean_vect(1,:),'b','LineWidth',3);
-% hold on;
-% grid on; grid minor;
-% xlabel('Tiempo (s)','FontSize',14); ylabel('Posición de enjambre en X (m)','FontSize',14);
-% xticks([0 10 20 30 40 50 60 70 80 90 100 110 120]);
-% xticklabels({'0','1','2','3','4','5','6','7','8','9','10','11','12'});
-% xlim([0 120]);
-% legend([p1(1),a1(1)],'Media de coordenada X de todas las partículas','Dispersión de particulas sobre eje X');
-% 
-% subplot(1,2,2);
-% % Creacion de barras de error por cada medicion de desviacion estandar en Y
-% f2 = fill([xx;flipud(xx)],[mean_vect(2,:)-sigma_vect(2,:);flipud(mean_vect(2,:)+sigma_vect(2,:))],'r');
-% set(f2,'EdgeColor','r');
-% set(f2,'EdgeAlpha',.5);
-% hold on;
-% % Extra para lograr cambiar el color de la leyenda de dispersion en Y
-% a2 = area([0.0001 0.0002],[0.0001 0.0002],'FaceColor','r','FaceAlpha',.3,'EdgeAlpha',.3,'ShowBaseLine','off');
-% hold on;
-% % Graficacion de movimiento de centro de enjambre respecto al tiempo
-% p2 = plot(mean_vect(2,:),'r','LineWidth',3);
-% hold on;
-% grid on; grid minor;
-% xlabel('Tiempo (s)','FontSize',14); ylabel('Posición de enjambre en Y (m)','FontSize',14);
-% xticks([0 10 20 30 40 50 60 70 80 90 100 110 120]);
-% xticklabels({'0','1','2','3','4','5','6','7','8','9','10','11','12'});
-% xlim([0 120]);
-% legend([p2(1),a2(1)],'Media de coordenada Y de todas las partículas','Dispersión de particulas sobre eje Y','Location','southeast');
-% 
-% % Eliminacion de margenes blancos
-% % ax = gca;
-% % outerpos = ax.OuterPosition;
-% % ti = ax.TightInset; 
-% % left = outerpos(1) + ti(1);
-% % bottom = outerpos(2) + ti(2);
-% % ax_width = outerpos(3) - ti(1) - ti(3);
-% % ax_height = outerpos(4) - ti(2) - ti(4);
-% % ax.Position = [left bottom ax_width ax_height];
-% 
-% %% Graficacion de Evolucion de centro y dispersion de enjambre (XY conjunto)
+% Inicializacion de figura con dimensiones y render EPS adecuado
+h2 = figure; clf;
+set(h2,'units','points','position',[60,95,1020,420]);
+set(h2,'color','w');
+set(h2,'renderer','Painters');
+
+subplot(1,2,1);
+% Creacion de barras de error por cada medicion de desviacion estandar en X
+xx = linspace(0,length(mean_vect(1,:))-1,length(mean_vect(1,:)));
+f1 = fill([xx;flipud(xx)],[mean_vect(1,:)-sigma_vect(1,:);flipud(mean_vect(1,:)+sigma_vect(1,:))],'b');
+set(f1,'EdgeColor','b');
+set(f1,'EdgeAlpha',.5);
+hold on;
+% Extra para lograr cambiar el color de la leyenda de dispersion en X
+a1 = area([0.0001 0.0002],[0.0001 0.0002],'FaceColor','b','FaceAlpha',.3,'EdgeAlpha',.3,'ShowBaseLine','off');
+hold on;
+% Graficacion de movimiento de centro de enjambre respecto al tiempo
+p1 = plot(mean_vect(1,:),'b','LineWidth',3);
+hold on;
+grid on; grid minor;
+xlabel('Tiempo (s)','FontSize',14); ylabel('Posición de enjambre en X (m)','FontSize',14);
+xticks([0 10 20 30 40 50 60 70 80 90 100 110 120]);
+xticklabels({'0','1','2','3','4','5','6','7','8','9','10','11','12'});
+xlim([0 120]);
+legend([p1(1),a1(1)],'Media de coordenada X de todas las partículas','Dispersión de particulas sobre eje X');
+
+subplot(1,2,2);
+% Creacion de barras de error por cada medicion de desviacion estandar en Y
+f2 = fill([xx;flipud(xx)],[mean_vect(2,:)-sigma_vect(2,:);flipud(mean_vect(2,:)+sigma_vect(2,:))],'r');
+set(f2,'EdgeColor','r');
+set(f2,'EdgeAlpha',.5);
+hold on;
+% Extra para lograr cambiar el color de la leyenda de dispersion en Y
+a2 = area([0.0001 0.0002],[0.0001 0.0002],'FaceColor','r','FaceAlpha',.3,'EdgeAlpha',.3,'ShowBaseLine','off');
+hold on;
+% Graficacion de movimiento de centro de enjambre respecto al tiempo
+p2 = plot(mean_vect(2,:),'r','LineWidth',3);
+hold on;
+grid on; grid minor;
+xlabel('Tiempo (s)','FontSize',14); ylabel('Posición de enjambre en Y (m)','FontSize',14);
+xticks([0 10 20 30 40 50 60 70 80 90 100 110 120]);
+xticklabels({'0','1','2','3','4','5','6','7','8','9','10','11','12'});
+xlim([0 120]);
+legend([p2(1),a2(1)],'Media de coordenada Y de todas las partículas','Dispersión de particulas sobre eje Y','Location','southeast');
+
+% Eliminacion de margenes blancos
+% ax = gca;
+% outerpos = ax.OuterPosition;
+% ti = ax.TightInset; 
+% left = outerpos(1) + ti(1);
+% bottom = outerpos(2) + ti(2);
+% ax_width = outerpos(3) - ti(1) - ti(3);
+% ax_height = outerpos(4) - ti(2) - ti(4);
+% ax.Position = [left bottom ax_width ax_height];
+
+%% Graficacion de Evolucion de centro y dispersion de enjambre (XY conjunto)
 % 
 % % Inicializacion de figura con dimensiones y render EPS adecuado
 % h2 = figure; clf;

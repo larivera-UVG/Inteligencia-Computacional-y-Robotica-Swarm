@@ -171,7 +171,7 @@ bool state = false;
 // Ruta donde se almacenarán los data logs
 // - Es necesario ponerle doble barra para que la reconozca.
 // - Las letras en la ruta no deben de presentar tildes, ñ's u otros caracteres especiales
-char base_dir[244] = "E:\\Escritorio\\Temporal\\Documentos\\Tesis\\Codigo\\Tesis Previas\\Aldo Aguilar\\Simulaciones WEBOTS\\Programas para interpretar resultados de WEBOTS en MATLAB";
+char base_dir[244] = "E:\\Escritorio\\Temporal\\Documentos\\Tesis\\Reinforcement y Deep Learning\\Codigo\\Webots\\Aldo Aguilar\\Programas para interpretar resultados de WEBOTS en MATLAB";
 char dirs[10][244];
 char base_txt[244] = "\\epuck0.txt";
 char txts[10][244];
