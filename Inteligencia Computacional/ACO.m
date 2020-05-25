@@ -1,5 +1,5 @@
 % IE Diseño e Innovación
-% Ant Colony Optimization
+% Ant Colony Optimization - Ant System
 % Gabriela Iriarte Colmenares
 % 16009
 % 5/04/2020 - 3/05/2020
@@ -19,26 +19,38 @@ nodos = nodes(grid_x,grid_y);
 cant_nodos = grid_x*grid_y;
 tf = 100; % número de iteraciones máx
 hormigas = 50;
-rho = 0.8; % rate de evaporación (puede tomar valores entre 0 y 1)
+rho = 0.5; % rate de evaporación (puede tomar valores entre 0 y 1)
 alpha = 1.3;
-
+beta = 1.3;
+Q = 1;
 nodo_dest = [6 6];
-
+AS = 1; 
+% 1 - 'cycle'
+% 2 - 'density'
+% 3 - 'quantity'
 epsilon = 0.1;
 %% Init de la matriz TAU
 % Que contiene todas las feromonas en forma de una matriz de adyacencia
 % pero con "pesos"
-
+cost_diag = 0.5;
 tau = zeros(cant_nodos);
+eta = ones(cant_nodos); % Eta inicial (1/d) todas menos las diagonales son 1
 for n = 1:cant_nodos % Por cada elemento de cada columna
     v = neighbors(nodos(n,:), grid_x, grid_y); % Encontrar sus vecinos
+    diagonal = repmat(nodos(n,:),[4 1])+[1 1;-1 1;-1 -1;1 -1];
+    [~,indxdiag] = ismember(diagonal,v,'rows');
+    nod_diag = v(indxdiag(any(indxdiag,2),:),:);
+    [~,indxdiag2] = ismember(nod_diag,nodos,'rows');
+    eta(indxdiag2,n) = 1/cost_diag; %sqrt(2); % A las diagonales les ponemos 1/1.41 (más costo)
     columnasvecinos = v(:,2);
     [~,indx] = ismember(v(any(v,2),:),nodos,'rows');
-    tau(indx,n) = ones(size(indx,1),1);
+    tau(indx,n) = ones(size(indx,1),1)*0.1; % init con valores pequeños! si
+    % no no funciona correctamente el algoritmo
 end
 
 for n = 1:cant_nodos
     tau(n,n:end) = tau(n:end,n)';
+    eta(n,n:end) = eta(n:end,n)';
 end
 
 edges = zeros(cant_nodos*cant_nodos,5);
@@ -84,7 +96,7 @@ end
 
 next_node = zeros(1,2);
 % omitir los ceros de los vectores
-
+G = graph(tau);%
 %% ACO loop
 t = 1;
 stop = 1;
@@ -102,6 +114,7 @@ while (t<=tf & stop)
             feas_nodes{k,n} = vytau{n,1};
         end
     end
+    % Por cada hormiga
     for k = 1:hormigas
         fila = 2;
         flag = 0;
@@ -112,8 +125,8 @@ while (t<=tf & stop)
             blocked_nodes{k,1}(size(blocked_nodes{k,1},1)+1,:) =  nodo_actual(k,:);
             % Calculamos qué nodos sí tenemos disponibles para viajar
             [feas_nodes{k,id},blocked_nodes{k,1},flag] = tabu(feas_nodes{k,id}, blocked_nodes{k,1}, last_node{k,id});
-            % La hormiga toma la decisión de a donde ir
-            next_node = ant_decision(feas_nodes{k,id},tau,alpha,nodos,id);
+            % La hormiga toma la decisión de a donde ir eq.(17.6)
+            next_node = ant_decision(feas_nodes{k,id},tau,alpha,eta,beta,nodos,id);
             % Calculamos el id del siguiente nodo
             id = nodeid(next_node,nodos);
             % En la lista del siguiente nodo tenemos que guardar que el nodo
@@ -127,8 +140,15 @@ while (t<=tf & stop)
             path_k{k,1}(fila,:) = nodo_actual(k,:);
             fila = fila + 1;
         end
-        path_k{k,1} = loop_remover(path_k{k,1});
-        L(k,t) = size(path_k{k,1},1)-1; % Equivale a f(x_k(t))
+        path_k{k,1} = loop_remover(path_k{k,1}); % Quitamos los loops del path
+        
+        id_path = nodeid(path_k{k,1},nodos); % ID de todos los nodos en la solución parcial
+        
+        for f = 1:size(id_path,1)-1
+            L(k,t) = L(k,t) + 1/eta(id_path(f),id_path(f+1));
+        end
+        
+        %L(k,t) = size(path_k{k,1},1)-1; % Equivale a f(x_k(t))
         all_path{k,t} = path_k{k,1};  % Equivale a x_k(t)
         
 
@@ -139,13 +159,16 @@ while (t<=tf & stop)
     % complejos
     for n = 1:cant_nodos % Por cada fila
         for m = 1:cant_nodos % Por cada columna
-            tau(n,m) = (1-rho)*tau(n,m);
+            tau(n,m) = (1-rho)*tau(n,m); % A cada link se le aplica la eq (17.5)
         end
     end
+    
     %% Update de Feromona
     for k = 1:hormigas
-        dtau = 1/L(k,t);
-        id_path = nodeid(all_path{k,t},nodos);
+        
+        dtau = Q/L(k,t);
+        id_path = nodeid(all_path{k,t},nodos); % ID de todos los nodos 
+        % visitados por la hormiga k en el tiempo t
         
         for f = 1:size(id_path,1)-1
             tau(id_path(f),id_path(f+1)) = tau(id_path(f),id_path(f+1)) + dtau;
@@ -153,7 +176,7 @@ while (t<=tf & stop)
         end
     end
     
-    if (numel(unique(L(:,t)))/hormigas < epsilon)
+    if (numel(unique(L(:,t)))/hormigas < epsilon) % condición de paro
         stop = 0;
     end
     
