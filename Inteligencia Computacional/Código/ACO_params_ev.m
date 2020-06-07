@@ -7,23 +7,31 @@
 %% Encoding grid in a graph 
 % Primero hay que hacer la lista de los nodos que vamos a utilizar. Nuestra
 % base será una cuadrícula rectangular de grid_x X grid_y:
-grid_x = 8;
-grid_y = 8;
+tic
+grid_x = 10;
+grid_y = 10;
 % Nodos es una lista de las coordenadas [x y] de todos los nodos del grafo
 % que representan a la cuadrícula
+cant_nodos = grid_x*grid_y;
 nodos = nodes(grid_x,grid_y);
 %% ACO init
 % Hay grid_x*grid_y nodos en el grafo
 % La matriz de adyacencia es una matriz cuadrada de tamaño cantidad de
 % nodos que hayan en el grafo.
-cant_nodos = grid_x*grid_y;
 tf = 100; % número de iteraciones máx
+barrido = zeros(8*20*20,6);
+barridoL = cell(8*20*20,1);
+cont = 1;
+%for hormigas = 1:50
 hormigas = 50;
-rho = 0.5; % rate de evaporación (puede tomar valores entre 0 y 1)
-alpha = 1.3;
-beta = 1.3;
+for rho = 0.3:0.1:1
+%rho = 0.5; % rate de evaporación (puede tomar valores entre 0 y 1)
+for alpha = 1:0.1:3
+%alpha = 1.3;
+for beta = 1:0.1:3
+%beta = 1.3;
 Q = 1;
-nodo_dest = [6 6];
+nodo_dest = [9 9];
 AS = 1; 
 % 1 - 'cycle'
 % 2 - 'density'
@@ -100,11 +108,11 @@ G = graph(tau);%
 %% ACO loop
 t = 1;
 stop = 1;
-figure(); clf;
+%figure(); clf;
 %hold on
 %h = scatter(edges(1,[1,3]),edges(1,[2,4]));
 %h.Color=[0,0,0,1];
-colores = zeros(size(G.Edges.Weight,1),3);
+%colores = zeros(size(G.Edges.Weight,1),3);
 %axis([1 8 1 8])
 while (t<=tf & stop)
     nodo_actual = ones(hormigas,2);
@@ -172,7 +180,7 @@ while (t<=tf & stop)
         
         for f = 1:size(id_path,1)-1
             tau(id_path(f),id_path(f+1)) = tau(id_path(f),id_path(f+1)) + dtau;
-            tau(id_path(f+1),id_path(f)) = tau(id_path(f),id_path(f+1));
+            %tau(id_path(f+1),id_path(f)) = tau(id_path(f),id_path(f+1));
         end
     end
     
@@ -180,36 +188,33 @@ while (t<=tf & stop)
         stop = 0;
     end
     
-%     mtau = max(max(tau));
-%     cont = 1;
-%     for n = 1:cant_nodos % Por cada nodo
-%         for m = 1:cant_nodos
-%             edges(cont,:) = [nodos(m,:) nodos(n,:) tau(m,n)/mtau];
-%             temp = edges(all(edges,2),:);
-%             cont = cont + 1;
-%         end
-%     end
-
-%     for cont = 1:length(edges)
-%         h.XData(:,[cont,cont+2]) = edges(cont,[1,3])';
-%         h.YData(:,[cont,cont+2]) = edges(cont,[2,4])';
-%         %h.Color(4) = edges(cont,5);
-%         drawnow limitrate
-%     end
-%     h.XData(:,[1,2]) = edges(9,[1,3])';
-%     h.YData(:,[1,2]) = edges(9,[2,4])';
-%     h.Color(4) = edges(9,5);
+%     colores(:,3) = G.Edges.Weight./max(G.Edges.Weight);
+%     G = graph(tau);%
+%     h = plot(G,'LineWidth', G.Edges.Weight, 'NodeColor', 'none','EdgeColor',colores); %'EdgeLabel',G.Edges.Weight,
+%     view([-90 -90])
 %     drawnow limitrate
-    colores(:,3) = G.Edges.Weight./max(G.Edges.Weight);
-    G = graph(tau);%
-    h = plot(G,'LineWidth', G.Edges.Weight, 'NodeColor', 'none','EdgeColor',colores); %'EdgeLabel',G.Edges.Weight,
-    view([-90 -90])
-    drawnow limitrate
     t = t + 1;
 end
+                                        % costo del camino  % iteraciones
+barrido(cont,:) = [rho, hormigas, alpha, beta, mode(L(:,t-1)), (t-1)];
+barridoL{cont,1} = L(:,t-1);
+cont = cont + 1;
+
+if (mod(contador,100)) % Cada 100 iteraciones guardo los datos en un mat
+    tiempofinal = toc;
+   save('datos_params.mat','barrido','barridoL', 'tiempofinal'); 
+end
+
+end
+end
+end
+%end
+
+
+
 %% Best Path Calculation
 % valor_minimo_por_columna,filas_en_donde_estan_los_min
-[minval_col,fil] =  min(L(:,t-1));
+[minval_col,fil] =  mode(L(:,t-1));
 best_path = all_path{fil,t-1}; % L(k,t)
 %% Gráfica
 figure()
@@ -220,7 +225,7 @@ nodos_especiales = [path_k{1,1}(1,:);nodo_dest];
 scatter(nodos_especiales(:,1),nodos_especiales(:,2),'r','filled')
 plot(best_path(:,1),best_path(:,2),'b')
 
-
+tiempofinal = toc
 %% Pruebas
 disp("Sección de pruebas")
 
