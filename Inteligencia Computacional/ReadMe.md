@@ -32,7 +32,7 @@ Para correr los programas de esta sección del repositorio es necesario tener in
 
 Primero se implementó el algoritmo Simple Ant Colony (SACO) con movimiento sin diagonales, pero el algoritmo final fue el Ant System de Marco Dorigo por tener más flexibilidad de parámetros. Este último algoritmo lo codifiqué en el mismo archivo de ACO.m, por lo que se sobreescribió el AS por el ACO y le agregué el movimiento diagonal. El algoritmo fue codificado según el pseudocódigo brindado por Andries P. Engelbrecht en su libro :blue_book: _Computational Intelligence An Introduction_, segunda edición, página 371 (algoritmo 17.3).
 
-![alg](/git-images/alg17.3.PNG)
+![alg](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/alg17.3.PNG)
 
 Básicamente el algoritmo consta de 3 distintas partes que se repiten :repeat: hasta que se haya encontrado una solución o se haya llegado a un máximo de iteraciones (t):
 - **Construcción de camino por hormiga**
@@ -79,19 +79,19 @@ Utilizando en la línea 128 de ACO.m. Esta función devuelve la lista de vecinos
 ### 3.6 ant_decision.m
 Utilizado en la línea 125 de ACO.m. Toma la decisión de a qué nodo debe de dirigirse la hormiga según la ecuación de probabilidad descrita en la imagen de abajo. La probabilidad se elige utilizando el algoritmo **Roulette Wheel** :ferris_wheel:, que se describe en la siguiente sección.
 
-![prob](/git-images/probabilidad_AS.PNG)
+![prob](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/probabilidad_AS.PNG)
 
 <a name="rou"></a>
 ### 3.7 rouletteWheel.m
 Utilizado en la línea 35 de ant_decision.m. Algoritmo utilizado en computación evolutiva para seleccionar de forma aleatoria un valor. El pseudocódigo fue extraído del libro :blue_book: antes mencionado (_Computational Intelligence An Introduction_).
 
-![rou](/git-images/roullete.PNG)
+![rou](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/roullete.PNG)
 
 <a name="loop"></a>
 ### 3.8 loop_remover.m
 Utilizado en la línea 139 de ACO.m. En algunas ocasiones el algoritmo se encuentra con topes como el de la siguiente figura:
 
-![fail](/git-images/fallo.PNG)
+![fail](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/fallo.png)
 
 Por lo tanto, el algoritmo necesita regresar en el path que recorrió para salir del callejón. Esta función lo que hace es quitar los nodos a los que recorrió y que no le llevaron a ningún lugar útil, por lo que se hace más corto el camino. Este comportamiento está mejor explicado en el libro :orange_book: _Ant Colony Optimization_ de Marco Dorigo y Thomas Stützle.
 
