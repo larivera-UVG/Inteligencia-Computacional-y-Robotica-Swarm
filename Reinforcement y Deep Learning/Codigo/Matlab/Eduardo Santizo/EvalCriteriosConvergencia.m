@@ -29,6 +29,8 @@ function [Criterios, NomCriterios] = EvalCriteriosConvergencia(Coords_Min, Posic
 % se cumplió para dar fin a la simulación. Si se desea dar mayor prioridad
 % a un criterio, reordenar los índices de "Criterios" para que el criterio
 % de interés tenga un índice más pequeño.
+%
+% -------------------------------------------------------------------------
 
 Mean_Dists = zeros(size(Coords_Min,1),1);                                           % "Mean_Dists" es un vector columna con el mismo número de filas que "Coords_Min"
 
@@ -81,9 +83,9 @@ Criterios(4) = (Iter == IteracionesMax);
 
 % Nombre de los criterios programados ====
 % String que desplegará el programa al finalizar el algoritmo.
-NomCriterios = {"Mínimo Global Alcanzado", ...
-                "Mínimo Global Alcanzado", ...
-                "Posición ha Convergido", ...
+NomCriterios = {"Mínimo Alcanzado", ...
+                "Mínimo Alcanzado (80%)", ...
+                "Posición Convergió", ...
                 "Iter. Máx. Alcanzadas"};
 end
 
