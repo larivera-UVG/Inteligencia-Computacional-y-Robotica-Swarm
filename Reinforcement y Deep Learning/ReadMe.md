@@ -245,6 +245,8 @@ Basado en el criterio de evaluación empleado por Aldo en su tesis. Se realiza u
 
 ## Grabación de Videos / Frames
 
+![Video](./Media/Video.gif)
+
 Para facilitar la presentación de resultados, la Toolbox cuenta con dos opciones de exportación de gráficas: *`SaveVideo`* y *`SaveFrames`*.
 
 - SaveFrames: Guarda cada una de las frames generadas durante el proceso de animación en el directorio raíz.  
