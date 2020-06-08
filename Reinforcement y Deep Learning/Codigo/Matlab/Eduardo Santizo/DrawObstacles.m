@@ -39,6 +39,18 @@ switch Figura
         Z  = Z * Altura;
         Z = Z + ZOffset;
         close(gcf);
+    
+    case "Custom"
+        
+        X = varargin{1};
+        Y = varargin{2};
+        
+        X = repmat(X,1,2);
+        Y = repmat(Y,1,2);
+        
+        Z = [zeros(size(X,1),1) ones(size(X,1),1)];
+        Z  = Z * Altura;
+        Z = Z + ZOffset;
         
 end
 

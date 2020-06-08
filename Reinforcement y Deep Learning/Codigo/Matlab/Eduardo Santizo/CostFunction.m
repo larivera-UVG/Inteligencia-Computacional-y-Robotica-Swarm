@@ -1,4 +1,4 @@
-function Costo = CostFunction(X, FunctionName, varargin)
+function [Costo,varargout] = CostFunction(X, FunctionName, varargin)
 % COSTFUNCTION Evaluación de las posiciones de las partículas (X) en
 % la función de costo elegida. 
 % ------------------------------------------------------------------
@@ -86,7 +86,7 @@ function Costo = CostFunction(X, FunctionName, varargin)
                 case 1
                     Waves = varargin{1};
                 otherwise
-                    Waves = 0.2;
+                    Waves = 2;
             end
             
             Costo = -(1 + cos(Waves * sqrt(sum(X.^2, 2)))) ./ ...
@@ -151,68 +151,77 @@ function Costo = CostFunction(X, FunctionName, varargin)
                 %   - Los obstáculos (Obs)
                 %   - Los bordes de la mesa (Mesa)
                 [InObs,OnObs] = inpolygon(X(:,1),X(:,2),VerticesObs(:,1),VerticesObs(:,2));
-                [~,OnMesa] = inpolygon(X(:,1),X(:,2),VerticesMesa(:,1),VerticesMesa(:,2));
+                [InMesa,OnMesa] = inpolygon(X(:,1),X(:,2),VerticesMesa(:,1),VerticesMesa(:,2));
 
-                % Se obtienen los puntos del mesh que consisten de "bordes"
-                BordesObs = X(OnObs,:);
-                BordesMesa = X(OnMesa,:);
-
-                % Puntos que no consisten de cuerpos sólidos se vuelven en 0
-                PuntosLibres = X .* ~InObs;
-
+                % Puntos del Mesh que estén en el borde o en el interior
+                % de el o los obstáculos.
+                PuntosObs = X(OnObs | InObs,:);
+                
+                % Puntos del Mesh que estén en el borde o en el exterior de
+                % la mesa.
+                PuntosMesa = X(OnMesa | ~InMesa,:);
+                
                 % Traspone y luego repite las coordenadas X y Y, tantas veces 
                 % como hay filas en "BordesObs". Se repite "hacia abajo".
-                MatrizX = repmat(PuntosLibres(:,1)', size(BordesObs,1),1);                
-                MatrizY = repmat(PuntosLibres(:,2)', size(BordesObs,1),1);
+                MatrizX = repelem(PuntosObs(:,1), 1, size(X,1));              
+                MatrizY = repelem(PuntosObs(:,2), 1, size(X,1));
 
                 % A las matrices se les restan los vectores columna con las
                 % coordenadas de los bordes
-                CambioX = min(MatrizX - BordesObs(:,1),[],1);
-                CambioY = min(MatrizY - BordesObs(:,2),[],1);
+                CambioX = MatrizX - X(:,1)';
+                CambioY = MatrizY - X(:,2)';
 
                 % Se calculan las distancias al obstáculo más cercano
-                DistsAObs = sqrt(CambioX'.^2 + CambioY'.^2) .* ~InObs;
-
-                % Se le agrega un valor de 0.1 a puntos que forman parte del
-                % cuerpo del obstáculo
-                DistsAObs = DistsAObs + InObs * 0.1;
-
-                % Threshold para ignorar obstáculos lejanos
-                Qi = 5;
-
-                % Se ignoran puntos muy lejanos al obstáculo
-                LejosObs = DistsAObs < Qi;
-
+                DistsAObs = sqrt(CambioX'.^2 + CambioY'.^2);
+                DistsAObs = min(DistsAObs,[],2);
+                
                 % Se repite el proceso previo pero ahora para los puntos que
                 % forman parte de los bordes de la mesa
-                PuntosDentroMesa = X .* ~OnMesa;
-                MatrizX = repmat(PuntosDentroMesa(:,1)', size(BordesMesa,1),1);                 
-                MatrizY = repmat(PuntosDentroMesa(:,2)', size(BordesMesa,1),1);
-                CambioX = min(MatrizX - BordesMesa(:,1),[],1);
-                CambioY = min(MatrizY - BordesMesa(:,2),[],1);
-                DistsABordes = sqrt(CambioX'.^2 + CambioY'.^2) .* OnMesa;
-                DistsABordes = DistsABordes + ~OnMesa * 0.1;
-                LejosBordesMesa = DistsABordes < Qi;
-
+                MatrizX = repelem(PuntosMesa(:,1), 1, size(X,1));                 
+                MatrizY = repelem(PuntosMesa(:,2), 1, size(X,1));
+                CambioX = MatrizX - X(:,1)';
+                CambioY = MatrizY - X(:,2)';
+                DistsAMesa = sqrt(CambioX'.^2 + CambioY'.^2);
+                DistsAMesa = min(DistsAMesa,[],2);
+                
                 switch Modo
                     case "Choset"
-                        Eta = 10;
-                        Zeta = 5;
-                        DStar = 2;
-                        PotRepulsorMesa = 0.5 * Eta * (1./DistsABordes - 1/Qi) .^2 .* LejosBordesMesa;
-                        PotRepulsorObs = 0.5 * Eta * (1./DistsAObs - 1/Qi) .^2 .* LejosObs;
-                        PotRepulsor = PotRepulsorMesa + PotRepulsorObs;
-
-                        PotAtractorA = 0.5 * Zeta * sum((X - Meta).^2, 2);
-                        PotAtractorB = DStar * Zeta * sqrt(sum((X - Meta).^2, 2)) - 0.5 * Zeta * DStar^2;
+                        Eta = 20;
+                        Qi = 5;                                                                 % Threshold para ignorar obstáculos lejanos
+                        PotRepulsorMesa = 0.5 * Eta * (1./DistsAMesa - 1/Qi) .^2;
+                        PotRepulsorObs = 0.5 * Eta * (1./DistsAObs - 1/Qi) .^2 ;
+                        
+                        % Se determinan las distancias menores al threshold
+                        % Qi como las distancias cercanas a los obstáculos.
+                        CercaBordesMesa = DistsAMesa <= Qi;
+                        CercaObs = DistsAObs <= Qi;
+                        
+                        % Las distancias cercanas menores a Qi adquieren
+                        % una altura muy grande. El resto toman una altura
+                        % de 0. 
+                        PotRepulsor = PotRepulsorObs .* CercaObs + PotRepulsorMesa .* CercaBordesMesa;
+                        
+                        % Ecuaciones propuestas por Choset (Pag. 82)
+                        Zeta = 5;                                                               % Factor para escalar el efecto de la atracción
+                        DStar = 2;                                                              % Threshold de "cercanía" a un obstáculo
+                        PotAtractorParabolico = 0.5 * Zeta * sum((X - Meta).^2, 2);
+                        PotAtractorConico = DStar * Zeta * sqrt(sum((X - Meta).^2, 2)) - 0.5 * Zeta * DStar^2;
+                        
+                        % Se determinan las distancias menores al threshold
+                        % DStar o D*. Estas son las distancias "cercanas" a
+                        % la meta.
                         DistsAMeta = sqrt(sum((X - Meta).^2, 2));
-
-                        LejosMeta = DistsAMeta <= DStar;
-                        PotAtractor = PotAtractorA .* LejosMeta + PotAtractorB .* ~LejosMeta;
+                        CercaMeta = DistsAMeta <= DStar;
+                        
+                        % Los puntos cercanos utilizan un potencial atractor
+                        % parabólico, mientras que los lejanos utlizan uno
+                        % cónico.
+                        PotAtractor = PotAtractorParabolico .* CercaMeta + PotAtractorConico .* ~CercaMeta;
+                        
                     otherwise
                         Co = 500; Lo = 0.2;
                         Cg = 500; Lg = 3;                                               % Distancia de intensidad / Distancia de correlación para migración grupal
-                        PotRepulsorMesa = Co * exp(-(DistsABordes .^2) / Lo^2);
+                        PotRepulsorMesa = Co * exp(-(DistsAMesa .^2) / Lo^2);
                         PotRepulsorObs = Co * exp(-(DistsAObs .^2) / Lo^2);
                         PotRepulsor = PotRepulsorMesa + PotRepulsorObs;
 
@@ -226,6 +235,7 @@ function Costo = CostFunction(X, FunctionName, varargin)
                         else
                             PotTotal = PotRepulsor / Cg .* PotAtractor + PotAtractor;
                         end
+                        
                     case "Aditivo"
                         PotTotal = PotRepulsor + PotAtractor;
                 end
@@ -238,12 +248,25 @@ function Costo = CostFunction(X, FunctionName, varargin)
             % de X (Puntos a analizar) es pequeño (Menor a 1000);
             elseif (size(X,1) < 1000 || Inicializada == 1)
                 
-                X = round(X,NoDecimales);
+                % Se aproximan las coordenadas de X a la misma cantidad de
+                % decimales que las coordenadas en CoordsMasCosto
+                X = round(X,NoDecimales);         
+                
+                % Se acotan las aproximaciones de las coordenadas X para
+                % que al momento de aproximar no se generen valores por
+                % encima o por debajo de los límites superiores o
+                % inferiores las coordenadas en "CoordsMasCosto".
+                X = min(X,max(CoordsMasCosto(:,1:2)));
+                X = max(X,min(CoordsMasCosto(:,1:2)));
+                
+                % Se buscan coincidencias entre las coordenadas de
+                % "CoordsMasCosto" y X. Los índices de CoordsMasCosto donde
+                % existe coincidencia se guardan en CoincidenciaFilas
                 [~,CoincidenciaFilas] = ismember(X,CoordsMasCosto(:,1:2),'rows');
                 Costo = CoordsMasCosto(CoincidenciaFilas,3);
-                
+
             else
-                ErrorMsg = 'Error. No se inicializó el artificial potential field. Si se desea inicializar, llamar a la función pasándole un vector X con más de 1000 puntos o filas.';
+                ErrorMsg = 'Error. No se inicializó el artificial potential field. Si se desea inicializar, llamar a la función pasándole un vector X con más de 1000 puntos (X,Y)';
                 error(ErrorMsg);
             end
             

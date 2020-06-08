@@ -31,6 +31,8 @@ function [VelLineal, VelAngular] = getControllerOutput(ControllerType, PartPosic
 % -------------------------------------------------------------------------
 %
 % Opciones "ControllerType"
+%   
+%   - PID: Control PID con filtro "hard stops".    
 %
 %   - TUC-LQR: Control LQR diseñado utilizando la función lqr(A,B,Q,R) de 
 %     Matlab donde A = [0 0; 0 0], B = [1 0; 0 1], R = B y Q = B*0.01.

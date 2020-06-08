@@ -21,7 +21,7 @@ K =  0.5;
 
 behaviour = 0; %  1 multiplicativo, 0 aditivo
 choset = 1;
-showAPF = 0;
+showAPF = 1;
 %Se elige el caso a implementar
 Utot = casoC(gridsize,step,rounding,zeta,eta,dstar,choset,behaviour,showAPF);
 
