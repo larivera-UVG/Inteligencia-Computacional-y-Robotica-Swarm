@@ -64,14 +64,9 @@ function [Costo,varargout] = CostFunction(X, FunctionName, varargin)
     defaultComportamientoAPF = "Aditivo";
     
     % Se crea el objeto encargado de "parsear" los inputs
-    %   - Required: Necesarios para el funcionamiento del programa. La 
-    %     función da error si el usuario no los pasa.
-    %   - Optional: El usuario puede o no pasarlos, pero estos deben ser
-    %     escritos en orden luego de los "Required". Si no se proporciona
-    %     un valor Matlab asume un valor "default".
-    %   - Parameter: Similar a cuando se utiliza 'FontSize' en plots. El
-    %     usuario debe escribir el nombre del parámetro a modificar seguido
-    %     de su valor. Si no se provee un valor Matlab asume uno "default".
+    %   - Required: Parámetros necesarios para el funcionamiento del
+    %     programa. La función da error si el usuario no los pasa.
+    %   - Optional: 
     IP = inputParser;                                                       
     IP.addRequired('Coordenadas', @isnumeric);
     IP.addRequired('NombreFuncion', @isstring);
