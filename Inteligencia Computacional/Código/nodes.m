@@ -1,10 +1,8 @@
+% nodes.m
+% Esta función crea los nodos según un tamaño de grid dado
+% Devuelve un vector de grid_x*grid_y filas y 2 columnas
+
 function nodos = nodes(grid_x,grid_y)
-    nodos = zeros(grid_x*grid_y,2); % preallocation
-    filas = 1;
-    for y = 1:grid_y
-        for x = 1:grid_x
-            nodos(filas,:) = [x y]; 
-            filas = filas + 1;
-        end
-    end
+    [X, Y] = meshgrid(1:grid_x, 1:grid_y);
+    nodos = [reshape(Y, [grid_x*grid_y, 1]), reshape(X, [grid_x*grid_y, 1])];
 end

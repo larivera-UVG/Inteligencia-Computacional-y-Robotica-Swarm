@@ -5,6 +5,9 @@
 % 5/04/2020 - 7/06/2020
 % Descripción: Código y simulación simple de un Ant System. Se recomienda 
 % primero leer el algoritmo 17.3 del libro Computational Intelligence
+%% Detectar funciones lentas
+%profile on
+
 %% Encoding grid in a graph 
 % Primero hay que hacer la lista de los nodos que vamos a utilizar. Nuestra
 % base será una cuadrícula rectangular de grid_x X grid_y:
@@ -14,17 +17,18 @@ grid_y = 10;
 % Nodos es una lista de las coordenadas [x y] de todos los nodos del grafo
 % que representan a la cuadrícula
 nodos = nodes(grid_x,grid_y);
+
 %% ACO init
 % Inicializamos los parámetros del Ant System:
 % Hay grid_x*grid_y nodos en el grafo
 cant_nodos = grid_x*grid_y;
 tf = 70; % número de iteraciones máx
 hormigas = 50; % Cantidad de hormigas
-rho = 0.5; % rate de evaporación (puede tomar valores entre 0 y 1)
+rho = 0.2; % rate de evaporación (puede tomar valores entre 0 y 1)
 alpha = 1.3; % Le da más peso a la feromona en la probabilidad
 beta = 1; % Le da más peso al costo del link en la probabilidad
 Q = 1; % cte. positiva que regula el depósito de feromona
-nodo_dest = [6 6]; % Nodo destino
+nodo_dest = [8 8]; % Nodo destino
 epsilon = 0.9; % Porcentaje de hormigas siguiendo la misma solución
 
 %% Init de la matriz TAU
@@ -39,8 +43,15 @@ tau = zeros(cant_nodos); % Matriz de adyacencia con pesos (costos de feromona)
 eta = ones(cant_nodos); % Eta inicial (1/d) (costo por distancia)
 tau_0 = 0.1; % Valor de tau inicial
 
+% Init de la celda que contiene todos los vecinos y tau de los nodos
+vytau = cell(cant_nodos,2);
+
 for n = 1:cant_nodos % Por cada elemento de cada columna
+    % Encontrarle los vecinos a cada nodo
     v = neighbors(nodos(n,:), grid_x, grid_y); % Encontrar sus vecinos
+    vytau{n,1} = v;
+    s = size(v,1);
+    vytau{n,2} = tau_0;
     diagonal = repmat(nodos(n,:),[4 1])+[1 1;-1 1;-1 -1;1 -1];
     % Probar si es vecino diagonal para ponerle un costo diferente en eta
     [~,indxdiag] = ismember(diagonal,v,'rows'); 
@@ -49,21 +60,16 @@ for n = 1:cant_nodos % Por cada elemento de cada columna
     eta(indxdiag2,n) = 1/cost_diag; % Parametrizamos el costo de las diagonales
     columnasvecinos = v(:,2);
     [~,indx] = ismember(v(any(v,2),:),nodos,'rows');
+    
+    
     tau(indx,n) = ones(size(indx,1),1)*tau_0; % init con valores pequeños! si
     % no no funciona correctamente el algoritmo
     % Se hace en un for y no desde el principio porque no todos los nodos
     % son vecinos.
 end
 
-%%
-% Init de la celda que contiene todos los vecinos y tau de los nodos
-vytau = cell(cant_nodos,2);
-for k=1:cant_nodos
-    v = neighbors(nodos(k,:), grid_x, grid_y);
-    vytau{k,1} = v; % asignamos los vecinos
-    s = size(v,1);
-    vytau{k,2} = tau_0; % asignamos la tau init de todo a rand entre 0 y 1
-end
+
+
 % Init de feasable nodes (vecinos posibles) de cada nodo
 feas_nodes = cell(hormigas,cant_nodos);
 for k=1:hormigas
@@ -89,14 +95,21 @@ path_k = cell(hormigas,1);
 L = zeros(hormigas,tf); % Se guardan todos los largos de cada path por hormiga y por unidad de tiempo t
 all_path = cell(hormigas,tf);
 
+Name = string((1:n)');
+
 for k = 1:hormigas
     path_k{k,1}(1,:) =  nodo_actual(1,:);
     last_node{k,id} = [0 0];
+    ants(k).feas_nodes = Name; %repmat(Name',[hormigas 1]);
 end
 
 next_node = zeros(1,2);
 % omitir los ceros de los vectores
-G = graph(tau);%
+
+
+%ants(1:hormigas).feas_nodes = repmat(Name',[hormigas 1]);
+G = graph(tau, table(Name, nodos));%
+G = reordernodes(G, (1:100)');
 %% ACO loop
 t = 1;
 stop = 1;
@@ -151,13 +164,7 @@ while (t<=tf && stop)
     end
     
     %% Evaporación de Feromona
-    % TAU_nm en vez de TAU_ij porque están reservadas en Matlab para los números
-    % complejos
-    for n = 1:cant_nodos % Por cada fila
-        for m = 1:cant_nodos % Por cada columna
-            tau(n,m) = (1-rho)*tau(n,m); % A cada link se le aplica la eq (17.5)
-        end
-    end
+    tau = (1-rho)*tau;
     
     %% Update de Feromona
     for k = 1:hormigas
@@ -179,7 +186,7 @@ while (t<=tf && stop)
     end
     
     colores(:,3) = G.Edges.Weight./max(G.Edges.Weight);
-    G = graph(tau);%
+    G = graph(tau, string((1:n)'));
     h = plot(G,'LineWidth', G.Edges.Weight, 'NodeColor', 'none','EdgeColor',colores); %'EdgeLabel',G.Edges.Weight,
     view([-90 -90])
     drawnow limitrate
@@ -192,12 +199,17 @@ end
 if (t>=tf)
     disp("No hubo convergencia")
 else
+    % Con la MODA
     moda =  mode(L(:,t-1));
     khor = L(:,t-1).*(L(:,t-1)==moda);
     %khor = (1:hormigas)'.*(L(:,t-1)==moda);
     %khor(any(khor,2))
     nin = rouletteWheel(khor); % Se puede porque ignora a los número 0 (probabilidad nula)
     best_path = path_k{nin,1}; % L(k,t)
+    
+    % Con el MIN
+%     [minval_col,fil] =  min(L(:,t-1));
+%     best_path = all_path{fil,t-1}; % L(k,t)
     %% Gráfica
     figure()
     scatter(nodos(:,1),nodos(:,2),'filled','k')
@@ -208,7 +220,7 @@ else
     plot(best_path(:,1),best_path(:,2),'b')
 end
 
-
+%profile viewer
 tiempofinal = toc;
 %% Pruebas
 %disp("Sección de pruebas")
