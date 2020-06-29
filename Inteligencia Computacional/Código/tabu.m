@@ -22,7 +22,7 @@
 % [x y]
 
 function [vecinos_updated,blocked_nodes,flag] = tabu(vecinos, blocked_nodes, last_node)
-    vecinos = setdiff(vecinos,blocked_nodes, 'rows','stable');
+    vecinos = setdiff(vecinos,blocked_nodes, 'rows','stable'); % data en vecinos que no está en blocked nodes
     if (isempty(vecinos))
         flag = 0;
         vecinos_updated = last_node;
