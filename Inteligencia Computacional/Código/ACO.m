@@ -68,27 +68,24 @@ for n = 1:cant_nodos % Por cada elemento de cada columna
 end
 
 
-nodo_actual = ones(hormigas,2);
+nodo_actual = ones(hormigas, 2);
 
-path_k = cell(hormigas,1);
+path_k = cell(hormigas, 1);
 
-L = zeros(hormigas,tf); % Se guardan todos los largos de cada path por hormiga y por unidad de tiempo t
-all_path = cell(hormigas,tf);
+L = zeros(hormigas, tf); % Se guardan todos los largos de cada path por hormiga y por unidad de tiempo t
+all_path = cell(hormigas, tf);
 
 Name = string((1:n)');
-
+ants(1:hormigas) = struct('blocked_nodes',[],'last_node',"1",'current_node',"1",'path',"1");
 for k = 1:hormigas
-    path_k{k,1}(1,:) =  nodo_actual(1,:);
-    ants(k).blocked_nodes = [];
-    ants(k).last_node = '0';
-    ants(k).current_node = '1';
-    ants(k).path = '1';
+    path_k{k, 1}(1, :) =  nodo_actual(1, :);
 end
 
-next_node = zeros(1,2);
+%next_node = zeros(1, 2);
 
-G = graph(tau, table(Name, nodos));%
-G = reordernodes(G, (1:100)');
+G = graph(tau, table(Name, nodos));
+
+
 %% ACO loop
 t = 1;
 stop = 1;
@@ -116,13 +113,13 @@ while (t<=tf && stop)
             vecinos_updated = vecinos;
 
             % La hormiga toma la decisión de a donde ir eq.(17.6)
-            next_node = ant_decision(vecinos_updated,alpha,eta,beta,G,ants(k).current_node);
+            next_node = ant_decision(vecinos_updated, alpha, eta, beta, G, ants(k).current_node);
             ants(k).last_node = [ants(k).last_node; ants(k).current_node];
             
             % Nos movemos al siguiente nodo
             ants(k).current_node = next_node;
             % Guardamos el path
-            path_k{k,1}(fila,:) = G.Nodes.nodos(str2double(ants(k).current_node),:);
+            path_k{k,1}(fila,:) = G.Nodes.nodos(str2double(ants(k).current_node), :);
             ants(k).path = [ants(k).path; ants(k).current_node];
             fila = fila + 1;
         end
@@ -133,14 +130,14 @@ while (t<=tf && stop)
         ants(k).path = loop_remover(str2double(ants(k).path));
         path_k{k,1} = loop_remover(path_k{k,1}); % Quitamos los loops del path
         
-        id_path = nodeid(path_k{k,1},nodos); % ID de todos los nodos en la solución parcial
+        id_path = nodeid(path_k{k,1}, nodos); % ID de todos los nodos en la solución parcial
         
-        for f = 1:size(id_path,1)-1
-            L(k,t) = L(k,t) + 1/eta(id_path(f),id_path(f+1));
+        for f = 1:size(id_path, 1)-1
+            L(k,t) = L(k,t) + 1/eta(id_path(f), id_path(f+1));
         end
         
         %L(k,t) = size(path_k{k,1},1)-1; % Equivale a f(x_k(t))
-        all_path{k,t} = path_k{k,1};  % Equivale a x_k(t)
+        all_path{k, t} = path_k{k, 1};  % Equivale a x_k(t)
         
         % Regresamos la hormiga k al inicio
         ants(k).current_node = '1'; 
@@ -155,7 +152,7 @@ while (t<=tf && stop)
     %% Update de Feromona
     for k = 1:hormigas
         dtau = Q/numel(ants(k).path);
-        edge_index = findedge(G,ants(k).path(1:end - 1),ants(k).path(2:end));
+        edge_index = findedge(G,ants(k).path(1:end - 1), ants(k).path(2:end));
         G.Edges.Weight(edge_index) = G.Edges.Weight(edge_index) + dtau;
         ants(k).path = "1";  % Borramos el path de la hormiga k
     end
@@ -166,11 +163,8 @@ while (t<=tf && stop)
         stop = 0;
     end
     
-    %colores(:,3) = G.Edges.Weight./max(G.Edges.Weight);
-    %G = graph(tau, table(Name, nodos));%
-    %G = reordernodes(G, (1:100)');
-    h = plot(G,'LineWidth', G.Edges.Weight); %'EdgeLabel',G.Edges.Weight,, 'NodeColor', 'none','EdgeColor',colores
-    view([-90 90])
+    G.Edges.NormWeight = G.Edges.Weight/sum(G.Edges.Weight);
+    h = plot(G,'XData',G.Nodes.nodos(:, 1),'YData',G.Nodes.nodos(:, 2),'LineWidth', G.Edges.NormWeight); %'EdgeLabel',G.Edges.Weight,, 'NodeColor', 'none','EdgeColor',colores
     drawnow limitrate
     t = t + 1;
 end
@@ -182,24 +176,24 @@ if (t>=tf)
     disp("No hubo convergencia")
 else
     % Con la MODA
-    moda =  mode(L(:,t-1));
-    khor = L(:,t-1).*(L(:,t-1)==moda);
+    moda =  mode(L(:, t-1));
+    khor = L(:, t-1).*(L(:,t-1) == moda);
     %khor = (1:hormigas)'.*(L(:,t-1)==moda);
     %khor(any(khor,2))
     nin = rouletteWheel(khor); % Se puede porque ignora a los número 0 (probabilidad nula)
-    best_path = path_k{nin,1}; % L(k,t)
+    best_path = path_k{nin, 1}; % L(k,t)
     
     % Con el MIN
 %     [minval_col,fil] =  min(L(:,t-1));
 %     best_path = all_path{fil,t-1}; % L(k,t)
     %% Gráfica
     figure()
-    scatter(nodos(:,1),nodos(:,2),'filled','k')
+    scatter(nodos(:,1), nodos(:,2), 'filled', 'k')
     grid on;
     hold on; 
-    nodos_especiales = [path_k{1,1}(1,:);[8 8]];
-    scatter(nodos_especiales(:,1),nodos_especiales(:,2),'r','filled')
-    plot(best_path(:,1),best_path(:,2),'b')
+    nodos_especiales = [path_k{1,1}(1,:); [8 8]];
+    scatter(nodos_especiales(:,1), nodos_especiales(:,2), 'r','filled')
+    plot(best_path(:,1), best_path(:,2),'b')
 end
 
 %profile viewer
