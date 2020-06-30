@@ -5,8 +5,11 @@
 % 5/04/2020 - 28/06/2020
 % Descripción: Código y simulación simple de un Ant System. Se recomienda 
 % primero leer el algoritmo 17.3 del libro Computational Intelligence
+
+
 %% Detectar funciones lentas
-%profile on
+% profile on
+
 
 %% Encoding grid in a graph 
 % Primero hay que hacer la lista de los nodos que vamos a utilizar. Nuestra
@@ -18,17 +21,20 @@ grid_y = 10;
 % que representan a la cuadrícula
 nodos = nodes(grid_x,grid_y);
 
+G = graph_grid(10);
+
+
 %% ACO init
 % Inicializamos los parámetros del Ant System:
 % Hay grid_x*grid_y nodos en el grafo
 cant_nodos = grid_x*grid_y;
-tf = 70; % número de iteraciones máx
+t_max = 70; % número de iteraciones máx
 hormigas = 50; % Cantidad de hormigas
 rho = 0.5; % rate de evaporación (puede tomar valores entre 0 y 1)
 alpha = 1; % Le da más peso a la feromona en la probabilidad
 beta = 1; % Le da más peso al costo del link en la probabilidad
 Q = 1; % cte. positiva que regula el depósito de feromona
-nodo_dest = '56'; % Nodo destino
+nodo_dest = '56';
 epsilon = 0.9; % Porcentaje de hormigas siguiendo la misma solución
 
 %% Init de la matriz TAU
@@ -72,8 +78,8 @@ nodo_actual = ones(hormigas, 2);
 
 path_k = cell(hormigas, 1);
 
-L = zeros(hormigas, tf); % Se guardan todos los largos de cada path por hormiga y por unidad de tiempo t
-all_path = cell(hormigas, tf);
+L = zeros(hormigas, t_max); % Se guardan todos los largos de cada path por hormiga y por unidad de tiempo t
+all_path = cell(hormigas, t_max);
 
 Name = string((1:n)');
 ants(1:hormigas) = struct('blocked_nodes',[],'last_node',"1",'current_node',"1",'path',"1");
@@ -83,7 +89,7 @@ end
 
 %next_node = zeros(1, 2);
 
-G = graph(tau, table(Name, nodos));
+%G = graph(tau, table(Name, nodos));
 
 
 %% ACO loop
@@ -91,7 +97,7 @@ t = 1;
 stop = 1;
 figure(); clf;
 
-while (t<=tf && stop)
+while (t<=t_max && stop)
     
     % Por cada hormiga
     parfor k = 1:hormigas
@@ -119,7 +125,7 @@ while (t<=tf && stop)
             % Nos movemos al siguiente nodo
             ants(k).current_node = next_node;
             % Guardamos el path
-            path_k{k,1}(fila,:) = G.Nodes.nodos(str2double(ants(k).current_node), :);
+            path_k{k,1}(fila,:) = [G.Nodes.X(str2double(ants(k).current_node)), G.Nodes.Y(str2double(ants(k).current_node))];
             ants(k).path = [ants(k).path; ants(k).current_node];
             fila = fila + 1;
         end
@@ -164,15 +170,15 @@ while (t<=tf && stop)
     end
     
     G.Edges.NormWeight = G.Edges.Weight/sum(G.Edges.Weight);
-    h = plot(G,'XData',G.Nodes.nodos(:, 1),'YData',G.Nodes.nodos(:, 2),'LineWidth', G.Edges.NormWeight); %'EdgeLabel',G.Edges.Weight,, 'NodeColor', 'none','EdgeColor',colores
+    h = plot(G, 'XData', G.Nodes.X, 'YData', G.Nodes.Y, 'LineWidth', G.Edges.NormWeight * 50); %'EdgeLabel',G.Edges.Weight,, 'NodeColor', 'none','EdgeColor',colores
     drawnow limitrate
-    t = t + 1;
+    t = t + 1
 end
 %% Best Path Calculation
 % valor_minimo_por_columna,filas_en_donde_estan_los_min
 %L(:,t-1);
 
-if (t>=tf)
+if (t>=t_max)
     disp("No hubo convergencia")
 else
     % Con la MODA

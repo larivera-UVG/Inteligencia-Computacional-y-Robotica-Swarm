@@ -15,7 +15,7 @@ function next_node = ant_decision(vecinos,alpha,eta,beta,G,id)%
     new_eta = zeros(size(vecinos));
     for f = 1:size(vecinos,1)
         new_tau(f) = G.Edges.Weight(findedge(G,id,vecinos(f)));
-        new_eta(f) = eta(str2double(id), str2double(vecinos(f)));
+        new_eta(f) = G.Edges.Eta(findedge(G,id,vecinos(f))); %eta(str2double(id), str2double(vecinos(f))); % 
     end
 
     s = size(vecinos,1);
