@@ -1,4 +1,4 @@
-function [Costo,varargout] = CostFunction(X, FunctionName, varargin)
+function [Costo] = CostFunction(X, FunctionName, varargin)
 % COSTFUNCTION Evaluación de las posiciones de las partículas (X) en
 % la función de costo elegida. 
 % ------------------------------------------------------------------
@@ -59,7 +59,7 @@ function [Costo,varargout] = CostFunction(X, FunctionName, varargin)
 %
 % ------------------------------------------------------------------
     
-    % Valores default para opciones APF
+    % Valores default para inputs
     defaultModoAPF = "Choset";
     defaultComportamientoAPF = "Aditivo";
     
@@ -75,14 +75,28 @@ function [Costo,varargout] = CostFunction(X, FunctionName, varargin)
     IP = inputParser;                                                       
     IP.addRequired('Coordenadas', @isnumeric);
     IP.addRequired('NombreFuncion', @isstring);
-    IP.addOptional('ObsX', 0, @isnumeric);
-    IP.addOptional('ObsY', 0, @isnumeric);
+    IP.addOptional('XObs', 0, @isnumeric);
+    IP.addOptional('YObs', 0, @isnumeric);
     IP.addOptional('PosMin', -inf);
     IP.addOptional('PosMax',  inf);
     IP.addOptional('Meta', [0 0], @isnumeric);
+    IP.addOptional('PuckPosicion', 0, @isnumeric);
     IP.addParameter('ModoAPF', defaultModoAPF, @isstring);
     IP.addParameter('ComportamientoAPF', defaultComportamientoAPF, @isstring);
     IP.parse(X,FunctionName,varargin{:});
+    
+    % Se guardan los inputs "parseados" en variables útiles capaces
+    % de ser utilizadas por el programa.
+    VerticesObsX = IP.Results.XObs;
+    VerticesObsY = IP.Results.YObs;
+    PosMin = IP.Results.PosMin;
+    PosMax = IP.Results.PosMax;
+    Meta = IP.Results.Meta;
+    Modo = IP.Results.ModoAPF;
+    PuckPosicion = IP.Results.PuckPosicion;
+    Comportamiento = IP.Results.ComportamientoAPF;
+    
+% ------------------------------------------------------------------
 
     switch FunctionName
         % Paraboloide o Esfera
@@ -136,20 +150,86 @@ function [Costo,varargout] = CostFunction(X, FunctionName, varargin)
         case "Himmelblau"
             Costo = (X(:,1).^2 + X(:,2) - 11).^2 + (X(:,1) + X(:,2).^2 - 7).^2;
         
+        % Función basada en paper publicado por Jabandzic y Velagic (2016)
+        case "Jabandzic"
+                       
+            persistent f2
+            
+            % Vertices de los obstáculos. Se colocan las coordenadas X
+            % en la primera columna y las Y en la segunda columna.
+            VerticesObs = [VerticesObsX VerticesObsY];
+            
+            % Vértices del polígono cuadrado que forma el borde la mesa
+            % Se repite el primer vértice para que la figura cierre
+            VerticesMesa = [PosMin PosMin PosMax PosMax ; ...
+                            PosMin PosMax PosMax PosMin]';
+            
+            % Vértices Mesa + Obstáculos
+            VerticesAll = [VerticesObs ; VerticesMesa]; 
+            
+            % F1 - Distancia a la meta:
+            % Utilizado para minimizar en la medida de lo posible la
+            % distancia hasta la meta que se desea alcanzar.
+            f1 = sqrt((X(:,1) - Meta(1)).^2 + (X(:,2) - Meta(2)).^2); 
+            
+            % F3 - Distancias a obstáculo previo más cercano:
+            % Si "f2" (Distancia a obstáculo actual más cercano) aún no 
+            % existe o su número de filas no coincide con el número de filas 
+            % del vector X (Coords de partícula) entonces "f3" consistirá 
+            % de un vector columna de "1000's" con tantas filas como "X". 
+            % De lo contrario se utiliza el valor previo de "f2".
+            if isempty(f2) || size(f2,1) ~= size(X,1)
+                f3 = ones(size(X,1),1) * 1000;
+            else
+                f3 = f2;
+            end
+            
+            % F2 - Recíproco de distancia a obstáculo actual más cercano:
+            % Utilizado para alejarse lo más posible del obstáculo más
+            % cercano (estático) que se ha detectado. Debe ser el recíproco
+            % para que al minimizar la función, se maximice la distancia 
+            % entre obstáculo y las partículas. Escribir "help
+            % getDistPoint2Poly" para más información sobre la función.
+            f2 = 1 ./ getDistPoint2Poly(X(:,1),X(:,2),VerticesAll(:,1),VerticesAll(:,2));
+            
+            % F4 - Recíproco de distancia al robot:
+            % Utilizado para alejar al robot de su posición actual a manera
+            % de evitar una potencial colisión.
+            f4 = 1 / sqrt((X(:,1) - PuckPosicion(1,1)).^2 + (X(:,2) - PuckPosicion(1,2)).^2);
+            f4 = 0;
+            
+            % F5 - Recíproco de distancia a centro de obstáculo dinámico:
+            % Utilizado para alejarse lo más posible del centro del
+            % obstáculo dinámico que se aproxima al robot.
+            f5 = 0;
+            
+            % K1 y K2 - Parámetros de restricción
+            % Utilizados para evitar que las partículas se muevan muy lejos
+            % de la posición actual del robot (K1) o que ingresen a
+            % una zona "prohibida" (K2).
+            k1 = 10000;
+            k2 = 10000;
+            
+            % Coeficientes asociados a cada una de las "f's" de la función
+            % de costo.
+            w1 = 1;
+            w2 = 1;
+            w3 = 0.8;
+            w4 = 1.5;
+            w5 = 1.5;
+            w6 = 0;
+            w7 = 0;
+            
+            % Suma ponderada utilizando todos los coeficientes "w" y
+            % sub-funciones "f".
+            Costo = f1*w1 + f2*w2 + f3*w3 + f4*w4 + f5*w5 + k1*w6 + k2*w7;
+            
         % Función generada utilizando Artificial Potential Fields
         case "APF"    
-            % Se guardan los inputs "parseados" en variables útiles capaces
-            % de ser utilizadas por el programa.
-            VerticesObsX = IP.Results.ObsX;
-            VerticesObsY = IP.Results.ObsY;
-            PosMin = IP.Results.PosMin;
-            PosMax = IP.Results.PosMax;
-            Meta = IP.Results.Meta;
-            Modo = IP.Results.ModoAPF;
-            Comportamiento = IP.Results.ComportamientoAPF;
-            
+                        
             persistent Inicializada CoordsMasCosto NoDecimales
-            
+            NoDecimales = 1;
+
             % Si el número de puntos es muy alto, se asume que la función
             % se está inicializando pasándole una matriz de puntos
             % correspondientes al tablero.
@@ -163,15 +243,14 @@ function [Costo,varargout] = CostFunction(X, FunctionName, varargin)
                 % Se repite el primer vértice para que la figura cierre
                 VerticesMesa = [PosMin PosMin PosMax PosMax ; ...
                                 PosMin PosMax PosMax PosMin]';
-
+                
                 % Cabe mencionar que los puntos que definen los vértices del polígono
-                % tienen 4 decimales. Los puntos de X pueden tener entre 2 a 4 decimales.
+                % tienen 4 decimales. Los puntos de X pueden tener entre 1 a 4 decimales.
                 % Si se intenta usar inpolygon con esta diferencia en cifras significativas
                 % el sistema encontrará puntos dentro del polígono, pero no en los bordes
                 % ya que busca coincidencias idénticas de puntos y para la función un 0.41005
                 % es distinto de un 0.41, por ejemplo. Para evitar esto, ambos vectores se
-                % redondean a 2 decimales, el valor mínimo.
-                NoDecimales = 1;
+                % redondean a 1 decimal (Valor de "NoDecimales"), el valor mínimo.
                 X = round(X, NoDecimales);
                 VerticesObs = round(VerticesObs, NoDecimales);
                 VerticesMesa = round(VerticesMesa, NoDecimales);

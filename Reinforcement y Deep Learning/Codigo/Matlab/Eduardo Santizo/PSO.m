@@ -39,7 +39,7 @@ classdef PSO < handle
     end
     
     methods
-        function obj = PSO(Posicion_Actual, Func_Costo, Iter_Max)
+        function obj = PSO(Posicion_Actual, Func_Costo, Iter_Max, EnvironmentParams)
             % PSO Construct an instance of this class
             %   Detailed explanation goes here
             
@@ -61,8 +61,8 @@ classdef PSO < handle
             end
             
             % Costo y Global Best
-            obj.FuncionCosto = Func_Costo;
-            obj.Costo_Local = CostFunction(obj.Posicion_Actual, obj.FuncionCosto);  % Evaluación del costo en la posición actual de la partícula.           Dims: NoPartículas X 1 (Vector Columna)                               	
+            obj.FuncionCosto = Func_Costo;                                  % Evaluación del costo en la posición actual de la partícula.           Dims: NoPartículas X 1 (Vector Columna)             
+            obj.Costo_Local = CostFunction(obj.Posicion_Actual, obj.FuncionCosto, EnvironmentParams{:});                    	
             obj.Costo_LocalBest = obj.Costo_Local;
 
             [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);     	% "Global best": El costo más pequeño del vector "CostoLocal"           Dims: Escalar
@@ -143,7 +143,7 @@ classdef PSO < handle
             end
         end
         
-        function RunStandardPSO(obj, TipoEjecucion)
+        function RunStandardPSO(obj, TipoEjecucion, EnvironmentParams)
             % RUNPSO Summary of this method goes here
             %   Detailed explanation goes here
             
@@ -175,23 +175,33 @@ classdef PSO < handle
                 obj.Posicion_Actual = max(obj.Posicion_Actual, obj.PosMin);                              % Se acotan las posiciones de la misma forma en que se acotaron las velocidades
                 obj.Posicion_Actual = min(obj.Posicion_Actual, obj.PosMax);
 
-                % Costo Local de partículas. No es necesario pasar los
-                % parámetros asociados a los obstáculos en el caso de una
-                % función de costo "APF", porque solo se necesitan en el
-                % paso de inicialización.
-                obj.Costo_Local = CostFunction(obj.Posicion_Actual, obj.FuncionCosto);                      % Actualización de los valores del costo.
+                % Cálculo de superficie o función de costo
+                obj.Costo_Local = CostFunction(obj.Posicion_Actual,obj.FuncionCosto,EnvironmentParams{:});  % Actualización de los valores del costo.
 
-                % Cálculo del Global Best
+                % Cálculo del Local Best
                 obj.Costo_LocalBest = min(obj.Costo_LocalBest, obj.Costo_Local);                            % Se sustituyen los costos que son menores al "Local Best" previo
                 Costo_Change = (obj.Costo_Local < obj.Costo_LocalBest);                                     % Vector binario que indica con un 0 cuales son las filas de "Costo_Local" que son menores que las filas de "PartCosto_LocalBest"
                 obj.Posicion_LocalBest = obj.Posicion_LocalBest .* Costo_Change + obj.Posicion_Actual;      % Se sustituyen las posiciones correspondientes a los costos a cambiar en la linea previa
-
-                [Actual_GlobalBest, Fila] = min(obj.Costo_Local);                                           % Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
-                if Actual_GlobalBest < obj.Costo_GlobalBest                                                 % Si el "Actual_GlobalBest" es menor al "Global Best" previo 
-                    obj.Costo_GlobalBest = Actual_GlobalBest;                                               % Se actualiza el valor del "Global Best" (Costo_GlobalBest)
-                    obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);                                 % Y la posición correspondiente al "Global Best"
-                end
                 
+                % Actualización de Global Best
+                switch obj.FuncionCosto
+                    
+                    case "Jabandzic"
+                        % Modificación a Actualización de Global Best basada en
+                        % paper por Jabandzic y Velagic (2016)
+                        [obj.Costo_GlobalBest, Fila] = min(obj.Costo_Local);      
+                        obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :); 
+                        
+                    otherwise
+                       % Cálculo estándar del Global Best
+                       [Actual_GlobalBest, Fila] = min(obj.Costo_Local);                                           % Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
+                       if Actual_GlobalBest < obj.Costo_GlobalBest                                                 % Si el "Actual_GlobalBest" es menor al "Global Best" previo 
+                          obj.Costo_GlobalBest = Actual_GlobalBest;                                               % Se actualiza el valor del "Global Best" (Costo_GlobalBest)
+                          obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);                                 % Y la posición correspondiente al "Global Best"
+                       end 
+                    
+                end
+
                 % Actualización de Historial de Posiciones
                 obj.IteracionActual = obj.IteracionActual + 1;
                 
