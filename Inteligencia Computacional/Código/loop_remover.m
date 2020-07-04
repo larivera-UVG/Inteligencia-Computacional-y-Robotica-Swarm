@@ -23,7 +23,7 @@ for r = flip(1:size(path_w_loops, 1))
         node = node + 1;
     end
     % ¿Pertenece x al path with loops?
-    [LIA, indxtemp] = ismember(path_w_loops(r, :),reversed_path,'rows');
+    [LIA, indxtemp] = ismember(path_w_loops(r, :), reversed_path, 'rows');
     if (LIA ~= 0)
         reversed_path(indxtemp:size(reversed_path, 1), :) = [];
         node = size(reversed_path, 1) + 1;

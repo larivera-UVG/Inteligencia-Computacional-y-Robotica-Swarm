@@ -11,13 +11,26 @@
 % profile on
 tic  % Para medir el tiempo que se tarda el algoritmo en correr.
 
+%% Graph generation
+graph_type = "visibility";
+
+if strcmp(graph_type, "grid")
+    % Creamos grid cuadrado con la cantidad de nodos indicada:
+    grid_size = 10;
+    cost_diag = 0.5;
+    tau_0 = 0.1;  % Valor de tau inicial
+    G = graph_grid(grid_size);
+    nodo_dest = '56';
+    nodo_init = "1";
+elseif strcmp(graph_type, "visibility")
+    load('vis_graph.mat')
+    G = grafo2;
+    nodo_dest = string(size(grafo2.Nodes, 1));
+    nodo_init = string(size(grafo2.Nodes, 1)-1);
+end
+
 
 %% ACO init
-% Creamos grid cuadrado con la cantidad de nodos indicada:
-grid_size = 10;
-cost_diag = 0.5;
-tau_0 = 0.1;  % Valor de tau inicial
-G = graph_grid(grid_size);
 t_max = 70; 
 hormigas = 50;
 
@@ -28,12 +41,11 @@ alpha = 1;
 % Le da más peso al costo del link en la probabilidad
 beta = 1;
 % cte. positiva que regula el depósito de feromona
-Q = 1; 
+Q = 2; 
 % Porcentaje de hormigas que queremos siguiendo la misma solución
 epsilon = 0.9; 
 
-nodo_dest = '56';
-nodo_init = "1";
+
 
 % Preallocation
 path_k = cell(hormigas, 1);
