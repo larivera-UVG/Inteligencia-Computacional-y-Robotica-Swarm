@@ -22,11 +22,13 @@ if strcmp(graph_type, "grid")
     G = graph_grid(grid_size);
     nodo_dest = '56';
     nodo_init = "1";
+    plot_obstacles = 0;
 elseif strcmp(graph_type, "visibility")
     load('vis_graph.mat')
     G = grafo2;
     nodo_dest = string(size(grafo2.Nodes, 1));
     nodo_init = string(size(grafo2.Nodes, 1)-1);
+    plot_obstacles = 1;
 end
 
 
@@ -65,8 +67,15 @@ map = [255 255 255
     255 111 150
     255 61 61]/255;
 colormap(map);
-h = plot(G, 'XData', G.Nodes.X, 'YData', G.Nodes.Y, 'NodeColor', 'k');
 
+h = plot(G, 'XData', G.Nodes.X, 'YData', G.Nodes.Y, 'NodeColor', 'k');
+if plot_obstacles
+    hold on
+    for obst = 1:max(obstacles(end-2, 4))
+        xy = obstacles(obstacles(:, 4) == obst, 1:2);
+        plot(polyshape(xy(:, 1), xy(:, 2)), 'FaceAlpha', 0.9, 'FaceColor', 'k');
+    end
+end
 while (t <= t_max && stop)
     
     parfor k = 1:hormigas
