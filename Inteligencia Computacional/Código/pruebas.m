@@ -1,5 +1,5 @@
 
-grid = 5;
+grid = 10;
 map = makemap(grid*grid);
 prm = PRM(map, 'npoints', 50);
 prm.plan()
@@ -16,5 +16,8 @@ G = graph(table(EndNodes, Weight, Eta), table(Name, X, Y));
 grafo = simplify(G);
 figure()
 plot(grafo, 'XData', grafo.Nodes.X, 'YData', grafo.Nodes.Y, 'NodeColor', 'k');
+% goal = [50,30];
+% start = [20, 10];
+% prm.query(start, goal)
 
 

@@ -2,17 +2,16 @@
 % Ant Colony Optimization - Ant System
 % Gabriela Iriarte Colmenares
 % 16009
-% 5/04/2020 - 1/07/2020
+% 5/04/2020 - 12/07/2020
 % Descripción: Código y simulación simple de un Ant System. Se recomienda 
 % primero leer el algoritmo 17.3 del libro Computational Intelligence
-
 
 %% Detectar funciones lentas
 % profile on
 tic  % Para medir el tiempo que se tarda el algoritmo en correr.
 
 %% Graph generation
-graph_type = "visibility";
+graph_type = "grid";
 
 if strcmp(graph_type, "grid")
     % Creamos grid cuadrado con la cantidad de nodos indicada:
@@ -29,6 +28,7 @@ elseif strcmp(graph_type, "visibility")
     nodo_dest = string(size(grafo2.Nodes, 1));
     nodo_init = string(size(grafo2.Nodes, 1)-1);
     plot_obstacles = 1;
+    axis([1 obstacles(end-3, 1) 1 obstacles(end-3, 1)])
 end
 
 
@@ -47,35 +47,49 @@ Q = 2;
 % Porcentaje de hormigas que queremos siguiendo la misma solución
 epsilon = 0.9; 
 
-
-
 % Preallocation
 path_k = cell(hormigas, 1);
 L = zeros(hormigas, t_max); % Lenght del path por hormiga e iteración
 all_path = cell(hormigas, t_max);
 ants(1:hormigas) = struct('blocked_nodes', [], 'last_node', nodo_init, 'current_node', nodo_init, 'path', nodo_init, 'L', zeros(1, t_max));
-
+mode_plot = zeros(t_max, 1);
+mean_plot = zeros(t_max, 1);
 
 %% ACO loop
 t = 1;
 stop = 1;
-figure(); clf;
 % Gradient Color para la animación
 map = [255 255 255
     245 215 250
     255 166 216
     255 111 150
     255 61 61]/255;
-colormap(map);
 
-h = plot(G, 'XData', G.Nodes.X, 'YData', G.Nodes.Y, 'NodeColor', 'k');
+figure(1); clf;
+h2 = plot((1:t_max)', mean_plot, 'Color', [0.8, 0.05, 0], 'LineWidth', 1.5);
+hold on
+h3 = plot((1:t_max)', mode_plot, 'Color', [0, 0, 0.8], 'LineWidth', 1.5);
+title('Global Cost', 'interpreter', 'latex', 'FontSize', 17)
+xlabel('Generations', 'interpreter', 'latex', 'FontSize', 12)
+ylabel('Path Lenght', 'interpreter', 'latex', 'FontSize', 12)
+leg1 = legend('$\bar{x}$', '$\hat{x}$');
+set(leg1, 'Interpreter', 'latex');
+set(leg1, 'FontSize', 17);
+figure(2); clf;
+h = plot(G, 'XData', G.Nodes.X, 'YData', G.Nodes.Y, 'NodeColor', 'k'); 
+hold on 
+nodos_especiales = [G.Nodes.X(str2double(nodo_init)), G.Nodes.Y(str2double(nodo_init)); G.Nodes.X(str2double(nodo_dest)), G.Nodes.Y(str2double(nodo_dest))];
+scatter(nodos_especiales(:,1), nodos_especiales(:,2), 'r','filled')
 if plot_obstacles
     hold on
-    for obst = 1:max(obstacles(end-2, 4))
+    axis([1 obstacles(end-3, 1) 1 obstacles(end-3, 1)])
+    for obst = 1:max(obstacles(end-6, 4))
         xy = obstacles(obstacles(:, 4) == obst, 1:2);
         plot(polyshape(xy(:, 1), xy(:, 2)), 'FaceAlpha', 0.9, 'FaceColor', 'k');
     end
+    plot([obstacles(end-5:end-2, 1); 1], [obstacles(end-5:end-2, 2); 1], 'k', 'LineWidth', 5)
 end
+colormap(map);
 while (t <= t_max && stop)
     
     parfor k = 1:hormigas
@@ -126,7 +140,8 @@ while (t <= t_max && stop)
         ants(k).path = nodo_init;  % Borramos el path de la hormiga k
     end
     
-    [~,F] = mode(L(:,t));
+    [mode_plot(t), F] = mode(L(:,t));
+    mean_plot(t) = mean(L(:,t));
     
     if (F/hormigas >= epsilon) % condición de paro
         stop = 0;
@@ -134,6 +149,8 @@ while (t <= t_max && stop)
     
     % Animación
     G.Edges.NormWeight = G.Edges.Weight/sum(G.Edges.Weight);
+    h2.YData(t) = mean_plot(t);
+    h3.YData(t) = mode_plot(t);
     h.LineWidth = G.Edges.NormWeight * 50;
     h.EdgeCData = G.Edges.NormWeight;
     drawnow limitrate
@@ -159,9 +176,8 @@ else
     best_path = all_path{len_prob, t-1};
     
     % Gráfica
+    figure(2);
     hold on;
-    nodos_especiales = [G.Nodes.X(str2double(nodo_init)), G.Nodes.Y(str2double(nodo_init)); G.Nodes.X(str2double(nodo_dest)), G.Nodes.Y(str2double(nodo_dest))];
-    scatter(nodos_especiales(:,1), nodos_especiales(:,2), 'r','filled')
     plot(G.Nodes.X(best_path), G.Nodes.Y(best_path),'r')
 
 end
