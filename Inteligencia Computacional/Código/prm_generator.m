@@ -1,9 +1,9 @@
-
-grid = 10;
-map = makemap(grid*grid);
-prm = PRM(map, 'npoints', 50);
+function grafo = prm_generator(grid, n_points)
+map = makemap(grid);
+prm = PRM(map, 'npoints', n_points);
 prm.plan()
 prm.plot()
+
 % Extraemos los parámetros de Edges
 EndNodes = prm.graph.edgelist(:, prm.graph.edgelen ~= 0)';
 Weight = ones(size(EndNodes, 1), 1);  % Tau
@@ -14,8 +14,8 @@ Y = prm.graph.vertexlist(2, :)';
 Name = string(1:size(X, 1))';
 G = graph(table(EndNodes, Weight, Eta), table(Name, X, Y));
 grafo = simplify(G);
-figure()
-plot(grafo, 'XData', grafo.Nodes.X, 'YData', grafo.Nodes.Y, 'NodeColor', 'k');
+% figure()
+% plot(grafo, 'XData', grafo.Nodes.X, 'YData', grafo.Nodes.Y, 'NodeColor', 'k');
 % goal = [50,30];
 % start = [20, 10];
 % prm.query(start, goal)

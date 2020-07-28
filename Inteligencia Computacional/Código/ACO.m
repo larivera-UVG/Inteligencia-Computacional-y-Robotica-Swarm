@@ -11,7 +11,7 @@
 tic  % Para medir el tiempo que se tarda el algoritmo en correr.
 
 %% Graph generation
-graph_type = "grid";
+graph_type = "visibility";
 
 if strcmp(graph_type, "grid")
     % Creamos grid cuadrado con la cantidad de nodos indicada:
@@ -23,12 +23,22 @@ if strcmp(graph_type, "grid")
     nodo_init = "1";
     plot_obstacles = 0;
 elseif strcmp(graph_type, "visibility")
+    % Para cambiar de grafo hay que crear uno con la app
     load('vis_graph.mat')
     G = grafo2;
     nodo_dest = string(size(grafo2.Nodes, 1));
     nodo_init = string(size(grafo2.Nodes, 1)-1);
     plot_obstacles = 1;
     axis([1 obstacles(end-3, 1) 1 obstacles(end-3, 1)])
+elseif strcmp(graph_type, "PRM")
+    % Para utilizar esta función instalar el toolbox
+    % de robótica de Peter Corke
+    % Está pensado para PRM sin obstáculos
+    grid_size = 10;
+    load('prm_test_graph'); % prm_generator(grid_size, 50);
+    nodo_dest = '47';
+    nodo_init = "31";
+    plot_obstacles = 0;
 end
 
 
