@@ -30,20 +30,31 @@ elseif strcmp(graph_type, "visibility")
     nodo_init = string(size(grafo2.Nodes, 1)-1);
     plot_obstacles = 1;
     axis([1 obstacles(end-3, 1) 1 obstacles(end-3, 1)])
-elseif strcmp(graph_type, "PRM")
+elseif strcmp(graph_type, "prm")
     % Para utilizar esta función instalar el toolbox
     % de robótica de Peter Corke
     % Está pensado para PRM sin obstáculos
     grid_size = 10;
     load('prm_test_graph'); % prm_generator(grid_size, 50);
-    nodo_dest = '47';
-    nodo_init = "31";
+    nodo_dest = '5';
+    nodo_init = "27";
+    plot_obstacles = 0;
+elseif strcmp(graph_type, "rrt")
+    % Para utilizar esta función instalar el toolbox
+    % de robótica de Peter Corke
+    % Está pensado para RRT sin obstáculos
+    grid_size = 10;
+    load('rrt_test_graph');
+    % save('rrt_test_graph', 'G')
+    % G = rrt_generator(grid_size);
+    nodo_dest = '247';
+    nodo_init = "1";
     plot_obstacles = 0;
 end
 
 
 %% ACO init
-t_max = 70; 
+t_max = 200; 
 hormigas = 50;
 
 % Rate de evaporación (puede tomar valores entre 0 y 1)
@@ -194,4 +205,5 @@ end
 
 % profile viewer
 tiempofinal = toc;
-
+formatSpec = 'iter: %d - t: %.2f - cost: %.2f \n';
+fprintf(formatSpec, t-1, tiempofinal, moda)
