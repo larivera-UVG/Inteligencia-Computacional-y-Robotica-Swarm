@@ -72,7 +72,7 @@ classdef PSO < handle
             
         end
         
-        function SetRestricciones(obj, Restriccion, PosMin, PosMax)
+        function SetRestricciones(obj, Restriccion, PosMin, PosMax, varargin)
             % -------------------------------------------------------------------------
             % SETRESTRICCIONES Modos de restricción: Inercia / Constriccion / Mixto. 
             %
@@ -83,10 +83,31 @@ classdef PSO < handle
             %   - Mezclar ambos métodos. Método utilizado por Aldo Nadalini en su tésis.
             % -------------------------------------------------------------------------
             
-            obj.PosMin = PosMin;
-            obj.PosMax = PosMax;
-            obj.TipoRestriccion = Restriccion;
+            IP = inputParser;
             
+            % Inputs Obligatorios / Requeridos
+            IP.addRequired('Restriccion', @isstring);
+            IP.addRequired('PosMin', @isnumeric);
+            IP.addRequired('PosMax', @isnumeric);
+            
+            % Parámetros Opcionales (Usuario debe escribir su nombre
+            % seguido del valor que desea).
+            IP.addParameter('Wmax', 0.9, @isnumeric);
+            IP.addParameter('Wmin', 0.4, @isnumeric);
+            IP.addParameter('Chi', 1, @isnumeric);
+            IP.addParameter('Phi1', 2.05, @isnumeric);
+            IP.addParameter('Phi2', 2.05, @isnumeric);
+            IP.addParameter('Kappa', 1, @isnumeric);
+            IP.addParameter('W', 1, @isnumeric);
+            
+            % Se ordenan las variables de entrada contenidas en IP.Results
+            % según los inputs previos
+            IP.parse(Restriccion, PosMin, PosMax, varargin{:});
+                        
+            obj.PosMin = IP.Results.PosMin;
+            obj.PosMax = IP.Results.PosMax;
+            obj.TipoRestriccion = IP.Results.Restriccion;
+
             switch Restriccion
 
                 % Coeficiente de Inercia ====
@@ -95,15 +116,16 @@ classdef PSO < handle
                 % más información.
 
                 case "Inercia"
-                    obj.TipoInercia = "Chaotic";                                              	% Consultar tipos de inercia utilizando "help ComputeInertia"
-                    obj.Wmax = 0.9; obj.Wmin = 0.4;
+                    obj.TipoInercia = "Linear";                                  	% Consultar tipos de inercia utilizando "help ComputeInertia"
+                    obj.Wmax = IP.Results.Wmax; 
+                    obj.Wmin = IP.Results.Wmin;
                     obj.W = ComputeInertia(obj.TipoInercia, 1, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);  	% Cálculo de la primera constante de inercia.
 
-                    obj.VelMax = 0.2*(PosMax - PosMin);                                         % Velocidad máx: Largo max. del vector de velocidad = 20% del ancho/alto del plano 
-                    obj.VelMin = -obj.VelMax;                                                   % Velocidad mín: Negativo de la velocidad máxima
-                    obj.Chi = 1;                                                                % Igualado a 1 para que el efecto del coeficiente de constricción sea nulo
-                    obj.Phi1 = 2; 
-                    obj.Phi2 = 2;
+                    obj.VelMax = 0.2*(PosMax - PosMin);                          	% Velocidad máx: Largo max. del vector de velocidad = 20% del ancho/alto del plano 
+                    obj.VelMin = -obj.VelMax;                                    	% Velocidad mín: Negativo de la velocidad máxima
+                    obj.Chi = IP.Results.Chi;                                      	% Igualado a 1 para que el efecto del coeficiente de constricción sea nulo
+                    obj.Phi1 = IP.Results.Phi1; 
+                    obj.Phi2 = IP.Results.Phi2;
 
                 % Coeficiente de Constricción ====
                 % Basado en la constricción tipo 1'' propuesta en el paper por Clerc y Kennedy (2001) 
@@ -111,13 +133,13 @@ classdef PSO < handle
                 % asegura la convergencia siempre y cuando Kappa = 1 y Phi = Phi1 + Phi2 > 4.
 
                 case "Constriccion"
-                    Kappa = 1;                                                      % Modificable. Valor recomendado = 1
-                    obj.Phi1 = 2.05;                                                % Modificable. Coeficiente de aceleración local. Valor recomendado = 2.05.
-                    obj.Phi2 = 2.05;                                                % Modificable. Coeficiente de aceleración global. Valor recomendado = 2.05
+                    Kappa = IP.Results.Kappa;                                       % Modificable. Valor recomendado = 1
+                    obj.Phi1 = IP.Results.Phi1;                                  	% Modificable. Coeficiente de aceleración local. Valor recomendado = 2.05.
+                    obj.Phi2 = IP.Results.Phi2;                                  	% Modificable. Coeficiente de aceleración global. Valor recomendado = 2.05
                     Phi = obj.Phi1 + obj.Phi2;
                     obj.Chi = 2*Kappa / abs(2 - Phi - sqrt(Phi^2 - 4*Phi));
 
-                    obj.W = 1;
+                    obj.W = IP.Results.W;
                     obj.VelMax = PosMax;                                            % Velocidad máx: Igual a PosMax
                     obj.VelMin = PosMin;                                            % Velocidad mín: Igual a PosMin
 
@@ -127,7 +149,7 @@ classdef PSO < handle
                 % utiliza un Phi1 = 2, Phi2 = 10 y el coeficiente de inercia exponencial decreciente.
 
                 case "Mixto"
-                    Kappa = 1;                                                      % Valor recomendado = 1
+                    Kappa = IP.Results.Kappa;                                       % Valor recomendado = 1
                     obj.Phi1 = 2;                                                   % Valor recomendado = 2
                     obj.Phi2 = 10;                                                  % Valor recomendado = 10
                     Phi = obj.Phi1 + obj.Phi2;
@@ -167,15 +189,15 @@ classdef PSO < handle
 
                 % Se acotan las velocidades para impedir velocidades muy
                 % grandes o muy pequeñas.
-                obj.Velocidad = max(obj.Velocidad, obj.VelMin);                                          % Si Velocidad < VelMin, entonces Velocidad = VelMin
-                obj.Velocidad = min(obj.Velocidad, obj.VelMax);                                       	% Si Velocidad > VelMax, entonces Velocidad = VelMax
+                obj.Velocidad = max(obj.Velocidad, obj.VelMin);                                             % Si Velocidad < VelMin, entonces Velocidad = VelMin
+                obj.Velocidad = min(obj.Velocidad, obj.VelMax);                                             % Si Velocidad > VelMax, entonces Velocidad = VelMax
 
                 % Actualización de Posición de Partículas
                 obj.Posicion_Actual = obj.Posicion_Actual + obj.Velocidad;                                  % Actualización "discreta" de la posición. El algoritmo de PSO original asume un sampling time = 1s.
-                obj.Posicion_Actual = max(obj.Posicion_Actual, obj.PosMin);                              % Se acotan las posiciones de la misma forma en que se acotaron las velocidades
+                obj.Posicion_Actual = max(obj.Posicion_Actual, obj.PosMin);                                 % Se acotan las posiciones de la misma forma en que se acotaron las velocidades
                 obj.Posicion_Actual = min(obj.Posicion_Actual, obj.PosMax);
 
-                % Cálculo de superficie o función de costo
+                % Cálculo de Costo Local para cada Partícula
                 obj.Costo_Local = CostFunction(obj.Posicion_Actual,obj.FuncionCosto,EnvironmentParams{:});  % Actualización de los valores del costo.
 
                 % Cálculo del Local Best

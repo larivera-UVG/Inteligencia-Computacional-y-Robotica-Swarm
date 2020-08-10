@@ -81,6 +81,7 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
     IP.addOptional('PosMax',  inf);
     IP.addOptional('Meta', [0 0], @isnumeric);
     IP.addOptional('PuckPosicion', 0, @isnumeric);
+    IP.addOptional('ObsMovilPosicion', 0, @isnumeric);
     IP.addParameter('ModoAPF', defaultModoAPF, @isstring);
     IP.addParameter('ComportamientoAPF', defaultComportamientoAPF, @isstring);
     IP.parse(X,FunctionName,varargin{:});
@@ -94,6 +95,7 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
     Meta = IP.Results.Meta;
     Modo = IP.Results.ModoAPF;
     PuckPosicion = IP.Results.PuckPosicion;
+    ObsMovilPosicion = IP.Results.ObsMovilPosicion;
     Comportamiento = IP.Results.ComportamientoAPF;
     
 % ------------------------------------------------------------------
@@ -161,11 +163,11 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
             
             % Vértices del polígono cuadrado que forma el borde la mesa
             % Se repite el primer vértice para que la figura cierre
-            VerticesMesa = [PosMin PosMin PosMax PosMax ; ...
-                            PosMin PosMax PosMax PosMin]';
-            
+            VerticesMesa = [PosMin PosMin PosMax PosMax PosMin ; ...
+                            PosMin PosMax PosMax PosMin PosMin]';
+                        
             % Vértices Mesa + Obstáculos
-            VerticesAll = [VerticesObs ; VerticesMesa]; 
+            VerticesAll = [VerticesObs ; NaN NaN; VerticesMesa; NaN NaN]; 
             
             % F1 - Distancia a la meta:
             % Utilizado para minimizar en la medida de lo posible la
@@ -186,21 +188,36 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
             
             % F2 - Recíproco de distancia a obstáculo actual más cercano:
             % Utilizado para alejarse lo más posible del obstáculo más
-            % cercano (estático) que se ha detectado. Debe ser el recíproco
-            % para que al minimizar la función, se maximice la distancia 
-            % entre obstáculo y las partículas. Escribir "help
-            % getDistPoint2Poly" para más información sobre la función.
-            f2 = 1 ./ getDistPoint2Poly(X(:,1),X(:,2),VerticesAll(:,1),VerticesAll(:,2));
+            % cercano (estático) que ha detectado el puck. Se calculan las
+            % distancias del robot controlado hasta los obstáculos
+            % detectados. Se seleccionan las coordenadas del obstáculo a la
+            % menor distancia (XObsMin, YObsMin)
+            [~,XObsMin,YObsMin] = getDistPoint2Poly(PuckPosicion(1,1),PuckPosicion(1,2),VerticesAll(:,1),VerticesAll(:,2));
+            
+            % Luego se maximiza la distancia de las partículas al obstáculo
+            % más cercano al robot / Puck.
+            f2 = 1 ./ sqrt((X(:,1) - XObsMin).^2 + (X(:,2) - YObsMin).^2); 
             
             % F4 - Recíproco de distancia al robot:
             % Utilizado para alejar al robot de su posición actual a manera
-            % de evitar una potencial colisión.
-            f4 = 1 / sqrt((X(:,1) - PuckPosicion(1,1)).^2 + (X(:,2) - PuckPosicion(1,2)).^2);
+            % de evitar una potencial colisión. 
+            f4 = 1 ./ sqrt(sum((X - PuckPosicion(1,:)) .^2, 2)); 
             f4 = 0;
             
             % F5 - Recíproco de distancia a centro de obstáculo dinámico:
             % Utilizado para alejarse lo más posible del centro del
-            % obstáculo dinámico que se aproxima al robot.
+            % obstáculo dinámico que se aproxima al robot. Primero se
+            % calculan las coordenadas de un punto meta alejado del
+            % obstáculo (MetaAlejadaObs) utilizando las expresiones:
+            %   ys = (yc + yd2) / 2
+            %   xs = (xc + xd2) / 2
+            % Donde el subíndice "c" hace referencia al robot / puck, el
+            % subíndice "d2" al obstáculo dinámico y "s" al punto meta.
+            MetaAlejadaObs = (ObsMovilPosicion + PuckPosicion(1,:)) / 2; 
+            
+            % Luego se maximiza la distancia de las partículas al punto
+            % meta alejado del obstáculo dinámico.
+            f5 = 1 ./ sqrt(sum((X - MetaAlejadaObs(1,:)) .^2, 2)); 
             f5 = 0;
             
             % K1 y K2 - Parámetros de restricción
@@ -210,15 +227,31 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
             k1 = 10000;
             k2 = 10000;
             
-            % Coeficientes asociados a cada una de las "f's" de la función
+            % Coeficientes asociados a cada una de las "F's" de la función
             % de costo.
             w1 = 1;
             w2 = 1;
             w3 = 0.8;
             w4 = 1.5;
             w5 = 1.5;
-            w6 = 0;
-            w7 = 0;
+            
+            % Coeficientes de restricción
+            % W6 = 1: Distancia entre partícula y obstáculo < threshold 
+            [DistsPartsAObs] = getDistPoint2Poly(X(:,1),X(:,2),VerticesAll(:,1),VerticesAll(:,2));  % Distancia mínima entre cada partícula y los obstáculos.
+            ThresholdDistAObs = 0.3;                                                                % Si una partícula está a menos de esta distancia de un obstáculo, su costo incrementa en gran medida.       
+
+            % También se restringen las regiones dentro de las líneas que
+            % conforman los obstáculos. Si no se incluye esto, solo se
+            % restringiran las regiones alrededor de las líneas que
+            % representan un obstáculo y no del obstáculo como tal.
+            InObs = inpolygon(X(:,1),X(:,2),VerticesObs(:,1),VerticesObs(:,2));
+ 
+            w6 = (DistsPartsAObs < ThresholdDistAObs) | InObs;                                   	% Si el punto está dentro del threshold o dentro de un obstáculo, se restringe
+
+            % W7 = 1: Distancia entre partícula y robot > threshold
+            DistsPartsAPuck = sqrt(sum((X - PuckPosicion(1,:)) .^2, 2)); 
+            ThresholdDistAPuck = 1;   
+            w7 = DistsPartsAPuck > ThresholdDistAPuck;
             
             % Suma ponderada utilizando todos los coeficientes "w" y
             % sub-funciones "f".

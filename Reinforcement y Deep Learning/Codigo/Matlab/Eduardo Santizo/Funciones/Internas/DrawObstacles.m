@@ -24,8 +24,19 @@ switch Figura
     case "Poligono"
         PosMin = varargin{1};
         PosMax = varargin{2};
-        figure(); clf; grid on;
+        Meta = varargin{3};
+        PuntoPartida = varargin{4};
+        figure(); clf; grid minor; hold on;
         axis([PosMin PosMax PosMin PosMax]);
+        
+        % Indicador de Meta
+        scatter(Meta(1),Meta(2),'x','red','LineWidth',2);
+        text(Meta(1),Meta(2),"Meta",'VerticalAlignment','cap','HorizontalAlignment','center');
+        
+        % Indicador de Punto de Partida
+        scatter(PuntoPartida(1),PuntoPartida(2),'o','blue','LineWidth',2);
+        text(PuntoPartida(1),PuntoPartida(2),"Punto de Partida",'VerticalAlignment','cap','HorizontalAlignment','center');
+        
         Dibujo = drawpolygon();
         X = Dibujo.Position(:,1);
         Y = Dibujo.Position(:,2); 
