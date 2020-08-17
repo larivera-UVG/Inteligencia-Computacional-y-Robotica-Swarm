@@ -1,0 +1,25 @@
+#VRML_SIM R2020a utf8
+WorldInfo {
+  basicTimeStep 16
+}
+Viewpoint {
+  orientation 0.5817030689323239 0.5690180752731357 0.581240027533524 4.176931552010948
+  position 0.009324423133090991 0.8690614921528854 0.015054391729426464
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 10 10
+  floorTileSize 1 1
+}
+E-puck {
+  controller "my_controller"
+  groundSensorsSlot [
+    GPS {
+    }
+    Compass {
+    }
+  ]
+}

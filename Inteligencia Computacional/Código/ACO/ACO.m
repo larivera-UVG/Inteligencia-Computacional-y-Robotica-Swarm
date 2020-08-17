@@ -11,7 +11,7 @@
 tic  % Para medir el tiempo que se tarda el algoritmo en correr.
 
 %% Graph generation
-graph_type = "visibility";
+graph_type = "rrt";
 
 if strcmp(graph_type, "grid")
     % Creamos grid cuadrado con la cantidad de nodos indicada:
@@ -47,11 +47,10 @@ elseif strcmp(graph_type, "rrt")
     load('rrt_test_graph');
     % save('rrt_test_graph', 'G')
     % G = rrt_generator(grid_size);
-    nodo_dest = '247';
-    nodo_init = "1";
+    nodo_dest = '360';
+    nodo_init = "445";
     plot_obstacles = 0;
 end
-
 
 %% ACO init
 t_max = 200; 
@@ -100,7 +99,8 @@ figure(2); clf;
 h = plot(G, 'XData', G.Nodes.X, 'YData', G.Nodes.Y, 'NodeColor', 'k'); 
 hold on 
 nodos_especiales = [G.Nodes.X(str2double(nodo_init)), G.Nodes.Y(str2double(nodo_init)); G.Nodes.X(str2double(nodo_dest)), G.Nodes.Y(str2double(nodo_dest))];
-scatter(nodos_especiales(:,1), nodos_especiales(:,2), 'r','filled')
+scatter(nodos_especiales(1, 1), nodos_especiales(1, 2), 'g','filled')
+scatter(nodos_especiales(2, 1), nodos_especiales(2, 2), 'xr','LineWidth', 5)
 if plot_obstacles
     hold on
     axis([1 obstacles(end-3, 1) 1 obstacles(end-3, 1)])

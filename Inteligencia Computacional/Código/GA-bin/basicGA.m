@@ -11,7 +11,7 @@ Pm = 0.01;  % Probabilidad de mutación pequeño, menor que 10%
 Maxgen = 100;
 Nvar = 2;
 epsilon = 0.05;
-tipo_funcion = "Banana";
+tipo_funcion = "Booth";
 if strcmp(tipo_funcion, "Banana")
     rango = [-5, -5;
         10, 10];
@@ -72,8 +72,6 @@ while (generaciones < Maxgen) && stop
     Mejor(generaciones) = valor;
     Mejor_cromosoma(generaciones, :) = genotipo(idx, :);
     path = [path; nuevo_feno(idx, :)];
-
-    
 
     h3.XData = path(:, 1);
     h3.YData = path(:, 2);

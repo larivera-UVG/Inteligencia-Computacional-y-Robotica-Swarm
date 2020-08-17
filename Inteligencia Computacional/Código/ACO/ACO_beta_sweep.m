@@ -6,6 +6,8 @@
 % Descripción: Barrido para encontrar mejores parámetros para alpha.
 % Le da más peso a la feromona en la probabilidad.
 %% Graph generation
+start_mail();
+try
 graph_type = "grid";
 
 if strcmp(graph_type, "grid")
@@ -53,7 +55,7 @@ ants(1:hormigas) = struct('blocked_nodes', [], 'last_node', nodo_init, 'current_
 sweep = 1:0.5:3;
 repetitions = 10;
 beta_sweep_data = cell(numel(sweep) * repetitions + 1, 5);
-beta_sweep_data(1, :) = {'tiempo', 'costo', 'iteraciones', 'path', 'alpha'};
+beta_sweep_data(1, :) = {'tiempo', 'costo', 'iteraciones', 'path', 'beta'};
 sweep_count = 1;
 t_acumulado = 0;
 
@@ -153,7 +155,13 @@ for rep = 1:1:repetitions
 end
 % Guardado final
 save('sweep_data', 'beta_sweep_data', '-append')
-disp("Done.")
+disp("Done.\n")
+end_mail();
+
+catch
+    disp("Oh rayos....\n")
+    error_mail();
+end
 
 % sum(cell2mat(rho_sweep_data(2:end, 1))) % Tiempo total de operación de la
 % prueba (barrido)

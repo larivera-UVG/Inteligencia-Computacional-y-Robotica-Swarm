@@ -3,8 +3,7 @@
 % Gabriela Iriarte Colmenares
 % 16009
 % 11/07/2020
-% Descripción: Barrido para encontrar mejores parámetros para alpha.
-% Le da más peso a la feromona en la probabilidad.
+% Descripción: Barrido para encontrar mejores parámetros para Q.
 %% Graph generation
 start_mail();
 try
@@ -42,25 +41,25 @@ end
 %% ACO init
 t_max = 70;
 hormigas = 50;
-Q = 2;  % cte. positiva que regula el depósito de feromona
+beta = 2;  % cte. positiva que regula el depósito de feromona
 epsilon = 0.9;  % Porcentaje de hormigas que queremos siguiendo la misma solución
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                C A M B I A R  E L  R H O
+%                C A M B I A R  E L  P A R Á M E T R O S
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rho = 0.5;
-beta = 1;  % Le da más peso al costo del link en la probabilidad
+alpha = 1;  % Le da más peso al costo del link en la probabilidad
 
 % Preallocation
 ants(1:hormigas) = struct('blocked_nodes', [], 'last_node', nodo_init, 'current_node', nodo_init, 'path', nodo_init, 'L', zeros(1, t_max));
-sweep = 1:0.5:3;
+sweep = 1:0.1:3;
 repetitions = 10;
-alpha_sweep_data = cell(numel(sweep) * repetitions + 1, 5);
-alpha_sweep_data(1, :) = {'tiempo', 'costo', 'iteraciones', 'path', 'alpha'};
+Q_sweep_data = cell(numel(sweep) * repetitions + 1, 5);
+Q_sweep_data(1, :) = {'tiempo', 'costo', 'iteraciones', 'path', 'Q'};
 sweep_count = 1;
 t_acumulado = 0;
 
 for rep = 1:1:repetitions
-    for alpha = sweep
+    for Q = sweep
         %% ACO loop
         timer = tic;
         G = G_cpy;
@@ -134,19 +133,19 @@ for rep = 1:1:repetitions
         if (t > t_max)
             best_path = "No hubo convergencia";
             tiempofinal = toc(timer);
-            alpha_sweep_data(sweep_count + 1, :) = {tiempofinal, 0, t - 1, best_path, alpha};
+            Q_sweep_data(sweep_count + 1, :) = {tiempofinal, 0, t - 1, best_path, Q};
         else
             moda =  mode(L(:, t-1));
             len_indx = L(:, t-1).*(L(:,t-1) == moda);
             len_prob = rouletteWheel(len_indx);
             best_path = all_path{len_prob, t-1};
             tiempofinal = toc(timer);
-            alpha_sweep_data(sweep_count + 1, :) = {tiempofinal, L(len_prob, t-1), t - 1, best_path, alpha};
+            Q_sweep_data(sweep_count + 1, :) = {tiempofinal, L(len_prob, t-1), t - 1, best_path, Q};
         end
         t_acumulado = t_acumulado + tiempofinal;
         if t_acumulado >= 60
             disp("Guardando...")
-            save('sweep_data', 'alpha_sweep_data', '-append')
+            save('sweep_data', 'Q_sweep_data', '-append')
             t_acumulado = 0;
         end
         sweep_count = sweep_count + 1;
@@ -154,7 +153,7 @@ for rep = 1:1:repetitions
     
 end
 % Guardado final
-save('sweep_data', 'alpha_sweep_data', '-append')
+save('sweep_data', 'Q_sweep_data', '-append')
 disp("Done.")
 end_mail();
 
@@ -163,9 +162,8 @@ catch
     error_mail();
 end
 
-% sum(cell2mat(rho_sweep_data(2:end, 1))) % Tiempo total de operación de la
+% sum(cell2mat(Q_sweep_data(2:end, 1))) % Tiempo total de operación de la
 % prueba (barrido)
-
 
 
 

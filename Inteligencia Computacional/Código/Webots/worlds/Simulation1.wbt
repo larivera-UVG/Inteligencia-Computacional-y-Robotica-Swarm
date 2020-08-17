@@ -1,0 +1,81 @@
+#VRML_SIM R2020a utf8
+WorldInfo {
+  basicTimeStep 16
+}
+Viewpoint {
+  orientation -0.4944065712557326 -0.7238215328357054 -0.48129464042571685 1.8785733071012856
+  position 0.27504688884923684 0.7616199768235459 -0.29996441414831343
+}
+E-puck {
+  translation 0.5452405070683326 0.0002508450521463402 -0.34839843112283997
+  rotation -0.0007942418661751897 0.9999994221355439 0.0007245056495078818 3.48239661165909
+  controller "ACO_controller"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+Floor {
+  size 2 2
+}
+TexturedBackgroundLight {
+}
+Solid {
+  translation 1 0.05 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry DEF WALL Box {
+        size 0.049999999999999996 0.1 2
+      }
+    }
+  ]
+  name "solid(1)"
+  boundingObject USE WALL
+}
+Solid {
+  translation -1 0.05 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry USE WALL
+    }
+  ]
+  name "solid(2)"
+  boundingObject USE WALL
+}
+Solid {
+  translation 0 0.05 0.95
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry DEF WALL2 Box {
+        size 2 0.1 0.05
+      }
+    }
+  ]
+  name "solid(3)"
+  boundingObject USE WALL2
+}
+Solid {
+  translation 0 0.049999999999999996 -0.9800000000000004
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry USE WALL2
+    }
+  ]
+  name "solid(4)"
+  boundingObject USE WALL2
+}
+Background {
+  skyColor [
+    0.1 0.1 0.1
+  ]
+}

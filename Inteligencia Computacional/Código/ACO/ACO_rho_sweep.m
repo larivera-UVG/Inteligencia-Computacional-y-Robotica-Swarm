@@ -6,6 +6,8 @@
 % Descripción: Barrido para encontrar mejores parámetros para rho.
 % Rho es el rate de evaporación (puede tomar valores entre 0 y 1)
 %% Graph generation
+start_mail();
+try
 graph_type = "grid";
 
 if strcmp(graph_type, "grid")
@@ -154,6 +156,12 @@ end
 % Guardado final
 save('sweep_data', 'rho_sweep_data')
 disp("Done.")
+end_mail();
+
+catch
+    disp("Oh rayos....\n")
+    error_mail();
+end
 
 % sum(cell2mat(rho_sweep_data(2:end, 1))) % Tiempo total de operación de la
 % prueba (barrido)
