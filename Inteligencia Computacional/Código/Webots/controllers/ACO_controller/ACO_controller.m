@@ -21,10 +21,14 @@ TIME_STEP = 32;  % milisegundos
 ell = 71/2000;  % Distance from center en metros
 r = 20.5/1000;  % Radio de las llantas en metros
 MAX_SPEED = 6.28;
-goal = [0, 0];  % Diagonal
+goal = [0, 0];  % Diagonal larga
 goal = [-4, -5]; % Norte
-% goal = [4, -4];
- goal = [-2, -4]; % Este
+% goal = [-2, -4]; % Este
+% goal = [-5, -4]; % Oeste
+% goal = [-3, -3]; % Diagonal corta
+% goal = [-4, -3]; % Sur corto
+% goal = [-5, -3]; % Diagonal corta
+% goal = [-5, -5]; % Diagonal corta
 % goal = [-4, -2]; % Sur
 
 %% Obtener todos los sensores del e-Puck
@@ -81,13 +85,13 @@ EP = 0;
 % kI_P = 0.0001;
 
 % 3 - Control de pose
-k_rho = 0.1;
-k_alpha = 50;
-k_beta = -25; % Mejor: -25
-
-% k_rho = 0.1;
-% k_alpha = 0.5;
-% k_beta = -25; % Mejor: -25
+k_rho = 0.09;
+k_alpha = 25;
+k_beta = -0.05; 
+% % Funciona bien en direcciones cortas, menos atrás
+% k_rho = 0.09;
+% k_alpha = 25;
+% k_beta = -0.05; 
 
 controlador = 3;
 % controlador
@@ -178,6 +182,19 @@ while wb_robot_step(TIME_STEP) ~= -1
         theta_g = atan2((zg - zi), (xg - xi));
         alpha = -theta + theta_g;
         beta = -theta - alpha;
+        
+        if (alpha < -pi)
+            alpha = alpha + (2*pi);
+        elseif (alpha > pi)
+            alpha = alpha - (2*pi);
+        end
+        
+        if (beta < -pi)
+            beta = beta + (2*pi);
+        elseif (beta > pi)
+            beta = beta - (2*pi);
+        end
+        
         v = k_rho*rho;
         w = k_alpha*alpha + k_beta*beta;
         
