@@ -23,7 +23,7 @@ r = 20.5/1000;  % Radio de las llantas en metros
 MAX_SPEED = 6.28;
 goal = [0, 0];  % Diagonal larga
 goal = [-4, -5]; % Norte
-% goal = [-2, -4]; % Este
+%  goal = [-2, -4]; % Este
 % goal = [-5, -4]; % Oeste
 % goal = [-3, -3]; % Diagonal corta
 % goal = [-4, -3]; % Sur corto
@@ -85,15 +85,21 @@ EP = 0;
 % kI_P = 0.0001;
 
 % 3 - Control de pose
-k_rho = 0.09;
-k_alpha = 25;
-k_beta = -0.05; 
-% % Funciona bien en direcciones cortas, menos atrás
 % k_rho = 0.09;
 % k_alpha = 25;
 % k_beta = -0.05; 
 
-controlador = 3;
+% 4 - Control de pose de Lyapunov
+k_rho = 0.09;
+k_alpha = 25;
+k_beta = -0.05; 
+
+% 5 - LQR
+Q = eye(2);
+R = eye(2);
+% Klqr = 2*lqr(A,B,Q,R);
+
+controlador = 4;
 % controlador
 % 0 - OFF
 % 1 - PID de acercamiento exponencial
@@ -197,6 +203,31 @@ while wb_robot_step(TIME_STEP) ~= -1
         
         v = k_rho*rho;
         w = k_alpha*alpha + k_beta*beta;
+        
+        % velocidad uniciclo
+        left_speed = (v + w*ell)/r;
+        right_speed = (v - w*ell)/r;
+        speed = [left_speed, right_speed];
+    elseif controlador == 4
+        % Error total de posicion
+        rho = sqrt((xg - xi)^2 + (zg - zi)^2);
+        
+        % Error de orientacion
+        theta_g = atan2((zg - zi), (xg - xi));
+        alpha = -theta + theta_g;
+        
+        if (alpha < -pi)
+            alpha = alpha + (2*pi);
+        elseif (alpha > pi)
+            alpha = alpha - (2*pi);
+        end
+               
+        v = k_rho * rho * cos(alpha);
+        w = k_rho * sin(alpha) * cos(alpha) + k_alpha*alpha;
+        
+        if alpha <= -pi/2 || alpha > pi/2
+            v = -v;
+        end
         
         % velocidad uniciclo
         left_speed = (v + w*ell)/r;
