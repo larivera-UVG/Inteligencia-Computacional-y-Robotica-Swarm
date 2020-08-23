@@ -7,7 +7,7 @@
 
 % uncomment the next two lines if you want to use
 % MATLAB's desktop to interact with the controller:
-% desktop;
+desktop;
 % keyboard;
 
 TIME_STEP = 32;
@@ -90,20 +90,23 @@ EP = 0;
 % k_beta = -0.05; 
 
 % 4 - Control de pose de Lyapunov
-k_rho = 0.09;
-k_alpha = 25;
-k_beta = -0.05; 
-
-% 5 - Closed Loop Steering
-k_1 = 1;
-k_2 = 10;
+% k_rho = 0.09;
+% k_alpha = 25;
+% k_beta = -0.05; 
+% 
+% % 5 - Closed Loop Steering
+% k_1 = 1;
+% k_2 = 10;
 
 % 6 - LQR
-Q = eye(2);
+A = zeros(2); 
+B = eye(2); 
+Q = 0.1*eye(2);
 R = eye(2);
-% Klqr = 2*lqr(A,B,Q,R);
+Klqr = 2*lqr(A,B,Q,R);
+Ti = 3;
 
-controlador = 5;
+controlador = 6;
 % controlador
 % 0 - OFF
 % 1 - PID de acercamiento exponencial
@@ -265,7 +268,16 @@ while wb_robot_step(TIME_STEP) ~= -1
         left_speed = (v + w*ell)/r;
         right_speed = (v - w*ell)/r;
         speed = [left_speed, right_speed];
+    elseif controlador == 6
+        e = [xi - xg; zi - zg];
+        u = -Klqr*e;
+        v = u(1)*cos(theta) + u(2)*sin(theta);
+        w = (-u(1)*sin(theta) + u(2)*cos(theta))/ell;
         
+        % velocidad uniciclo
+        left_speed = (v + w*ell)/r;
+        right_speed = (v - w*ell)/r;
+        speed = [left_speed, right_speed];
     end
     
     % Truncamos la velocidad
