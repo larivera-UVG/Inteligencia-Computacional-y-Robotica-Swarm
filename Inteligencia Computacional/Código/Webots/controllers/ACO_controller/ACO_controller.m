@@ -23,13 +23,13 @@ r = 20.5/1000;  % Radio de las llantas en metros
 MAX_SPEED = 6.28;
 goal = [0, 0];  % Diagonal larga
 goal = [-4, -5]; % Norte
-%  goal = [-2, -4]; % Este
-% goal = [-5, -4]; % Oeste
 % goal = [-3, -3]; % Diagonal corta
 % goal = [-4, -3]; % Sur corto
 % goal = [-5, -3]; % Diagonal corta
 % goal = [-5, -5]; % Diagonal corta
 % goal = [-4, -2]; % Sur
+% goal = [-2, -4]; % Este
+% goal = [-5, -4]; % Oeste
 
 %% Obtener todos los sensores del e-Puck
 
@@ -94,12 +94,16 @@ k_rho = 0.09;
 k_alpha = 25;
 k_beta = -0.05; 
 
-% 5 - LQR
+% 5 - Closed Loop Steering
+k_1 = 1;
+k_2 = 10;
+
+% 6 - LQR
 Q = eye(2);
 R = eye(2);
 % Klqr = 2*lqr(A,B,Q,R);
 
-controlador = 4;
+controlador = 5;
 % controlador
 % 0 - OFF
 % 1 - PID de acercamiento exponencial
@@ -233,6 +237,35 @@ while wb_robot_step(TIME_STEP) ~= -1
         left_speed = (v + w*ell)/r;
         right_speed = (v - w*ell)/r;
         speed = [left_speed, right_speed];
+        
+    elseif controlador == 5
+        % Error total de posicion
+        rho = sqrt((xg - xi)^2 + (zg - zi)^2);
+        % Error de orientacion
+        theta_g = atan2((zg - zi), (xg - xi));
+        alpha = -theta + theta_g;
+        beta = -theta - alpha;
+        
+        if (alpha < -pi)
+            alpha = alpha + (2*pi);
+        elseif (alpha > pi)
+            alpha = alpha - (2*pi);
+        end
+        
+        if (beta < -pi)
+            beta = beta + (2*pi);
+        elseif (beta > pi)
+            beta = beta - (2*pi);
+        end
+        
+        v = k_rho * rho * cos(alpha);
+        w = (2/5)*(v/rho)*(k_2*(alpha + atan(-k_1*beta)) + (1 + k_1/(1 + (k_1*beta)^2))*sin(alpha));
+        
+        % velocidad uniciclo
+        left_speed = (v + w*ell)/r;
+        right_speed = (v - w*ell)/r;
+        speed = [left_speed, right_speed];
+        
     end
     
     % Truncamos la velocidad
