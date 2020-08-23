@@ -7,7 +7,7 @@
 
 % uncomment the next two lines if you want to use
 % MATLAB's desktop to interact with the controller:
-desktop;
+% desktop;
 % keyboard;
 
 TIME_STEP = 32;
@@ -21,11 +21,12 @@ TIME_STEP = 32;  % milisegundos
 ell = 71/2000;  % Distance from center en metros
 r = 20.5/1000;  % Radio de las llantas en metros
 MAX_SPEED = 6.28;
+MAX_CHANGE = 1;  % rad/s
 goal = [0, 0];  % Diagonal larga
 goal = [-4, -5]; % Norte
-% goal = [-3, -3]; % Diagonal corta
-% goal = [-4, -3]; % Sur corto
-% goal = [-5, -3]; % Diagonal corta
+goal = [-3, -3]; % Diagonal corta
+goal = [-4, -3]; % Sur corto
+goal = [-5, -3]; % Diagonal corta
 % goal = [-5, -5]; % Diagonal corta
 % goal = [-4, -2]; % Sur
 % goal = [-2, -4]; % Este
@@ -55,6 +56,7 @@ wb_compass_enable(orientation_sensor, TIME_STEP);
 %% Valores iniciales
 xg = goal(1);  zg = goal(2);
 step = 0;
+old_speed = zeros(2, 1);
 epsilon = 0.05;
 
 %% Variables PID
@@ -71,32 +73,31 @@ EP = 0;
 
 % CONSTANTES DEL PID
 % 1 - Acercamiento exponencial
-% kP_O = 20;
-% kD_O = 5;
-% kI_O = 9;
+kP_O = 20;
+kD_O = 5;
+kI_O = 9;
 
 % 2 - Velocidad lineal y angular
-% kP_O2 = 1;
-% kD_O2 = 100; 
-% kI_O2 = 40;
+kP_O2 = 1;
+kD_O2 = 100; 
+kI_O2 = 40;
 
-% kP_P = 2;
-% kD_P = 0;
-% kI_P = 0.0001;
+kP_P = 2;
+kD_P = 0;
+kI_P = 0.0001;
 
 % 3 - Control de pose
-% k_rho = 0.09;
-% k_alpha = 25;
-% k_beta = -0.05; 
+k_rho = 0.09;
+k_alpha = 25;
+k_beta = -0.05; 
 
 % 4 - Control de pose de Lyapunov
-% k_rho = 0.09;
-% k_alpha = 25;
-% k_beta = -0.05; 
-% 
-% % 5 - Closed Loop Steering
-% k_1 = 1;
-% k_2 = 10;
+k_rho2 = 0.09;
+k_alpha2 = 25;
+
+% 5 - Closed Loop Steering
+k_1 = 1;
+k_2 = 10;
 
 % 6 - LQR
 A = zeros(2); 
@@ -106,12 +107,28 @@ R = eye(2);
 Klqr = 2*lqr(A,B,Q,R);
 Ti = 3;
 
-controlador = 6;
+% 7 - LQI
+Cr = eye(2);
+Dr = zeros(2);
+AA = [A, zeros(size(Cr')); Cr, zeros(size(Cr,1))];
+BB = [B; Dr];
+QQ = eye(size(A,1) + size(Cr,1)); 
+ref = [xg; zg];
+sigma = zeros(2, 1); 
+% Modificaciones de Aldo para el LQI:
+bv_p = 0.95;          % Reducir velocidad de control proporcional en 95% evitando aceleracion brusca por actualizacion PSO
+bv_i = 0.01;          % Reducir velocidad de control integrador en 1% cada iteracion para frenado al acercarse a Meta PSO
+
+controlador = 7;
 % controlador
 % 0 - OFF
 % 1 - PID de acercamiento exponencial
 % 2 - PID
 % 3 - Pose
+% 4 - Pose de Lyapunov
+% 5 - Steering Wheel
+% 6 - LQR
+% 7 - LQI
 
 % main loop:
 % perform simulation steps of TIME_STEP milliseconds
@@ -128,14 +145,14 @@ while wb_robot_step(TIME_STEP) ~= -1
     rad = atan2(north(1), north(3));
     theta = rad + pi;  % Se corrige el ángulo para que esté igual que theta_g
     
-    if (xi >= xg - epsilon) && (xi <= xg + epsilon) && (zi >= zg - epsilon) && (zi <= zg + epsilon)
+    if sqrt((xg - xi)^2 + (zg - zi)^2) <= epsilon
         controlador = 0;
     end
-    
+
     % ------------- OFF -------------
     if controlador == 0
-        speed = [0, 0];
-        
+        v = 0;
+        w = 0;
     % ------------- PID exp ---------
     elseif controlador == 1
         % Error total de posicion
@@ -145,7 +162,6 @@ while wb_robot_step(TIME_STEP) ~= -1
         theta_g = atan2((zg - zi), (xg - xi));
         eO = atan2(sin(theta_g - theta), cos(theta_g - theta));
         
-        
         % Control de velocidad angular
         eD = eO - eO_k_1;  % error derivativo
         EO_k = EO_k + eO;  % error acumulado
@@ -153,11 +169,6 @@ while wb_robot_step(TIME_STEP) ~= -1
         eO_k_1 = eO;  % actualizar las variables
         
         v = MAX_SPEED*(1 - exp(-eP*eP*alpha))/eP;
-        
-        % velocidad uniciclo
-        left_speed = (v + w*ell)/r;
-        right_speed = (v - w*ell)/r;
-        speed = [left_speed, right_speed];
         
     elseif controlador == 2
         % Error total de posicion
@@ -181,11 +192,6 @@ while wb_robot_step(TIME_STEP) ~= -1
         EO_k = EO_k + eO;  % error acumulado
         w = kP_O2*eO + kI_O2*EO_k + kD_O2*eD;
         eO_k_1 = eO;  % actualizar las variables
-        
-        % velocidad uniciclo
-        left_speed = (v + w*ell)/r;
-        right_speed = (v - w*ell)/r;
-        speed = [left_speed, right_speed];
         
     elseif controlador == 3
         % Error total de posicion
@@ -211,11 +217,7 @@ while wb_robot_step(TIME_STEP) ~= -1
         v = k_rho*rho;
         w = k_alpha*alpha + k_beta*beta;
         
-        % velocidad uniciclo
-        left_speed = (v + w*ell)/r;
-        right_speed = (v - w*ell)/r;
-        speed = [left_speed, right_speed];
-    elseif controlador == 4
+    elseif controlador == 4       
         % Error total de posicion
         rho = sqrt((xg - xi)^2 + (zg - zi)^2);
         
@@ -229,17 +231,12 @@ while wb_robot_step(TIME_STEP) ~= -1
             alpha = alpha - (2*pi);
         end
                
-        v = k_rho * rho * cos(alpha);
-        w = k_rho * sin(alpha) * cos(alpha) + k_alpha*alpha;
+        v = k_rho2 * rho * cos(alpha);
+        w = k_rho2 * sin(alpha) * cos(alpha) + k_alpha2*alpha;
         
         if alpha <= -pi/2 || alpha > pi/2
             v = -v;
         end
-        
-        % velocidad uniciclo
-        left_speed = (v + w*ell)/r;
-        right_speed = (v - w*ell)/r;
-        speed = [left_speed, right_speed];
         
     elseif controlador == 5
         % Error total de posicion
@@ -264,21 +261,32 @@ while wb_robot_step(TIME_STEP) ~= -1
         v = k_rho * rho * cos(alpha);
         w = (2/5)*(v/rho)*(k_2*(alpha + atan(-k_1*beta)) + (1 + k_1/(1 + (k_1*beta)^2))*sin(alpha));
         
-        % velocidad uniciclo
-        left_speed = (v + w*ell)/r;
-        right_speed = (v - w*ell)/r;
-        speed = [left_speed, right_speed];
     elseif controlador == 6
         e = [xi - xg; zi - zg];
         u = -Klqr*e;
+        % Difeomorfismo:
         v = u(1)*cos(theta) + u(2)*sin(theta);
         w = (-u(1)*sin(theta) + u(2)*cos(theta))/ell;
         
-        % velocidad uniciclo
-        left_speed = (v + w*ell)/r;
-        right_speed = (v - w*ell)/r;
-        speed = [left_speed, right_speed];
+    elseif controlador == 7
+        R = 2000*eye(2);
+        Klqi = lqr(AA, BB, QQ, R);
+        e = [xi - xg; zi - zg];
+        sigma = sigma + (Cr*[xi; zi] - ref)*TIME_STEP/1000;
+        u = -Klqi*[e*(1-bv_p); sigma];
+        sigma = sigma + [xg - xi; zg - zi]*TIME_STEP/1000;
+        sigma = (1 - bv_i)*sigma;
+        
+        % Difeomorfismo:
+        v = u(1)*cos(theta) + u(2)*sin(theta);
+        w = (-u(1)*sin(theta) + u(2)*cos(theta))/ell;
+        
     end
+    
+    % velocidad uniciclo
+    left_speed = (v + w*ell)/r;
+    right_speed = (v - w*ell)/r;
+    speed = [left_speed, right_speed];
     
     % Truncamos la velocidad
     for k = 1:2
@@ -287,7 +295,13 @@ while wb_robot_step(TIME_STEP) ~= -1
         elseif speed(k) > MAX_SPEED
             speed(k) = MAX_SPEED;
         end
+        
+        % Hardstop filter
+        if abs(speed(k) - old_speed(k)) > MAX_CHANGE
+            speed(k) = (speed(k) + 2*old_speed(k))/3;
+        end
     end
+    old_speed = speed;
     
     left_speed = speed(1); right_speed = speed(2);
     wb_motor_set_velocity(left_motor, left_speed);
