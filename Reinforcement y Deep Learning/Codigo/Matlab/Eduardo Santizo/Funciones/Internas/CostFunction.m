@@ -54,8 +54,7 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
 %     para determinar la influencia de la posición inicial de las partículas
 %     sobre la decisión del punto de convergencia final. 4 Mínimos.
 %
-%   - APF: Función creada utilizando artificial potential fields. PARÁMETRO
-%     ADICIONAL DE FUNCIÓN: 
+%   - APF: Función creada utilizando artificial potential fields. 
 %
 % ------------------------------------------------------------------
     
@@ -81,7 +80,7 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
     IP.addOptional('PosMax',  inf);
     IP.addOptional('Meta', [0 0], @isnumeric);
     IP.addOptional('PuckPosicion', 0, @isnumeric);
-    IP.addOptional('ObsMovilPosicion', 0, @isnumeric);
+    IP.addOptional('ObsMovilPosicion', [0 0], @isnumeric);
     IP.addParameter('ModoAPF', defaultModoAPF, @isstring);
     IP.addParameter('ComportamientoAPF', defaultComportamientoAPF, @isstring);
     IP.parse(X,FunctionName,varargin{:});
