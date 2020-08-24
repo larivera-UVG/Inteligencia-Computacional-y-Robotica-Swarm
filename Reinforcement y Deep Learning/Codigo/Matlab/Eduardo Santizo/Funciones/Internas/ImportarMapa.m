@@ -32,6 +32,11 @@ function [Vertices] = ImportarMapa(PathImagen)
 % EVITAR LECTURAS REDUNDANTES DE LA MISMA IMAGEN
 % ===============================================
 
+% Cuadradito unitario retornado cuando ocurre un error en el procesamiento
+% de vértices o el usuario no desea procesar los vértices.
+CuadraditoError = [0 0 1 1; 0 1 1 0]';
+
+% Path a la carpeta con las imágenes de los mapas
 PathImMapa = ".\Mapas\Imágenes\";
 
 % Se busca la imagen en el directorio actual
@@ -86,25 +91,70 @@ end
 
 % Si la mejor coincidencia con la imagen a analizar está por encima del 90%. 
 if Similitud > 0.9
-    Respuesta = questdlg('Mapa actual similar a uno previamente procesado. ¿Desea utilizar los datos del mapa previo?',...
-                         'Importador de Mapas','Si','No','No');
-
-    switch Respuesta
-        case "Si"
-            PathCoincidencia = DatosArchivos(MejorCoincidencia).name;
-            [~,NombreCoincidencia,~] = fileparts(PathCoincidencia);
-            load(".\Mapas\Vertices\" + NombreCoincidencia + ".mat");
-            Vertices = VerticesClean;
-            msgbox("Datos de mapa cargados");
-            ProcesarImagen = 0;
-
-        case "No"
-            ProcesarImagen = 1;
-
-        otherwise
-            msgbox("Error: Respuesta no válida");
-            Vertices = [];
-            ProcesarImagen = 0;
+    
+    % Directorio conteniendo datos de las imágenes
+    PathVertices = ".\Mapas\Vertices\";
+    DatosVertices = dir(fullfile(PathVertices,'*.mat'));
+    
+    % Se asume que no existen datos para la imagen
+    DatosEncontrados = 0;
+    
+    % Se buscan coincidencias entre los nombres de las imágenes en
+    % "Imágenes" y los vértices en "Vértices".
+    for i = 1:numel(DatosVertices)
+        
+        [~,NombreMat,~] = fileparts(DatosVertices(i).name);
+        
+        if strcmp(NombreImagen, NombreMat)
+            DatosEncontrados = 1;
+            break;
+        end
+        
+    end
+    
+    % Si se encontraron datos asociados a la imagen actual
+    if DatosEncontrados
+        Respuesta = questdlg('Mapa actual similar a uno previamente procesado. ¿Desea utilizar los datos del mapa previo?',...
+                             'Importador de Mapas','Si','No','No');
+        
+        switch Respuesta
+            case "Si"
+               	PathCoincidencia = DatosArchivos(MejorCoincidencia).name;
+                [~,NombreCoincidencia,~] = fileparts(PathCoincidencia);
+                load(".\Mapas\Vertices\" + NombreCoincidencia + ".mat");
+                Vertices = VerticesClean;
+                disp("Datos de mapa cargados");
+                ProcesarImagen = 0;
+                
+            case "No"
+                disp("Importador Mapas: Procesando Imagen...");
+                ProcesarImagen = 1;
+                
+            otherwise
+                error("Error: Respuesta no válida");
+                
+        end
+    
+    % Si no se encontraron datos asociados a la imagen actual
+    else
+        Respuesta = questdlg('Mapa a procesar carece de vértices asociados al mismo. ¿Desea generar dichos vértices?',...
+                             'Importador de Mapas','Si','No','No');
+        
+         switch Respuesta
+            case "Si"
+                disp("Importador Mapas: Procesando Imagen...");
+                ProcesarImagen = 1;
+                
+            case "No"
+                disp("Error: No hay datos para trabajar. Usando cuadrito");
+                Vertices = CuadraditoError;
+                ProcesarImagen = 0;
+                
+            otherwise
+                error("Error: Respuesta no válida");
+                
+         end
+        
     end
 
 else
@@ -374,11 +424,18 @@ if ProcesarImagen
         [~,IndEsquinasAscen] = sort(EsquinasCercanas,'ascend');
 
         % Extracción de los vértices del objeto actual en orden correcto para
-        % que puedan convertirse debidamente en un polígono
+        % que puedan convertirse debidamente en un polígono. Se separa cada
+        % objeto usando NaNs y el primer punto del polígono se repite al 
+        % final.
         VerticesObjeto = EsquinasUtiles(IndEsquinasAscen,:);
-        VerticesClean = [VerticesClean ;
-                         VerticesObjeto;
-                         NaN NaN];
+        if ~isempty(VerticesObjeto)
+            VerticesClean = [VerticesClean ;
+                             VerticesObjeto;
+                             VerticesObjeto(1,:);
+                             NaN NaN];
+        end
+        
+        
     end
     
     % ===============================================
@@ -389,6 +446,7 @@ if ProcesarImagen
     imwrite(ImagenMapa, ".\Mapas\Imágenes\" + PathImagen);
     save(".\Mapas\Vertices\" + NombreImagen + ".mat","VerticesClean");
     Vertices = VerticesClean;
+    disp("Importador Mapas: Procesado Finalizado!");
     
 end
     

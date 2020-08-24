@@ -9,9 +9,44 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
 %   - FunctionName: Función de costo en la que se evaluarán las
 %     coordenadas presentes en la matriz X. 9 opciones en total. 
 %
+% Inputs Opcionales: 
+%   FunctionName = "APF"
+%   1. LimsX: Límites de la mesa de trabajo en X.
+%   2. LimsY: Límites de la mesa de trabajo en Y.
+%   3. Meta: Punto a alcanzar por los robots
+%
+%   FunctionName = "Jabandzic"
+%   1. LimsX: Límites de la mesa de trabajo en X.
+%   2. LimsY: Límites de la mesa de trabajo en Y.
+%   3. Meta: Punto a alcanzar por los robots
+%   4. PuckPosicion: Posición actual del robot siguiendo el swarm de
+%      partículas PSO.
+%   5. ObsMovilPosicion: Posición actual del obstáculo movil más cercano al 
+%      robot.
+%
 % Outputs:
 %   - Costo: Vector columna con cada fila consistiendo del costo
 %     correspondiente a cada una de las partículas en el swarm.
+%
+% ------------------------------------------------------------------
+%
+% Parámetros:
+% 
+%   FunctionName = "Dropwave" 
+%   - 'NoWaves': Esta función es similar al patrón que se observaría al
+%     dejar caer una gota en el agua. El número de "ripples" u olas de la
+%     función está dado por este parámetro. Default = 2;
+%      
+%           Ejemplo de uso: CostFunction(X,"Dropwave",'NoWaves',2);
+%
+%   FunctionName = "APF"
+%   - 'ModoAPF': Referencia utilizada para poder calcular el valor del
+%     artificial potential field. Opciones: "Choset" / "Standard".
+%     Default = "Choset".
+%   - 'ComportamientoAPF': Forma en la que se mezcla el campo atractivo y
+%     repulsivo. Opciones: "Aditivo" / "Multiplicativo". Default =
+%     "Aditivo".
+%
 % ------------------------------------------------------------------
 %
 % Opciones "FunctionName"
@@ -54,48 +89,68 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
 %     para determinar la influencia de la posición inicial de las partículas
 %     sobre la decisión del punto de convergencia final. 4 Mínimos.
 %
-%   - APF: Función creada utilizando artificial potential fields. 
+%   - APF: Función creada utilizando artificial potential fields. Esta
+%     genera un campo de potencial o función de costo "custom" que presenta
+%     un valle en la meta a alcanzar y montañas de altura casi infinita en
+%     donde se presentan obstáculos. Si se permite que un algoritmo de
+%     optimización basado en exploración encuentre el mínimo de esta
+%     función, lo más común es que este navegue alrededor de los obstáculos
+%     (Para evitar máximos) moviéndose hacia la meta, donde se encontraría
+%     el mínimo.
+%
+%   - Jabandzic: Función de costo que mezcla las ideas del PSO y
+%     planificación de trayectorias. El algoritmo utiliza un plantamiento
+%     muy intuitivo: El robot busca maximizar la distancia hacia paredes y
+%     obstáculos, mientras minimiza la distancia hacia la meta. Para
+%     poder hacer esta minimización y maximización, emplea PSO como método
+%     para resolver el problema de optimización.
 %
 % ------------------------------------------------------------------
     
     % Valores default para inputs
     defaultModoAPF = "Choset";
     defaultComportamientoAPF = "Aditivo";
+    defaultNoWaves = 2;
     
     % Se crea el objeto encargado de "parsear" los inputs
-    %   - Required: Necesarios para el funcionamiento del programa. La 
-    %     función da error si el usuario no los pasa.
-    %   - Optional: El usuario puede o no pasarlos, pero estos deben ser
-    %     escritos en orden luego de los "Required". Si no se proporciona
-    %     un valor Matlab asume un valor "default".
-    %   - Parameter: Similar a cuando se utiliza 'FontSize' en plots. El
-    %     usuario debe escribir el nombre del parámetro a modificar seguido
-    %     de su valor. Si no se provee un valor Matlab asume uno "default".
-    IP = inputParser;                                                       
+    IP = inputParser;  
+    
+    % Inputs Obligatorios / Requeridos: Necesarios para el funcionamiento 
+    % del programa. La función da error si el usuario no los pasa.                                                     
     IP.addRequired('Coordenadas', @isnumeric);
     IP.addRequired('NombreFuncion', @isstring);
+    
+    % Inputs Opcionales: El usuario puede o no pasarlos, pero estos deben 
+    % ser escritos en orden luego de los "Required". Si no se proporciona
+    % un valor Matlab asume un valor "default"
     IP.addOptional('XObs', 0, @isnumeric);
     IP.addOptional('YObs', 0, @isnumeric);
-    IP.addOptional('PosMin', -inf);
-    IP.addOptional('PosMax',  inf);
+    IP.addOptional('LimsX', [-20 20], @isnumeric);
+    IP.addOptional('LimsY', [-20 20], @isnumeric);
     IP.addOptional('Meta', [0 0], @isnumeric);
     IP.addOptional('PuckPosicion', 0, @isnumeric);
     IP.addOptional('ObsMovilPosicion', [0 0], @isnumeric);
+    
+    % Parámetros: Similar a cuando se utiliza 'FontSize' en plots. El
+    % usuario debe escribir el nombre del parámetro a modificar seguido
+    % de su valor. Si no se provee un valor Matlab asume uno "default".
     IP.addParameter('ModoAPF', defaultModoAPF, @isstring);
     IP.addParameter('ComportamientoAPF', defaultComportamientoAPF, @isstring);
+    IP.addParameter('NoWaves', defaultNoWaves, @isnumeric);
     IP.parse(X,FunctionName,varargin{:});
     
     % Se guardan los inputs "parseados" en variables útiles capaces
     % de ser utilizadas por el programa.
     VerticesObsX = IP.Results.XObs;
     VerticesObsY = IP.Results.YObs;
-    PosMin = IP.Results.PosMin;
-    PosMax = IP.Results.PosMax;
+    LimsX = IP.Results.LimsX;
+    LimsY = IP.Results.LimsY;
     Meta = IP.Results.Meta;
     Modo = IP.Results.ModoAPF;
     PuckPosicion = IP.Results.PuckPosicion;
     ObsMovilPosicion = IP.Results.ObsMovilPosicion;
     Comportamiento = IP.Results.ComportamientoAPF;
+    NoWaves = IP.Results.NoWaves;
     
 % ------------------------------------------------------------------
 
@@ -124,14 +179,8 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
 
         % Drop Wave Function        
         case "Dropwave"
-            switch numel(varargin)
-                case 1
-                    Waves = varargin{1};
-                otherwise
-                    Waves = 2;
-            end
             
-            Costo = -(1 + cos(Waves * sqrt(sum(X.^2, 2)))) ./ ...
+            Costo = -(1 + cos(NoWaves * sqrt(sum(X.^2, 2)))) ./ ...
                      (0.5 * sqrt(sum(X.^2, 2)) + 2);
         
         % Schaffer F6 Function
@@ -161,9 +210,11 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
             VerticesObs = [VerticesObsX VerticesObsY];
             
             % Vértices del polígono cuadrado que forma el borde la mesa
-            % Se repite el primer vértice para que la figura cierre
-            VerticesMesa = [PosMin PosMin PosMax PosMax PosMin ; ...
-                            PosMin PosMax PosMax PosMin PosMin]';
+            % Se repite el primer vértice para que la figura cierre. Los
+            % vértices de la mesa inician en el vértice inferior izquierdo
+            % y luego se listan en sentido anti-horario.
+            VerticesMesa = [LimsX(1) LimsX(1) LimsX(2) LimsX(2) LimsX(1) ; ...
+                            LimsY(1) LimsY(2) LimsY(2) LimsY(1) LimsY(1)]';
                         
             % Vértices Mesa + Obstáculos
             VerticesAll = [VerticesObs ; NaN NaN; VerticesMesa; NaN NaN]; 
@@ -273,8 +324,8 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
 
                 % Vértices del polígono cuadrado que forma el borde la mesa
                 % Se repite el primer vértice para que la figura cierre
-                VerticesMesa = [PosMin PosMin PosMax PosMax ; ...
-                                PosMin PosMax PosMax PosMin]';
+                VerticesMesa = [LimsX(1) LimsX(1) LimsX(2) LimsX(2); ...
+                                LimsY(1) LimsY(2) LimsY(2) LimsY(1)]';
                 
                 % Cabe mencionar que los puntos que definen los vértices del polígono
                 % tienen 4 decimales. Los puntos de X pueden tener entre 1 a 4 decimales.

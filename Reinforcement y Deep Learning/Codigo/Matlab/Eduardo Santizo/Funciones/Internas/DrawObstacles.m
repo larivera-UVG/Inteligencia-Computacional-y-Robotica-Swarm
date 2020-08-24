@@ -150,6 +150,7 @@ switch Figura
         Z = [zeros(size(X,1),1) ones(size(X,1),1)];
         Z  = Z * Altura;
         Z = Z + ZOffset;
+end
         
 end
 
