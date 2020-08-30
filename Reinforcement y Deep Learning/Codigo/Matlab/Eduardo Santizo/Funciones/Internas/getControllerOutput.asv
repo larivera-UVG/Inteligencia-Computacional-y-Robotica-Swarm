@@ -61,32 +61,24 @@ switch ControllerType
         [~,Rho_p] = dsearchn(Meta,PuckPosicion_Actual);
         
         % Error de posición
-        ErrorPos = Meta - PuckPosicion_Actual;
-        %ErrorPos = PuckPosicion_Actual - Meta;
+        ErrorPos = PuckPosicion_Actual - Meta;
         
-        % Ángulo de línea entre meta y robot (Theta goal)
+        % Ángulo de línea entre meta y robot
         Theta_g = atan2(ErrorPos(:,2),ErrorPos(:,1));
-        %Theta_g = wrapTo2Pi(Theta_g);
-        %Theta_g = atan(ErrorPos(:,2) ./ ErrorPos(:,1));
         
         % Orientación actual del robot
         Theta_o = PuckOrientacion_Actual;
-        %Theta_o = wrapTo2Pi(Theta_o);
-        %Theta_o = atan2(sin(Theta_o),cos(Theta_o));
         
         % Error de orientación
         Alpha = - Theta_o + Theta_g;
-        %Alpha = wrapTo2Pi(Alpha);
-        %Alpha = atan2(sin(Alpha),cos(Alpha)) + pi;
+        Alpha = atan2(sin(Alpha),cos(Alpha)) + pi;
         
         % Velocidades Lineal y Angular (Nadalini, pág. 31)
         VelLineal = K_Rho .* Rho_p .* cos(Alpha);
         VelAngular = (K_Rho .* sin(Alpha) .* cos(Alpha)) + K_Alpha .* Alpha;
         
-        % Si "alpha" se encuentra en cuadrantes izquierdos, se invierte la
-        % velocidad lineal
-        %CuadrantesIzq = Alpha <= -pi/2 | Alpha > pi/2;
-        %VelLineal(CuadrantesIzq) = -VelLineal(CuadrantesIzq);
+        % Las 
+        VelLineal = -VelLineal(Alpha <= -pi/2 || Alpha > pi/2)
     
     % Controlador por Regulador Lineal Cuadrático (LQR)
     case "LQR"
