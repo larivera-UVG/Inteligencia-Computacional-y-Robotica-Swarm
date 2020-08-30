@@ -383,15 +383,15 @@ classdef PSO < handle
                     case "Jabandzic"
                         % Modificación a Actualización de Global Best basada en
                         % paper por Jabandzic y Velagic (2016)
-                        [obj.Costo_GlobalBest, Fila] = min(obj.Costo_Local);      
+                        [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);      
                         obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :); 
                         
                     otherwise
                        % Cálculo estándar del Global Best
-                       [Actual_GlobalBest, Fila] = min(obj.Costo_Local);                                           % Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
-                       if Actual_GlobalBest < obj.Costo_GlobalBest                                                 % Si el "Actual_GlobalBest" es menor al "Global Best" previo 
-                          obj.Costo_GlobalBest = Actual_GlobalBest;                                               % Se actualiza el valor del "Global Best" (Costo_GlobalBest)
-                          obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);                                 % Y la posición correspondiente al "Global Best"
+                       [Actual_GlobalBest, Fila] = min(obj.Costo_LocalBest);                  	% Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
+                       if Actual_GlobalBest < obj.Costo_GlobalBest                            	% Si el "Actual_GlobalBest" es menor al "Global Best" previo 
+                          obj.Costo_GlobalBest = Actual_GlobalBest;                            	% Se actualiza el valor del "Global Best" (Costo_GlobalBest)
+                          obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);              	% Y la posición correspondiente al "Global Best"
                        end 
                     
                 end
@@ -400,7 +400,7 @@ classdef PSO < handle
                 obj.IteracionActual = obj.IteracionActual + 1;
                 
                 for j = 1:obj.NoDimensiones
-                    obj.Posicion_History{j}(:,obj.IteracionActual) = obj.Posicion_Actual(:,j);              % Array dentro de la fila "j" de "Posicion_History" = Todos los valores de posición para la dimensión "j".
+                    obj.Posicion_History{j}(:,obj.IteracionActual) = obj.Posicion_Actual(:,j); 	% Array dentro de la fila "j" de "Posicion_History" = Todos los valores de posición para la dimensión "j".
                 end
                 
                 % Actualización del coeficiente inercial
