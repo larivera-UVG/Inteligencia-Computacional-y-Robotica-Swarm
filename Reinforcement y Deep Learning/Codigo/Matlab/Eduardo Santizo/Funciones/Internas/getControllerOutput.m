@@ -62,31 +62,29 @@ switch ControllerType
         
         % Error de posición
         ErrorPos = Meta - PuckPosicion_Actual;
-        %ErrorPos = PuckPosicion_Actual - Meta;
         
         % Ángulo de línea entre meta y robot (Theta goal)
+        % Para que todos los ángulos estén entre los mismos límites se
+        % mapean los valores de 0 a 2pi (wrapTo2Pi)
         Theta_g = atan2(ErrorPos(:,2),ErrorPos(:,1));
-        %Theta_g = wrapTo2Pi(Theta_g);
-        %Theta_g = atan(ErrorPos(:,2) ./ ErrorPos(:,1));
+        Theta_g = wrapTo2Pi(Theta_g);
         
         % Orientación actual del robot
         Theta_o = PuckOrientacion_Actual;
-        %Theta_o = wrapTo2Pi(Theta_o);
-        %Theta_o = atan2(sin(Theta_o),cos(Theta_o));
+        Theta_o = wrapTo2Pi(Theta_o);
         
         % Error de orientación
-        Alpha = - Theta_o + Theta_g;
-        %Alpha = wrapTo2Pi(Alpha);
-        %Alpha = atan2(sin(Alpha),cos(Alpha)) + pi;
+        % Se utiliza "angdiff()" para calcular la diferencia entre ambos
+        % ángulos para tomar en cuenta que ángulos como "2pi" y "0" son
+        % virtualmente el mismo ángulo. Entonces, usando esta función, 
+        % la diferencia entre 6.27 (Casi 2pi) y 0.78 (Casi pi/4), será muy
+        % cercana a la diferencia entre 0 y 0.78 (Casi pi/4). Los ángulos 
+        % resultantes están acotados entre -pi y pi.
+        Alpha = angdiff(Theta_o, Theta_g);
         
         % Velocidades Lineal y Angular (Nadalini, pág. 31)
         VelLineal = K_Rho .* Rho_p .* cos(Alpha);
         VelAngular = (K_Rho .* sin(Alpha) .* cos(Alpha)) + K_Alpha .* Alpha;
-        
-        % Si "alpha" se encuentra en cuadrantes izquierdos, se invierte la
-        % velocidad lineal
-        %CuadrantesIzq = Alpha <= -pi/2 | Alpha > pi/2;
-        %VelLineal(CuadrantesIzq) = -VelLineal(CuadrantesIzq);
     
     % Controlador por Regulador Lineal Cuadrático (LQR)
     case "LQR"
