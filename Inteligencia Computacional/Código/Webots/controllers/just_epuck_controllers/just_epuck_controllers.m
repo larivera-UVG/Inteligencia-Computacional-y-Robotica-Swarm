@@ -64,11 +64,11 @@ epsilon = 0.05;
 % Acercamiento exponencial
 alpha = 0.9;
 
-% PID de orientación
+% PID de orientaciÃ³n
 eO_k_1 = 0; % Error derivativo
 EO_k = 0;   % Error integral
 
-% PID de posición
+% PID de posiciÃ³n
 eP_1 = 0;
 EP = 0;
 
@@ -150,7 +150,7 @@ while wb_robot_step(TIME_STEP) ~= -1
     %         formatSpec = 'xi: %.2f, zi: %.2f eP: %.2f | theta: %.2f theta g: %.2f eO: %.2f \n';
 %         fprintf(formatSpec, xi, zi, eP, theta, theta_g, eO);
     
-    theta = pi - rad;  % Se corrige el ángulo para que esté igual que theta_g
+    theta = pi - rad;  % Se corrige el Ã¡ngulo para que estÃ© igual que theta_g
     
    
     if sqrt((xg - xi)^2 + (zg - zi)^2) <= epsilon
@@ -299,7 +299,7 @@ while wb_robot_step(TIME_STEP) ~= -1
         u2 = I*tanh(k*(zg - zi)/MAX_SPEED);
         v = u1*cos(270-theta) + u2*sin(270-theta);
         w = (-u1*sin(270-theta) + u2*cos(270-theta))/ell;
-        % Ni idea de por que 270-theta, pero asi me funciona xd 
+        % Ni idea de por que 270-theta, pero asi me funciona xd    
     end
     
     % velocidad uniciclo

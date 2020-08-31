@@ -11,7 +11,7 @@
 tic  % Para medir el tiempo que se tarda el algoritmo en correr.
 
 %% Graph generation
-graph_type = "rrt";
+graph_type = "grid";
 
 if strcmp(graph_type, "grid")
     % Creamos grid cuadrado con la cantidad de nodos indicada:
@@ -207,3 +207,6 @@ end
 tiempofinal = toc;
 formatSpec = 'iter: %d - t: %.2f - cost: %.2f \n';
 fprintf(formatSpec, t-1, tiempofinal, moda)
+bpath = [G.Nodes.X(best_path), G.Nodes.Y(best_path)];
+webots_path = (bpath - grid_size/2).*[1/5 -1/5];
+save('webots_test.mat', 'bpath', 'webots_path')

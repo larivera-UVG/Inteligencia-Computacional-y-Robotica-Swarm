@@ -9,13 +9,13 @@ selectionDisabled: 0
 viewpointLocked: 0
 orthographicViewHeight: 1
 textFiles: 0 "controllers/ACO_controller/ACO_controller.m"
-renderingDevicePerspectives: e-puck(8):camera;0;0.820513;0;0
-renderingDevicePerspectives: e-puck(7):camera;0;0.820513;0;0
-renderingDevicePerspectives: e-puck(5):camera;0;0.820513;0;0
+renderingDevicePerspectives: e-puck(6):camera;0;0.820513;0;0
 renderingDevicePerspectives: e-puck(2):camera;0;0.820513;0;0
-renderingDevicePerspectives: e-puck(3):camera;0;0.820513;0;0
 renderingDevicePerspectives: e-puck(4):camera;0;0.820513;0;0
+renderingDevicePerspectives: e-puck(9):camera;0;0.820513;0;0
+renderingDevicePerspectives: e-puck(8):camera;0;0.820513;0;0
+renderingDevicePerspectives: e-puck(5):camera;0;0.820513;0;0
 renderingDevicePerspectives: e-puck(1):camera;0;0.820513;0;0
 renderingDevicePerspectives: e-puck:camera;0;0.820513;0;0
-renderingDevicePerspectives: e-puck(9):camera;0;0.820513;0;0
-renderingDevicePerspectives: e-puck(6):camera;0;0.820513;0;0
+renderingDevicePerspectives: e-puck(3):camera;0;0.820513;0;0
+renderingDevicePerspectives: e-puck(7):camera;0;0.820513;0;0
