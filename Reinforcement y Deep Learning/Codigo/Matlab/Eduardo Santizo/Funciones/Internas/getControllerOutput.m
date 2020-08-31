@@ -75,6 +75,12 @@ function [VelLineal, VelAngular] = getControllerOutput(ControllerType, Meta, Puc
 % Variables que mantienen su valor entre diferentes llamadas a una función
 persistent ErrorAcumulado
 
+% El usuario debe pasar: 1 meta para todos los Pucks o 1 meta por Puck.
+% Si se pasa un número irregular de metas, se retorna un error.
+if ~(size(Meta,1) == 1 || size(Meta,1) == size(PuckPosicion_Actual,1))
+   error("El número de metas no coincide con el número de Pucks. Porfavor pasar 1 meta para todos los Pucks o 1 meta por Puck"); 
+end
+    
 switch ControllerType
     % Controlador de pose simple de robot
     case "Pose Simple"

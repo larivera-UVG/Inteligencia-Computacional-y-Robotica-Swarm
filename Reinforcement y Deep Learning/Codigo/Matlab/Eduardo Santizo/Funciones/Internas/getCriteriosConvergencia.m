@@ -28,7 +28,7 @@ function [Stop] = getCriteriosConvergencia(Criterio, Meta, Posicion_Actual, Porc
 %
 %   Parámetros Modificables
 %   - 'ThresholdDist': Distancia que debe de existir entre una entidad y la
-%     meta para considerarse "cercana". Default = 0.1
+%     meta para considerarse "cercana". Default = 0.2
 %   - 'ThresholdPorcentajeMeta': Porcentaje de entidades que deben estar
 %     cercanas a la meta para detener el algoritmo. Default = 0.95
 %
@@ -59,7 +59,7 @@ IP.addRequired('Porcentaje_Progreso', @isnumeric);
 % Parámetros: Similar a cuando se utiliza 'FontSize' en plots. El
 % usuario debe escribir el nombre del parámetro a modificar seguido
 % de su valor. Si no se provee un valor Matlab asume uno "default".
-IP.addParameter('ThresholdDist', 0.1, @isnumeric);
+IP.addParameter('ThresholdDist', 0.2, @isnumeric);
 IP.addParameter('ThresholdPorcentajeMeta', 0.95, @isnumeric);
 IP.addParameter('ThresholdPosDiff', 0.001, @isnumeric);
 IP.addParameter('ThresholdPorcentajeQuietas', 0.95, @isnumeric);
@@ -76,9 +76,9 @@ switch Criterio
         % función. Este criterio consiste en contar el número número de
         % partículas que se han acercado lo suficiente a la meta. 
         
-        % Se obtiene la distancia más corta de cada una de las posiciones
-        % hasta la o las metas.
-        [~,Distancias] = dsearchn(Meta,Posicion_Actual);
+        % Se obtiene la distancia de cada una de las posiciones hasta la o 
+        % las metas.
+        Distancias = hypot(Meta(:,1)-Posicion_Actual(:,1), Meta(:,2)-Posicion_Actual(:,2));
         
         % Se calcula el número de entidades que están a menos del
         % threshold de distancia requerido.
