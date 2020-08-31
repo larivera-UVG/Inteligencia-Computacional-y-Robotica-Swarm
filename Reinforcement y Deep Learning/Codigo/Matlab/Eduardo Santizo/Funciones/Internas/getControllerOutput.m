@@ -50,6 +50,49 @@ function [VelLineal, VelAngular] = getControllerOutput(ControllerType, Meta, Puc
 persistent ErrorAcumulado
 
 switch ControllerType
+    % Controlador de pose simple de robot
+    case "Pose Simple"
+        K_Rho = 0.1;
+        K_Alpha = 0.5;
+        K_Beta = -0.05;
+        
+        % Rho_p: Distancia de todos los Pucks a la Meta
+        [~,Rho_p] = dsearchn(Meta,PuckPosicion_Actual);
+        
+        % Error de posición
+        ErrorPos = Meta - PuckPosicion_Actual;
+        
+        % Ángulo de línea entre meta y robot (Theta goal)
+        % Para que todos los ángulos estén entre los mismos límites se
+        % mapean los valores de 0 a 2pi (wrapTo2Pi)
+        Theta_g = atan2(ErrorPos(:,2),ErrorPos(:,1));
+        Theta_g = wrapTo2Pi(Theta_g);
+        
+        % Orientación actual del robot
+        Theta_o = PuckOrientacion_Actual;
+        Theta_o = wrapTo2Pi(Theta_o);
+        
+        % Error de orientación
+        % Se utiliza "angdiff()" para calcular la diferencia entre ambos
+        % ángulos para tomar en cuenta que ángulos como "2pi" y "0" son
+        % virtualmente el mismo ángulo. Entonces, usando esta función, 
+        % la diferencia entre 6.27 (Casi 2pi) y 0.78 (Casi pi/4), será muy
+        % cercana a la diferencia entre 0 y 0.78 (Casi pi/4). Los ángulos 
+        % resultantes están acotados entre -pi y pi.
+        Alpha = angdiff(Theta_o, Theta_g);
+        
+        % Beta = - Theta_o - Alpha (Nadalini, pág 29), pero Theta_o está 
+        % entre 0 y 2pi luego de usar "wrapTo2Pi". Se le resta pi, para 
+        % regresarlo entre [-pi, pi] y que así esté entre el mismo rango de
+        % Alpha.
+        Theta_o = Theta_o - pi;
+        Beta = angdiff(Theta_o, -Alpha);
+        
+        % Velocidades Lineal y Angular (Nadalini, pág. 29)
+        VelLineal = K_Rho .* Rho_p;
+        VelAngular = K_Alpha .* Alpha + K_Beta .* Beta;
+        
+    
     % Controlador de Pose con Criterio de Estabilidad de Lyapunov
     case "Lyapunov"
         
