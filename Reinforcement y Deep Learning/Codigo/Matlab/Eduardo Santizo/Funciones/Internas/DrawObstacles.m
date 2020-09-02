@@ -79,20 +79,23 @@ switch Figura
         LimsX = varargin{1};
         LimsY = varargin{2};
         Meta = varargin{3};
-        PuntoPartida = varargin{4};
+        BordesRegionPartida = varargin{4};
         
         % Creación de figura
         figure('Name',"Creación de Obstáculos",'NumberTitle',"off"); clf; 
-        grid minor; hold on;
+        grid minor; hold on; axis equal;
         axis([LimsX(1) LimsX(2) LimsY(1) LimsY(2)]);
         
         % Indicador de Meta
         scatter(Meta(1),Meta(2),'x','red','LineWidth',2);
-        text(Meta(1),Meta(2),"Meta",'VerticalAlignment','cap','HorizontalAlignment','center');
+        text(Meta(1),Meta(2),"Meta",'VerticalAlignment','cap','HorizontalAlignment','center','Fontsize',7);
         
-        % Indicador de Punto de Partida
-        scatter(PuntoPartida(1),PuntoPartida(2),'o','blue','LineWidth',2);
-        text(PuntoPartida(1),PuntoPartida(2),"Punto de Partida",'VerticalAlignment','cap','HorizontalAlignment','center');
+        % Indicador de la región de partida
+        VertsRegionPartida = [BordesRegionPartida(1,1) BordesRegionPartida(1,1) BordesRegionPartida(2,1) BordesRegionPartida(2,1) BordesRegionPartida(1,1) 
+                              BordesRegionPartida(1,2) BordesRegionPartida(2,2) BordesRegionPartida(2,2) BordesRegionPartida(1,2) BordesRegionPartida(1,2)]';
+        RegionPartida = polyshape(VertsRegionPartida);
+        plot(RegionPartida,'Facealpha',0.2,'Facecolor','blue');
+        text(BordesRegionPartida(1,1),BordesRegionPartida(2,2),"Region de Partida",'VerticalAlignment','bottom','HorizontalAlignment','left','Fontsize',7);
         
         Dibujo = drawpolygon();
         X = Dibujo.Position(:,1);

@@ -118,6 +118,9 @@ classdef PSO < handle
         Phi1
         Phi2
         
+        % Criterio de convergencia
+        CriterioConv
+        
         % Restricciones
         TipoRestriccion
         VelMin
@@ -129,11 +132,12 @@ classdef PSO < handle
         FuncionCosto
         Costo_Local
         Costo_LocalBest
-        Costo_GlobalBest    
+        Costo_GlobalBest  
+        Costo_GlobalBestHistory
     end
     
     methods
-        function obj = PSO(Posicion_Actual, Func_Costo, Iter_Max, EnvironmentParams)
+        function obj = PSO(Posicion_Actual, Func_Costo, CriterioConv, Iter_Max, EnvironmentParams)
             % PSO Rutina de inicialización para un objeto de tipo PSO. Se
             % inicializan los datos de posición y velocidad de las
             % partículas, su costo inicial y la iteración actual.
@@ -181,7 +185,14 @@ classdef PSO < handle
             [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);     	% "Global best": El costo más pequeño del vector "CostoLocal"           Dims: Escalar
             obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);        	% "Global best": Posición que genera el costo más pequeño               Dims: 1 X VarDims
             
-            obj.IteracionActual = 1;                                        % La etapa de setup consiste de la iteración 1 del algoritmo
+            obj.Costo_GlobalBestHistory = zeros(Iter_Max,1);
+            obj.Costo_GlobalBestHistory(1) = obj.Costo_GlobalBest;
+            
+            % Se configura el criterio de convergencia a utilizar después
+            obj.CriterioConv = CriterioConv;
+            
+            % La etapa de setup consiste de la iteración 1 del algoritmo
+            obj.IteracionActual = 1;                                        
             
         end
         
@@ -317,7 +328,7 @@ classdef PSO < handle
             end
         end
         
-        function RunStandardPSO(obj, TipoEjecucion, EnvironmentParams)
+        function RunStandardPSO(obj, TipoEjecucion, Meta, EnvironmentParams)
             % -------------------------------------------------------------
             % RUNSTANDARDPSO Ejecutar el algoritmo de PSO con los
             % con los parámetros dados.
@@ -327,6 +338,9 @@ classdef PSO < handle
             %     "Steps". En "Full" el algoritmo se ejecuta hasta llegar a
             %     la iteración final o la IterMax. En "Step" el algoritmo
             %     ejecuta una iteración por cada llamada al método.
+            %   - Meta: Punto o puntos a los que deben llegar a la
+            %     partícula ya que consisten de los mínimos globales de la
+            %     función de costo.
             %   - EnvironmentParams: Parámetros del entorno (Obstáculos,
             %     dimensiones de mesa, etc.). Requerido para evaluar
             %     algunas funciones de costo.
@@ -395,7 +409,9 @@ classdef PSO < handle
                        end 
                     
                 end
-
+                
+                obj.Costo_GlobalBestHistory(i) = obj.Costo_GlobalBest;
+                
                 % Actualización de Historial de Posiciones
                 obj.IteracionActual = obj.IteracionActual + 1;
                 
@@ -408,6 +424,17 @@ classdef PSO < handle
                     obj.W = ComputeInertia(obj.TipoInercia, obj.IteracionActual, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);
                 end
                 
+                % Evaluación de criterios de convergencia
+                [StopPart] = getCriteriosConvergencia(obj.CriterioConv, Meta, obj.Posicion_Actual, i/IteracionesMax);
+                
+                % Si el tipo de ejecución es distinta de "Step", se detiene
+                % el algoritmo cuando converja.
+                if IteracionesMax ~=2
+                    if StopPart                           
+                        break;      
+                    end  
+                end
+                    
             end
             
         end

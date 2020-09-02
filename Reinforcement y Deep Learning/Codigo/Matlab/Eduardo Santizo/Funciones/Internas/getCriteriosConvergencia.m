@@ -1,7 +1,9 @@
 function [Stop] = getCriteriosConvergencia(Criterio, Meta, Posicion_Actual, Porcentaje_Progreso)
 % EVALCRITERIOSCONVERGENCIA El usuario indica el criterio que desea evaluar
 % En caso este se cumpla, se retorna una señal binaria indicando que se
-% debe detener el algoritmo.
+% debe detener el algoritmo. Si se selecciona un criterio diferente a
+% "Iteraciones Max" pero se alcanza el número de iteraciones máximas, la
+% función retorna una señal de parada.
 % -------------------------------------------------------------------------
 % Inputs:
 %   - Criterio: Criterio de convergencia a evaluar. Existen tres opciones
@@ -140,17 +142,16 @@ switch Criterio
             Stop = 0;
         end
         
-    otherwise
-        
-        % Si ya se ha llegado al 100% de las iteraciones se envía una señal
-        % para detenerse
-        if Porcentaje_Progreso == 1
-            Stop = 1;
-        else
-            Stop = 0;
-        end
-        
 end                              
+
+% No importando si el criterio de convergencia corresponde al número máximo
+% de iteraciones, la función retorna una señal de parada cuando alcanza el
+% número máximo de iteraciones.
+if Porcentaje_Progreso == 1
+    Stop = 1;
+else
+    Stop = 0;
+end
 
 end
 
