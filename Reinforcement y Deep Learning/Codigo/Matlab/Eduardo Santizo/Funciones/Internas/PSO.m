@@ -83,12 +83,17 @@ classdef PSO < handle
 % 
 % Métodos
 %
-%   - PSO: Inicialización de algoritmo. 
+%   - PSO: Creación de un objeto de tipo PSO.
+%   - InitPSO: Inicialización de las posiciones, velocidades y costos de
+%     partículas del algoritmo.
 %   - SetRestricciones: Se elige el tipo de restricciones a colocar en la
 %     ecuación de actualización de la velocidad de las partículas.
 %   - RunStandardPSO: Se ejecuta el algoritmo PSO. Se puede ejecutar una
 %     sola iteración por llamada a este método o ejecutar una corrida
 %     completa hasta converger.
+%
+% Nota: Para más información sobre cada método, escribir en consola "help
+% PSO.NombreMetodo". Cada método tiene su propia documentación.
 % 
 % -------------------------------------------------------------------------
     
@@ -106,6 +111,7 @@ classdef PSO < handle
         NoParticulas
         NoDimensiones
         IteracionActual
+        Bordes_RegionPartida
         
         % Parámetros de Inercia
         W
@@ -137,22 +143,28 @@ classdef PSO < handle
     end
     
     methods
-        function obj = PSO(Posicion_Actual, Func_Costo, CriterioConv, Iter_Max, EnvironmentParams)
-            % PSO Rutina de inicialización para un objeto de tipo PSO. Se
-            % inicializan los datos de posición y velocidad de las
-            % partículas, su costo inicial y la iteración actual.
+      
+        function obj = PSO(NoParticulas, Func_Costo, CriterioConv, Iter_Max, Bordes_RegionPartida)
+            % PSO Rutina que permite crear un objeto de la clase PSO.
+            % Se configura la función de costo a utilizar, el criterio de
+            % convergencia, el número de iteraciones máximas que puede
+            % utilizar el algoritmo, y los bordes de la región de partida
+            % de las partículas.
             % -------------------------------------------------------------
             % Inputs: 
-            %   - Posicion_Actual: Dims = (NoParticulas,NoDims).
-            %     Coordenadas cartesianas para las posiciones de cada una 
-            %     de las partículas, donde cada columna consiste de un eje
-            %     (X,Y,Z,..).
+            %   - NoParticulas: Cantidad de partículas a simular.
             %   - Func_Costo: Función de costo a minimizar. Escribir "help
             %     CostFunction" para más información.
+            %   - CriterioConv: Criterio a utilizar para determinar si el
+            %     algoritmo ha convergido. Escribir "help
+            %     getCriterioConvergencia" en consola para más info.
             %   - IterMax: Iteraciones máximas que puede llegar a durar el
             %     algoritmo de PSO. 
-            %   - EnvironmentParams: Parámetros adicionales requeridos por
-            %     la función de costo elegida. 
+            %   - Bordes_RegionPartida: Límites en X y Y para la región
+            %     rectangular en la que se podrán posicionar las partículas
+            %     al inicializar el algoritmo. 
+            %
+            %       Forma: [LimXInf LimXSup ; LimYInf LimYSup]
             %
             % Outputs:
             %   - Obj: Objeto de la clase PSO que contiene todas las
@@ -160,42 +172,76 @@ classdef PSO < handle
             %
             % -------------------------------------------------------------
             
-            % Posición y Velocidad de Partículas
-            obj.Posicion_Actual = Posicion_Actual;                          % Posición de todas las partículas.                                     Dims: NoParticulas X VarDims
-            obj.Posicion_Previa = Posicion_Actual;                          % Memoria con la posición previa de todas las partículas.               Dims: NoParticulas X VarDims
-            obj.Posicion_LocalBest = Posicion_Actual;                       % Las posiciones que generaron los mejores costos en las partículas     Dims: NoParticulas X VarDims
-            obj.Velocidad = zeros(size(Posicion_Actual));                   % Velocidad de todas las partículas. Inicialmente 0.                    Dims: NoParticulas X VarDims
+            % Cantidad de partículas a simular
+            obj.NoParticulas = NoParticulas;
             
             % Historial de Posición 
             obj.NoIteracionesMax = Iter_Max;
-            obj.NoDimensiones = size(Posicion_Actual,2);
-            obj.NoParticulas = size(Posicion_Actual,1);
-            obj.Posicion_History = cell(obj.NoDimensiones,1);              	% Celda con arrays guardando todas las posiciones.                      Dims: VarDims X 1
-            
-            for i = 1:obj.NoDimensiones
-                obj.Posicion_History{i} = zeros(obj.NoParticulas,Iter_Max);	% Fila "i" de "Posicion_History" = Matriz de ceros para la dimensión "i"
-                obj.Posicion_History{i}(:,1) = Posicion_Actual(:,i);        % Array dentro de la fila "i" de "Posicion_History" = Todos los valores de posición para la dimensión "i".
-            end
             
             % Costo y Global Best
-            obj.FuncionCosto = Func_Costo;                                  % Evaluación del costo en la posición actual de la partícula.           Dims: NoPartículas X 1 (Vector Columna)             
-            obj.Costo_Local = CostFunction(obj.Posicion_Actual, obj.FuncionCosto, EnvironmentParams{:});                    	
-            obj.Costo_LocalBest = obj.Costo_Local;
+            obj.FuncionCosto = Func_Costo;                                  
+            
+            % Bordes de la región de partida de la que saldrán las
+            % partículas
+            obj.Bordes_RegionPartida = Bordes_RegionPartida;
 
-            [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);     	% "Global best": El costo más pequeño del vector "CostoLocal"           Dims: Escalar
-            obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);        	% "Global best": Posición que genera el costo más pequeño               Dims: 1 X VarDims
-            
-            obj.Costo_GlobalBestHistory = zeros(Iter_Max,1);
-            obj.Costo_GlobalBestHistory(1) = obj.Costo_GlobalBest;
-            
             % Se configura el criterio de convergencia a utilizar después
             obj.CriterioConv = CriterioConv;
             
-            % La etapa de setup consiste de la iteración 1 del algoritmo
-            obj.IteracionActual = 1;                                        
-            
         end
         
+        function InitPSO(obj, EnvironmentParams)
+            % INITPSO Rutina de inicialización para un objeto de tipo PSO. 
+            % Se inicializan los datos de posición y velocidad de las
+            % partículas, su costo inicial y la iteración actual.
+            % -------------------------------------------------------------
+            % Inputs: 
+            %   - EnvironmentParams: Parámetros adicionales requeridos por
+            %     la función de costo elegida. 
+            %
+            % -------------------------------------------------------------
+            
+            % Posición (Random) de todas las partículas. Distribución
+            % uniforme a lo largo de la región de partida.
+            obj.Posicion_Actual(:,1) = unifrnd(obj.Bordes_RegionPartida(1,1), obj.Bordes_RegionPartida(2,1), [obj.NoParticulas 1]);               
+            obj.Posicion_Actual(:,2) = unifrnd(obj.Bordes_RegionPartida(1,1), obj.Bordes_RegionPartida(2,1), [obj.NoParticulas 1]); 
+            
+            % Posición Previa, Posición Local Best y Velocidad
+            obj.Posicion_Previa = obj.Posicion_Actual;                      % Memoria con la posición previa de todas las partículas.               Dims: NoParticulas X VarDims
+            obj.Posicion_LocalBest = obj.Posicion_Actual;                  	% Las posiciones que generaron los mejores costos en las partículas     Dims: NoParticulas X VarDims
+            obj.Velocidad = zeros(size(obj.Posicion_Actual));               % Velocidad de todas las partículas. Inicialmente 0.                    Dims: NoParticulas X VarDims
+            
+            % Dimensionalidad y Número de Partículas
+            obj.NoDimensiones = size(obj.Posicion_Actual,2);
+            
+            % Creación del Historial de Posiciones.
+            obj.Posicion_History = cell(obj.NoDimensiones,1);              	% Celda con arrays guardando todas las posiciones.                      Dims: VarDims X 1
+            
+            for i = 1:obj.NoDimensiones
+                % Fila "i" de "Posicion_History" = Matriz de ceros para la dimensión "i"
+                obj.Posicion_History{i} = zeros(obj.NoParticulas,obj.NoIteracionesMax);  
+                
+                % Array dentro de la fila "i" de "Posicion_History" = Todos los valores de posición para la dimensión "i".
+                obj.Posicion_History{i}(:,1) = obj.Posicion_Actual(:,i);    
+            end
+            
+            % Evaluación del costo en la posición actual de la partícula.           
+            % Dims: NoPartículas X 1 (Vector Columna)             
+            obj.Costo_Local = CostFunction(obj.Posicion_Actual, obj.FuncionCosto, EnvironmentParams{:});                    	
+            obj.Costo_LocalBest = obj.Costo_Local;
+            
+            % Obtención del Global Best Inicial
+            [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);        % "Global best": El costo más pequeño del vector "CostoLocal"           Dims: Escalar
+            obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);        	% "Global best": Posición que genera el costo más pequeño               Dims: 1 X VarDims
+            
+            obj.Costo_GlobalBestHistory = zeros(obj.NoIteracionesMax,1);
+            obj.Costo_GlobalBestHistory(1) = obj.Costo_GlobalBest;
+            
+            % La etapa de inicialización consiste de la iteración 1 del
+            % algoritmo
+            obj.IteracionActual = 1;   
+            
+        end
         
         function SetRestricciones(obj, Restriccion, LimsX, LimsY, varargin)
             % -------------------------------------------------------------
@@ -397,8 +443,13 @@ classdef PSO < handle
                     case "Jabandzic"
                         % Modificación a Actualización de Global Best basada en
                         % paper por Jabandzic y Velagic (2016)
-                        [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);      
-                        obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :); 
+                        % [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);      
+                        % obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :); 
+                        [Actual_GlobalBest, Fila] = min(obj.Costo_LocalBest);                  	% Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
+                        if Actual_GlobalBest < obj.Costo_GlobalBest                            	% Si el "Actual_GlobalBest" es menor al "Global Best" previo 
+                            obj.Costo_GlobalBest = Actual_GlobalBest;                            	% Se actualiza el valor del "Global Best" (Costo_GlobalBest)
+                            obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);              	% Y la posición correspondiente al "Global Best"
+                        end 
                         
                     otherwise
                        % Cálculo estándar del Global Best
@@ -410,6 +461,7 @@ classdef PSO < handle
                     
                 end
                 
+                % Actualización del Historial del Global Best
                 obj.Costo_GlobalBestHistory(i) = obj.Costo_GlobalBest;
                 
                 % Actualización de Historial de Posiciones
@@ -420,21 +472,22 @@ classdef PSO < handle
                 end
                 
                 % Actualización del coeficiente inercial
+                % Solo válido para las restricciones que emplean inercia
                 if strcmp(obj.TipoRestriccion, "Inercia") || strcmp(obj.TipoRestriccion, "Mixto")
                     obj.W = ComputeInertia(obj.TipoInercia, obj.IteracionActual, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);
                 end
-                
-                % Evaluación de criterios de convergencia
-                [StopPart] = getCriteriosConvergencia(obj.CriterioConv, Meta, obj.Posicion_Actual, i/IteracionesMax);
-                
-                % Si el tipo de ejecución es distinta de "Step", se detiene
-                % el algoritmo cuando converja.
-                if IteracionesMax ~=2
-                    if StopPart                           
+                               
+                % Criterio de Convergencia: Solo válido para tipo de
+                % ejecución "Full".
+                if strcmp(TipoEjecucion,"Full")
+                    
+                    % Evaluación de criterios de convergencia
+                    [StopPart] = getCriteriosConvergencia(obj.CriterioConv, Meta, obj.Posicion_Actual, i/IteracionesMax);
+                    
+                    if StopPart   
                         break;      
                     end  
                 end
-                    
             end
             
         end

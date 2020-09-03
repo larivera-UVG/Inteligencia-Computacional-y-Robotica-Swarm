@@ -40,7 +40,7 @@ function [Stop] = getCriteriosConvergencia(Criterio, Meta, Posicion_Actual, Porc
 %   Parámetros Modificables
 %   - 'ThresholdPosDiff': Distancia euclideana mínima que debe existir
 %     entre la posición actual y previa para considerar a la entidad como
-%     quieta. Default = 0.001
+%     quieta. Default = 0.01
 %   - 'ThresholdPorcentajeQuietas': Porcentaje de entidades que deben estar
 %     quietas para detener el algoritmo. Default = 0.95.
 %
@@ -63,7 +63,7 @@ IP.addRequired('Porcentaje_Progreso', @isnumeric);
 % de su valor. Si no se provee un valor Matlab asume uno "default".
 IP.addParameter('ThresholdDist', 0.2, @isnumeric);
 IP.addParameter('ThresholdPorcentajeMeta', 0.95, @isnumeric);
-IP.addParameter('ThresholdPosDiff', 0.001, @isnumeric);
+IP.addParameter('ThresholdPosDiff', 0.01, @isnumeric);
 IP.addParameter('ThresholdPorcentajeQuietas', 0.95, @isnumeric);
 IP.parse(Criterio,Meta,Posicion_Actual,Porcentaje_Progreso);
 
@@ -80,7 +80,15 @@ switch Criterio
         
         % Se obtiene la distancia de cada una de las posiciones hasta la o 
         % las metas.
-        Distancias = hypot(Meta(:,1)-Posicion_Actual(:,1), Meta(:,2)-Posicion_Actual(:,2));
+        
+        % Caso 1: 1 meta para todos los pucks o 1 meta por Puck
+        if (size(Meta,1) == size(Posicion_Actual,1)) || (size(Meta,1) == 1)
+            Distancias = hypot(Meta(:,1)-Posicion_Actual(:,1), Meta(:,2)-Posicion_Actual(:,2));
+        
+        % Caso 2: Múltiples metas a seguir por los pucks.
+        else
+            [~,Distancias] = dsearchn(Meta,Posicion_Actual);
+        end
         
         % Se calcula el número de entidades que están a menos del
         % threshold de distancia requerido.
@@ -101,7 +109,7 @@ switch Criterio
     case "Entidades Detenidas"
         
         % Se crea una variable persistente que almacena o recuerda la
-        % "Posición_Actual" previamente ingresada por el usuario.
+        % "Posicion_Actual" previamente ingresada por el usuario.
         persistent Posicion_Previa
         
         % Si es la primera vez que se utiliza "Posicion_Previa" esta se
@@ -129,7 +137,7 @@ switch Criterio
             Stop = 0;
         end
         
-        % Se actualiza el valor de "Posición_Previa"
+        % Se actualiza el valor de "Posicion_Previa"
         Posicion_Previa = Posicion_Actual;
         
     case "Iteraciones Max"
@@ -149,8 +157,6 @@ end
 % número máximo de iteraciones.
 if Porcentaje_Progreso == 1
     Stop = 1;
-else
-    Stop = 0;
 end
 
 end

@@ -1,4 +1,4 @@
-function [Costo] = CostFunction(X, FunctionName, varargin)
+function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
 % COSTFUNCTION Evaluación de las posiciones de las partículas (X) en
 % la función de costo elegida. 
 % ------------------------------------------------------------------
@@ -54,32 +54,32 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
 %   - Schaffer F6: Utilizada originalmente por Kennedy y Eberhart para evaluar 
 %     la capacidad de exploración del PSO debido a las múltiples oscilaciones 
 %     que presenta. Se puede llamar esta función escribiendo tanto "Paraboloid"
-%     como "Sphere". 1 Mínimo = [0,0].
+%     como "Sphere". Mínimo = [0,0].
 %
 %   - Paraboloid / Sphere: Utilizado en la investigación de J. Bansal et
 %     al. para evaluar el rendimiento del parámetro de inercia (W). Útil para 
-%     evaluar la velocidad de convergencia del enjambre por su simplicidad
-%     1 Mínimo = [0,0].
+%     evaluar la velocidad de convergencia del enjambre por su simplicidad.
+%     Mínimo = [0,0].
 %
 %   - Rosenbrock / Banana: El mínimo de esta función se presenta en un
 %     angosto valle parabólico. A pesar que el valle es fácil de ubicar, el
 %     mínimo comúnmente es dificil de localizar debido a que la pendiente
-%     presente en el valle es virtualmente nula. 1 Mínimo = [1,1].
+%     presente en el valle es virtualmente nula. Mínimo = [1,1].
 %
 %   - Booth: Función simple que puede llegar a describirse como una función
-%     "Sphere" descentrada. 1 Mínimo = [0,0]
+%     "Sphere" descentrada. Mínimo = [0,0]
 %
 %   - Ackley: Utilizada ampliamente para evaluar susceptibilidad a mínimos
 %     locales. Esto se debe a que esta función posee un mínimo absoluto en
 %     [0,0], pero la región circundante al valle que contiene este mínimo
-%     está repleta de mínimos locales. 1 Mínimo = [0,0].
+%     está repleta de mínimos locales. Mínimo = [0,0].
 %
 %   - Rastrigin: Función con múltiples mínimos locales. Su superficie es
 %     irregular pero sus mínimos locales están uniformemente distribuidos.
-%     1 Mínimo = [0,0].
+%     Mínimo = [0,0].
 %
 %   - Levy N13: Utilizada para evaluar susceptibilidad a mínimos locales.
-%     1 Mínimo.
+%     Mínimo = [1,1].
 %
 %   - Dropwave: Muy similar a la función "SchafferF6". Similar al forma del
 %     agua luego que una gota golpeara su superficie. PARÁMETRO OPCIONAL DE
@@ -157,7 +157,10 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
     switch FunctionName
         % Paraboloide o Esfera
         case {"Paraboloid", "Sphere"}                      
-            Costo = sum(X.^2, 2);                                   
+            Costo = sum(X.^2, 2);
+            
+            Minimo = [0 0];
+            varargout{1} = Minimo;
 
         % Ackley Function
         case "Ackley"                      
@@ -165,41 +168,68 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
             Sum1 = -b * sqrt((1/d) * sum(X.^2, 2));
             Sum2 = (1/d) * sum(cos(c*X), 2);
             Costo = -a*exp(Sum1) - exp(Sum2) + a + exp(1);
+            
+            Minimo = [0 0];
+            varargout{1} = Minimo;
 
         % Rastrigin Function
         case "Rastrigin"
             d = size(X,2);                                          
             Costo = 10*d + sum(X.^2 - 10*cos(2*pi*X), 2);
+            
+            Minimo = [0 0];
+            varargout{1} = Minimo;
 
         % Levy Function N.13
         case {"Levy N13", "Levy"}
             Costo = sin(3*pi*X(:,1)).^2 ...                        
                     + (X(:,1)-1).^2 .* (1 + sin(3*pi*X(:,2)).^2) ...
                     + (X(:,2) - 1).^2 .* (1 + sin(2*pi*X(:,2)).^2);
+                
+            Minimo = [1 1];
+            varargout{1} = Minimo;
 
         % Drop Wave Function        
         case "Dropwave"
             
             Costo = -(1 + cos(NoWaves * sqrt(sum(X.^2, 2)))) ./ ...
                      (0.5 * sqrt(sum(X.^2, 2)) + 2);
+            
+            Minimo = [0 0];
+            varargout{1} = Minimo;
         
         % Schaffer F6 Function
         case "Schaffer F6"
             Costo = 0.5 + ((sin(sqrt(sum(X.^2, 2))).^2 - 0.5) ./ ...
                            (1 + (0.001 * sum(X.^2, 2))));
+                       
+            Minimo = [0 0];
+            varargout{1} = Minimo;
         
         % Rosenbrock / Banana Function
         case {"Rosenbrock", "Banana"}
             Costo = sum(100*(X(:,2)-X(:,1).^2).^2 + (X(:,1)-1).^2, 2);
+            
+            Minimo = [1 1];
+            varargout{1} = Minimo;
         
         % Booth Function
         case "Booth"
             Costo = (X(:,1) + 2*X(:,2) - 7).^2 + (2*X(:,1) + X(:,2) - 5).^2;
+            
+            Minimo = [1 3];
+            varargout{1} = Minimo;
         
         % Himmelblau Function
         case "Himmelblau"
             Costo = (X(:,1).^2 + X(:,2) - 11).^2 + (X(:,1) + X(:,2).^2 - 7).^2;
-        
+
+            Minimo = [      3       2; 
+                      -2.8051  3.1313; 
+                      -3.7793 -3.2831; 
+                       3.5844 -1.8481];
+            varargout{1} = Minimo;
+            
         % Función basada en paper publicado por Jabandzic y Velagic (2016)
         case "Jabandzic"
                        
@@ -222,7 +252,7 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
             % F1 - Distancia a la meta:
             % Utilizado para minimizar en la medida de lo posible la
             % distancia hasta la meta que se desea alcanzar.
-            f1 = sqrt((X(:,1) - Meta(1)).^2 + (X(:,2) - Meta(2)).^2); 
+            f1 = hypot(X(:,1) - Meta(1), X(:,2) - Meta(2)); 
             
             % F3 - Distancias a obstáculo previo más cercano:
             % Si "f2" (Distancia a obstáculo actual más cercano) aún no 
@@ -246,7 +276,7 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
             
             % Luego se maximiza la distancia de las partículas al obstáculo
             % más cercano al robot / Puck.
-            f2 = 1 ./ sqrt((X(:,1) - XObsMin).^2 + (X(:,2) - YObsMin).^2); 
+            f2 = 1 ./ hypot(X(:,1) - XObsMin, X(:,2) - YObsMin); 
             
             % F4 - Recíproco de distancia al robot:
             % Utilizado para alejar al robot de su posición actual a manera
@@ -279,8 +309,8 @@ function [Costo] = CostFunction(X, FunctionName, varargin)
             
             % Coeficientes asociados a cada una de las "F's" de la función
             % de costo.
-            w1 = 1;
-            w2 = 1;
+            w1 = 2;
+            w2 = 1.5;
             w3 = 0.8;
             w4 = 1.5;
             w5 = 1.5;
