@@ -144,7 +144,7 @@ classdef PSO < handle
     
     methods
       
-        function obj = PSO(NoParticulas, Func_Costo, CriterioConv, Iter_Max, Bordes_RegionPartida)
+        function obj = PSO(NoParticulas, NoDimensiones, Func_Costo, CriterioConv, Iter_Max, Bordes_RegionPartida)
             % PSO Rutina que permite crear un objeto de la clase PSO.
             % Se configura la función de costo a utilizar, el criterio de
             % convergencia, el número de iteraciones máximas que puede
@@ -153,6 +153,11 @@ classdef PSO < handle
             % -------------------------------------------------------------
             % Inputs: 
             %   - NoParticulas: Cantidad de partículas a simular.
+            %   - NoDimensiones: Cantidad de dimensiones para las posicio-
+            %     nes y velocidades de las partículas. Si se iguala a 2 por
+            %     ejemplo, las partículas se moverán sobre el plano (X,Y),
+            %     si se coloca 3, las partículas se podrán mover sobre el
+            %     espacio (X,Y,Z), etc.
             %   - Func_Costo: Función de costo a minimizar. Escribir "help
             %     CostFunction" para más información.
             %   - CriterioConv: Criterio a utilizar para determinar si el
@@ -174,6 +179,10 @@ classdef PSO < handle
             
             % Cantidad de partículas a simular
             obj.NoParticulas = NoParticulas;
+            
+            % Cantidad de dimensiones para las posiciones y velocidades de
+            % las partículas.
+            obj.NoDimensiones = NoDimensiones;
             
             % Historial de Posición 
             obj.NoIteracionesMax = Iter_Max;
@@ -203,16 +212,16 @@ classdef PSO < handle
             
             % Posición (Random) de todas las partículas. Distribución
             % uniforme a lo largo de la región de partida.
-            obj.Posicion_Actual(:,1) = unifrnd(obj.Bordes_RegionPartida(1,1), obj.Bordes_RegionPartida(2,1), [obj.NoParticulas 1]);               
-            obj.Posicion_Actual(:,2) = unifrnd(obj.Bordes_RegionPartida(1,1), obj.Bordes_RegionPartida(2,1), [obj.NoParticulas 1]); 
+            obj.Posicion_Actual = zeros(obj.NoParticulas, obj.NoDimensiones);
+            
+            for i = 1:obj.NoDimensiones
+                obj.Posicion_Actual(:,i) = unifrnd(obj.Bordes_RegionPartida(i,1), obj.Bordes_RegionPartida(i,2), [obj.NoParticulas 1]);               
+            end
             
             % Posición Previa, Posición Local Best y Velocidad
             obj.Posicion_Previa = obj.Posicion_Actual;                      % Memoria con la posición previa de todas las partículas.               Dims: NoParticulas X VarDims
             obj.Posicion_LocalBest = obj.Posicion_Actual;                  	% Las posiciones que generaron los mejores costos en las partículas     Dims: NoParticulas X VarDims
             obj.Velocidad = zeros(size(obj.Posicion_Actual));               % Velocidad de todas las partículas. Inicialmente 0.                    Dims: NoParticulas X VarDims
-            
-            % Dimensionalidad y Número de Partículas
-            obj.NoDimensiones = size(obj.Posicion_Actual,2);
             
             % Creación del Historial de Posiciones.
             obj.Posicion_History = cell(obj.NoDimensiones,1);              	% Celda con arrays guardando todas las posiciones.                      Dims: VarDims X 1
@@ -438,29 +447,18 @@ classdef PSO < handle
                 obj.Posicion_LocalBest = obj.Posicion_LocalBest .* Costo_Change + obj.Posicion_Actual;      % Se sustituyen las posiciones correspondientes a los costos a cambiar en la linea previa
                 
                 % Actualización de Global Best
-                switch obj.FuncionCosto
-                    
-                    case "Jabandzic"
-                        % Modificación a Actualización de Global Best basada en
-                        % paper por Jabandzic y Velagic (2016)
-                        % [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);      
-                        % obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :); 
-                        [Actual_GlobalBest, Fila] = min(obj.Costo_LocalBest);                  	% Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
-                        if Actual_GlobalBest < obj.Costo_GlobalBest                            	% Si el "Actual_GlobalBest" es menor al "Global Best" previo 
-                            obj.Costo_GlobalBest = Actual_GlobalBest;                            	% Se actualiza el valor del "Global Best" (Costo_GlobalBest)
-                            obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);              	% Y la posición correspondiente al "Global Best"
-                        end 
-                        
-                    otherwise
-                       % Cálculo estándar del Global Best
-                       [Actual_GlobalBest, Fila] = min(obj.Costo_LocalBest);                  	% Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
-                       if Actual_GlobalBest < obj.Costo_GlobalBest                            	% Si el "Actual_GlobalBest" es menor al "Global Best" previo 
-                          obj.Costo_GlobalBest = Actual_GlobalBest;                            	% Se actualiza el valor del "Global Best" (Costo_GlobalBest)
-                          obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);              	% Y la posición correspondiente al "Global Best"
-                       end 
-                    
-                end
                 
+                % Modificación a Actualización de Global Best basada en
+                % paper por Jabandzic y Velagic (2016)
+                % [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);      
+                % obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :); 
+                
+                [Actual_GlobalBest, Fila] = min(obj.Costo_LocalBest);                  	% Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
+                if Actual_GlobalBest < obj.Costo_GlobalBest                            	% Si el "Actual_GlobalBest" es menor al "Global Best" previo 
+                    obj.Costo_GlobalBest = Actual_GlobalBest;                         	% Se actualiza el valor del "Global Best" (Costo_GlobalBest)
+                    obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :);           	% Y la posición correspondiente al "Global Best"
+                end 
+                        
                 % Actualización del Historial del Global Best
                 obj.Costo_GlobalBestHistory(i) = obj.Costo_GlobalBest;
                 

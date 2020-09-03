@@ -304,14 +304,14 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             % Utilizados para evitar que las partículas se muevan muy lejos
             % de la posición actual del robot (K1) o que ingresen a
             % una zona "prohibida" (K2).
-            k1 = 10000;
-            k2 = 10000;
+            k1 = 1000;
+            k2 = 1000;
             
             % Coeficientes asociados a cada una de las "F's" de la función
             % de costo.
-            w1 = 2;
+            w1 = 0.5;
             w2 = 1.5;
-            w3 = 0.8;
+            w3 = 2;
             w4 = 1.5;
             w5 = 1.5;
             
@@ -330,7 +330,7 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
 
             % W7 = 1: Distancia entre partícula y robot > threshold
             DistsPartsAPuck = sqrt(sum((X - PuckPosicion(1,:)) .^2, 2)); 
-            ThresholdDistAPuck = 1;   
+            ThresholdDistAPuck = 1.2;   
             w7 = DistsPartsAPuck > ThresholdDistAPuck;
             
             % Suma ponderada utilizando todos los coeficientes "w" y
