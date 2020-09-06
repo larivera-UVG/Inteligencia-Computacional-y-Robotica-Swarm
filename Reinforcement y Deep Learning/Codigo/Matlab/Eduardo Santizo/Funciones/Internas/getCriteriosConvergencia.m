@@ -1,4 +1,4 @@
-function [Stop] = getCriteriosConvergencia(Criterio, Meta, Posicion_Actual, Porcentaje_Progreso)
+function [Stop] = getCriteriosConvergencia(Criterio, Meta, Posicion_Actual, Porcentaje_Progreso, varargin)
 % EVALCRITERIOSCONVERGENCIA El usuario indica el criterio que desea evaluar
 % En caso este se cumpla, se retorna una señal binaria indicando que se
 % debe detener el algoritmo. Si se selecciona un criterio diferente a
@@ -30,7 +30,7 @@ function [Stop] = getCriteriosConvergencia(Criterio, Meta, Posicion_Actual, Porc
 %
 %   Parámetros Modificables
 %   - 'ThresholdDist': Distancia que debe de existir entre una entidad y la
-%     meta para considerarse "cercana". Default = 0.2
+%     meta para considerarse "cercana". Default = 0.4
 %   - 'ThresholdPorcentajeMeta': Porcentaje de entidades que deben estar
 %     cercanas a la meta para detener el algoritmo. Default = 0.95
 %
@@ -61,11 +61,11 @@ IP.addRequired('Porcentaje_Progreso', @isnumeric);
 % Parámetros: Similar a cuando se utiliza 'FontSize' en plots. El
 % usuario debe escribir el nombre del parámetro a modificar seguido
 % de su valor. Si no se provee un valor Matlab asume uno "default".
-IP.addParameter('ThresholdDist', 0.2, @isnumeric);
+IP.addParameter('ThresholdDist', 0.4, @isnumeric);
 IP.addParameter('ThresholdPorcentajeMeta', 0.95, @isnumeric);
 IP.addParameter('ThresholdPosDiff', 0.01, @isnumeric);
 IP.addParameter('ThresholdPorcentajeQuietas', 0.95, @isnumeric);
-IP.parse(Criterio,Meta,Posicion_Actual,Porcentaje_Progreso);
+IP.parse(Criterio,Meta,Posicion_Actual,Porcentaje_Progreso, varargin{:});
 
 ThresholdDist = IP.Results.ThresholdDist;
 ThresholdPorcentajeMeta = IP.Results.ThresholdPorcentajeMeta;

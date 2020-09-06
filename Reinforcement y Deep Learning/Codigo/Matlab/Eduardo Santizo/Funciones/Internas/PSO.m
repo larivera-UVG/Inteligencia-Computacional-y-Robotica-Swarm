@@ -306,6 +306,7 @@ classdef PSO < handle
             
             % Parámetros Opcionales (Usuario debe escribir su nombre
             % seguido del valor que desea).
+            IP.addParameter('TipoInercia', "Linear", @isstring);
             IP.addParameter('Wmax', 0.9, @isnumeric);
             IP.addParameter('Wmin', 0.4, @isnumeric);
             IP.addParameter('Chi', 1, @isnumeric);
@@ -317,10 +318,13 @@ classdef PSO < handle
             % Se ordenan las variables de entrada contenidas en IP.Results
             % según los inputs previos
             IP.parse(Restriccion, LimsX, LimsY, varargin{:});
-                        
+            
+            obj.TipoInercia = IP.Results.TipoInercia;
             obj.LimsX = IP.Results.LimsX;
             obj.LimsY = IP.Results.LimsY;
             obj.TipoRestriccion = IP.Results.Restriccion;
+            obj.Wmax = IP.Results.Wmax; 
+            obj.Wmin = IP.Results.Wmin;
 
             switch Restriccion
 
@@ -330,10 +334,6 @@ classdef PSO < handle
                 % más información.
 
                 case "Inercia"
-                    obj.TipoInercia = "Linear";                                  	% Consultar tipos de inercia utilizando "help ComputeInertia"
-                    obj.Wmax = IP.Results.Wmax; 
-                    obj.Wmin = IP.Results.Wmin;
-                    
                     % Cálculo de la primera constante de inercia.
                     obj.W = ComputeInertia(obj.TipoInercia, 1, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);  
                     

@@ -309,9 +309,9 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             
             % Coeficientes asociados a cada una de las "F's" de la función
             % de costo.
-            w1 = 0.5;
+            w1 = 1;
             w2 = 1.5;
-            w3 = 2;
+            w3 = 1.5;
             w4 = 1.5;
             w5 = 1.5;
             
@@ -330,7 +330,7 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
 
             % W7 = 1: Distancia entre partícula y robot > threshold
             DistsPartsAPuck = sqrt(sum((X - PuckPosicion(1,:)) .^2, 2)); 
-            ThresholdDistAPuck = 1.2;   
+            ThresholdDistAPuck = 1;   
             w7 = DistsPartsAPuck > ThresholdDistAPuck;
             
             % Suma ponderada utilizando todos los coeficientes "w" y
@@ -340,7 +340,7 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
         % Función generada utilizando Artificial Potential Fields
         case "APF"    
                         
-            persistent Inicializada CoordsMasCosto NoDecimales
+            persistent Inicializada CoordsMasCosto
             NoDecimales = 1;
 
             % Si el número de puntos es muy alto, se asume que la función
@@ -464,31 +464,49 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
                 Inicializada = 1;
                 Costo = PotTotal;
                 CoordsMasCosto = [X PotTotal];
+                disp("Artificial Potential Field inicializado exitosamente");
                 
             % Si la función se inicializó previamente y el número de filas
             % de X (Puntos a analizar) es pequeño (Menor a 1000);
             elseif (size(X,1) < 1000 || Inicializada == 1)
-                
-                % Se aproximan las coordenadas de X a la misma cantidad de
-                % decimales que las coordenadas en CoordsMasCosto
-                X = round(X,NoDecimales);         
-                
+
                 % Se acotan las aproximaciones de las coordenadas X para
                 % que al momento de aproximar no se generen valores por
                 % encima o por debajo de los límites superiores o
                 % inferiores las coordenadas en "CoordsMasCosto".
                 X = min(X,max(CoordsMasCosto(:,1:2)));
                 X = max(X,min(CoordsMasCosto(:,1:2)));
+                                 
+                % Se convierten las posiciones dadas en double en caso se
+                % requiera.
+                X = double(X);
+
+                % Se aproximan las coordenadas de X a la misma cantidad de
+                % decimales que las coordenadas en CoordsMasCosto
+                X = round(X,NoDecimales);  
                 
                 % Se buscan coincidencias entre las coordenadas de
                 % "CoordsMasCosto" y X. Los índices de CoordsMasCosto donde
                 % existe coincidencia se guardan en CoincidenciaFilas
                 [~,CoincidenciaFilas] = ismember(X,CoordsMasCosto(:,1:2),'rows');
-                Costo = CoordsMasCosto(CoincidenciaFilas,3);
+                
+                % Función alternativa al método de indexar utilizando
+                % "ismember". Esta función siempre funcionará y nunca
+                % retornará errores. A pesar de esto, es un poco más lenta. 
+                % Debido a esto solo se incluye aquí pero no se descomenta.
+                % CoincidenciaFilas = dsearchn(CoordsMasCosto(:,1:2),X);
+                
+                % Si no se encuentra alguno de los puntos en X, dentro de
+                % "CoordsMasCosto" (Se retorna un índice igual a 0) se
+                % despliega un error.
+                if any(CoincidenciaFilas == 0)
+                    error("Error: No se encontró una coincidencia para el costo de todas las posiciones X dadas por el usuario");
+                else
+                    Costo = CoordsMasCosto(CoincidenciaFilas,3);
+                end
 
             else
-                ErrorMsg = 'Error. No se inicializó el artificial potential field. Si se desea inicializar, llamar a la función pasándole un vector X con más de 1000 puntos (X,Y)';
-                error(ErrorMsg);
+                error("Error. No se inicializó el artificial potential field. Si se desea inicializar, llamar a la función pasándole un vector X con más de 1000 parejas de puntos (X,Y)");
             end
             
             
