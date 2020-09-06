@@ -10,7 +10,7 @@
 desktop;
 % keyboard;
 load('webots_test.mat');
-
+controlador = 8;
 % get and enable devices, e.g.:
 %  camera = wb_robot_get_device('camera');
 %  wb_camera_enable(camera, TIME_STEP);
@@ -22,10 +22,6 @@ r = 20.5/1000;  % Radio de las llantas en metros
 MAX_SPEED = 6.28;
 MAX_CHANGE = 0.001;  % rad/s
 % goals = webots_path; %[- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];
-
-
-% 
-
 
 %% Obtener todos los sensores del e-Puck
 
@@ -52,17 +48,25 @@ wb_compass_enable(orientation_sensor, TIME_STEP);
 pos = [-0.94 0 0.94];
 x = [pos(1); webots_path(:, 1)]; 
 y = [pos(3); webots_path(:, 2)];
-interpolate_step = 0.02;
-xi = (x(1):interpolate_step:x(end))'; 
+
+if controlador == 3 || controlador == 4
+    interpolate_step = 0.02;
+    epsilon = 0.01;
+else
+    interpolate_step = 0.005;
+    epsilon = interpolate_step/2;
+end
+
+xi = (x(1):interpolate_step:x(end))';
 yi = interp1q(x, y, xi);
 % plot(x,y,'o',xi,yi,'r*')
-goals = [xi(2:end), yi(2:end)];
+goals = [xi(2:end), yi(2:end)]; % [- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];%
 xg = goals(1, 1);  
 zg = goals(1, 2);
 step = 0;
 
 old_speed = zeros(2, 1);
-epsilon = 0.01;
+
 
 %% Variables de controladores
 % Acercamiento exponencial
@@ -123,8 +127,10 @@ sigma = zeros(2, 1);
 % Modificaciones de Aldo para el LQI:
 bv_p = 0.95;          % Reducir velocidad de control proporcional en 95% evitando aceleracion brusca por actualizacion PSO
 bv_i = 0.01;          % Reducir velocidad de control integrador en 1% cada iteracion para frenado al acercarse a Meta PSO
+yn_1 = [0, 0];
+yn = [0, 0];
+x_n = [0, 0];
 
-controlador = 3;
 controlador_copy = controlador;
 stop_counter = 0;
 path_node = 1;
@@ -208,7 +214,7 @@ while wb_robot_step(TIME_STEP) ~= -1
         w = kP_O*eO + kI_O*EO_k + kD_O*eD;
         eO_k_1 = eO;  % actualizar las variables
         
-        v = MAX_SPEED*(1 - exp(-eP*eP*alpha))/eP;
+        v = MAX_SPEED*(1 - exp(-eP*eP*alpha));
         
         formatSpec = 'xi: %.2f, zi: %.2f  | theta: %.2f theta g: %.2f eO:%.2f sin: %.2f cos: %.2f \n';
         fprintf(formatSpec, xi, zi, theta*180/pi, theta_g*180/pi, eO, sin(theta_g - theta), cos(theta_g - theta));
@@ -314,9 +320,9 @@ while wb_robot_step(TIME_STEP) ~= -1
         e = [xi - xg; zi - zg];
         u = -Klqr*e;
         % Difeomorfismo:
-        v = u(1)*cos(270-theta) + u(2)*sin(270-theta);
-        w = (-u(1)*sin(270-theta) + u(2)*cos(270-theta))/ell;
-        
+        v = u(1)*cos(-theta) + u(2)*sin(-theta);
+        w = (-u(1)*sin(-theta) + u(2)*cos(-theta))/ell;
+        [controlador xi zi xg zg]
     elseif controlador == 7
         R = 2000*eye(2);
         Klqi = lqr(AA, BB, QQ, R);
@@ -325,10 +331,10 @@ while wb_robot_step(TIME_STEP) ~= -1
         u = -Klqi*[e*(1-bv_p); sigma];
         sigma = sigma + [xg - xi; zg - zi]*TIME_STEP/1000;
         sigma = (1 - bv_i)*sigma;
-        
+        [controlador xi zi xg zg]
         % Difeomorfismo:
-        v = u(1)*cos(270-theta) + u(2)*sin(270-theta);
-        w = (-u(1)*sin(270-theta) + u(2)*cos(270-theta))/ell;
+        v = u(1)*cos(-theta) + u(2)*sin(-theta);
+        w = (-u(1)*sin(-theta) + u(2)*cos(-theta))/ell;
     elseif controlador == 8
         % Error total de posicion
         eP = sqrt((xg - xi)^2 + (zg - zi)^2);
@@ -336,9 +342,9 @@ while wb_robot_step(TIME_STEP) ~= -1
         k = 3.12*(1 - exp(-2*eP))/eP;
         u1 = I*tanh(k*(xg - xi)/MAX_SPEED);
         u2 = I*tanh(k*(zg - zi)/MAX_SPEED);
-        v = u1*cos(270-theta) + u2*sin(270-theta);
-        w = (-u1*sin(270-theta) + u2*cos(270-theta))/ell;
-        % Ni idea de por que 270-theta, pero asi me funciona xd 
+        v = u1*cos(-theta) + u2*sin(-theta);
+        w = (-u1*sin(-theta) + u2*cos(-theta))/ell;
+        [controlador xi zi xg zg]
     end
     
     % velocidad uniciclo
@@ -348,25 +354,48 @@ while wb_robot_step(TIME_STEP) ~= -1
     
     % Truncamos la velocidad
     for k = 1:2
-        if speed(k) < -MAX_SPEED
-            speed(k) = -MAX_SPEED;
-        elseif speed(k) > MAX_SPEED
-            speed(k) = MAX_SPEED;
-        end
+        
         
         % Hardstop filter
-        %         if abs(speed(k) - old_speed(k)) > MAX_CHANGE
-        %             speed(k) = (speed(k) + 2*old_speed(k))/3;
-        %         end
-        
-        if (abs(speed(k)) < 1) && (controlador ~= 0)
-            if path_node >= length(goals)-1
-                speed(k) = (speed(k)+ MAX_SPEED/2)*exp(-stop_counter);
-                stop_counter = stop_counter + 0.0375;
-            else
-                speed(k) = speed(k) + MAX_SPEED/2;
+%         if abs(speed(k) - old_speed(k)) > MAX_CHANGE
+%             speed(k) = (speed(k) + 2*old_speed(k))/3;
+%         end
+        if controlador == 3 || controlador == 4
+            if (abs(speed(k)) < 1) && (controlador ~= 0)
+                if path_node >= length(goals)-1
+                    speed(k) = (speed(k)+ MAX_SPEED/2)*exp(-stop_counter);
+                    stop_counter = stop_counter + 0.0375;
+                else
+                    speed(k) = speed(k) + MAX_SPEED/2;
+                end
             end
+        else
+            lambda = 0.95;
+            
+            if path_node <= 10
+                x_n(k) = speed(k);
+                yn(k) = ((1-lambda)*x_n(k) + lambda*yn_1(k));
+                speed(k) = yn(k);
+                yn_1(k) = yn(k);
+            else
+                if (abs(speed(k)) < 1) && (controlador ~= 0)
+                    x_n(k) = speed(k)*2;
+                    yn(k) = ((1-lambda)*x_n(k) + lambda*yn_1(k));
+                    speed(k) = yn(k);
+                    yn_1(k) = yn(k);
+                end
+            end
+            
+
+            if speed(k) < -MAX_SPEED
+                speed(k) = -MAX_SPEED;
+            elseif speed(k) > MAX_SPEED
+                speed(k) = MAX_SPEED;
+            end
+            
         end
+        
+        
     end
     old_speed = speed;
     
