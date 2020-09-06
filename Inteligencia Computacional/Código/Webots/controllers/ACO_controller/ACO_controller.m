@@ -9,8 +9,7 @@
 % MATLAB's desktop to interact with the controller:
 desktop;
 % keyboard;
-
-TIME_STEP = 32;
+load('webots_test.mat');
 
 % get and enable devices, e.g.:
 %  camera = wb_robot_get_device('camera');
@@ -21,18 +20,13 @@ TIME_STEP = 32;  % milisegundos
 ell = 71/2000;  % Distance from center en metros
 r = 20.5/1000;  % Radio de las llantas en metros
 MAX_SPEED = 6.28;
-MAX_CHANGE = 1;  % rad/s
-goal = [0, 0];  % Diagonal larga
-%goal = [0, 0.94];
-% goal = [-4, -5]; % Norte
-% goal = [-3, -3]; % Diagonal corta
-% goal = [-4, -3]; % Sur corto
-% goal = [-5, -3]; % Diagonal corta
-% goal = [-5, -5]; % Diagonal corta
-% goal = [-4, -2]; % Sur
-% goal = [-2, -4]; % Este
-% goal = [-5, -4]; % Oeste
-goals = [- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];
+MAX_CHANGE = 0.001;  % rad/s
+% goals = webots_path; %[- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];
+
+
+% 
+
+
 %% Obtener todos los sensores del e-Puck
 
 % Pose
@@ -55,12 +49,22 @@ wb_compass_enable(orientation_sensor, TIME_STEP);
 % wb_receiver_enable(receiver,TIME_STEP);
 
 %% Valores iniciales
-xg = goal(1);  zg = goal(2);
+pos = [-0.94 0 0.94];
+x = [pos(1); webots_path(:, 1)]; 
+y = [pos(3); webots_path(:, 2)];
+interpolate_step = 0.02;
+xi = (x(1):interpolate_step:x(end))'; 
+yi = interp1q(x, y, xi);
+% plot(x,y,'o',xi,yi,'r*')
+goals = [xi(2:end), yi(2:end)];
+xg = goals(1, 1);  
+zg = goals(1, 2);
 step = 0;
-old_speed = zeros(2, 1);
-epsilon = 0.05;
 
-%% Variables PID
+old_speed = zeros(2, 1);
+epsilon = 0.01;
+
+%% Variables de controladores
 % Acercamiento exponencial
 alpha = 0.9;
 
@@ -79,9 +83,9 @@ kD_O = 5;
 kI_O = 9;
 
 % 2 - Velocidad lineal y angular
-kP_O2 = 1;
-kD_O2 = 100; 
-kI_O2 = 40;
+kP_O2 = 0.01;
+kD_O2 = 0; 
+kI_O2 = 0;
 
 kP_P = 2;
 kD_P = 0;
@@ -120,7 +124,11 @@ sigma = zeros(2, 1);
 bv_p = 0.95;          % Reducir velocidad de control proporcional en 95% evitando aceleracion brusca por actualizacion PSO
 bv_i = 0.01;          % Reducir velocidad de control integrador en 1% cada iteracion para frenado al acercarse a Meta PSO
 
-controlador = 8;
+controlador = 3;
+controlador_copy = controlador;
+stop_counter = 0;
+path_node = 1;
+save('analysis.mat', 'controlador')
 % controlador
 % 0 - OFF
 % 1 - PID de acercamiento exponencial
@@ -131,6 +139,15 @@ controlador = 8;
 % 6 - LQR
 % 7 - LQI
 % 8 - TUC
+
+%% Variables para graficar
+pos = wb_gps_get_values(position_sensor);
+xi = pos(1);  zi = pos(3);
+trajectory = [xi, zi];
+v_hist = [];
+w_hist = [];
+rwheel_hist = [];
+lwheel_hist = [];
 
 % main loop:
 % perform simulation steps of TIME_STEP milliseconds
@@ -145,13 +162,20 @@ while wb_robot_step(TIME_STEP) ~= -1
     
     north = wb_compass_get_values(orientation_sensor);
     rad = atan2(north(1), north(3));
+    
+    if rad < 0
+       rad = rad + 2*pi; 
+    end
+    
 %     disp(north);
 %     disp(rad);
     %         formatSpec = 'xi: %.2f, zi: %.2f eP: %.2f | theta: %.2f theta g: %.2f eO: %.2f \n';
 %         fprintf(formatSpec, xi, zi, eP, theta, theta_g, eO);
     
     theta = pi - rad;  % Se corrige el ángulo para que esté igual que theta_g
-    
+    if xg == goals(length(goals), 1) && zg == goals(length(goals), 2)
+        epsilon = 0.05;
+    end
    
     if sqrt((xg - xi)^2 + (zg - zi)^2) <= epsilon
         controlador = 0;
@@ -159,8 +183,15 @@ while wb_robot_step(TIME_STEP) ~= -1
 
     % ------------- OFF -------------
     if controlador == 0
-        v = 0;
-        w = 0;
+        if xg == goals(length(goals), 1) && zg == goals(length(goals), 2)
+            v = 0;
+            w = 0;
+        else
+            controlador = controlador_copy;
+            path_node = path_node + 1;
+            xg = goals(path_node, 1);  zg = goals(path_node, 2);
+        end
+        
     % ------------- PID exp ---------
     elseif controlador == 1
         % Error total de posicion
@@ -168,6 +199,7 @@ while wb_robot_step(TIME_STEP) ~= -1
         
         % Error de orientacion
         theta_g = -atan2((zg - zi), (xg - xi));
+        
         eO = atan2(sin(theta_g - theta), cos(theta_g - theta));
         
         % Control de velocidad angular
@@ -177,6 +209,10 @@ while wb_robot_step(TIME_STEP) ~= -1
         eO_k_1 = eO;  % actualizar las variables
         
         v = MAX_SPEED*(1 - exp(-eP*eP*alpha))/eP;
+        
+        formatSpec = 'xi: %.2f, zi: %.2f  | theta: %.2f theta g: %.2f eO:%.2f sin: %.2f cos: %.2f \n';
+        fprintf(formatSpec, xi, zi, theta*180/pi, theta_g*180/pi, eO, sin(theta_g - theta), cos(theta_g - theta));
+        
         
     elseif controlador == 2
         % Error total de posicion
@@ -208,9 +244,12 @@ while wb_robot_step(TIME_STEP) ~= -1
         beta = -theta - alpha;
         % disp(theta_g*180/pi)
         
-        formatSpec = 'xi: %.2f, zi: %.2f  | theta: %.2f theta g: %.2f \n';
-        fprintf(formatSpec, xi, zi, theta*180/pi, theta_g*180/pi);
-        
+        theta_g = -atan2((zg - zi), (xg - xi));
+        eO = atan2(sin(theta_g - theta), cos(theta_g - theta));
+
+        %formatSpec = 'xi: %.2f, zi: %.2f  | theta: %.2f theta g: %.2f eO:%.2f sin: %.2f cos: %.2f \n';
+        %fprintf(formatSpec, xi, zi, theta*180/pi, theta_g*180/pi, eO, sin(theta_g - theta), cos(theta_g - theta));
+        [controlador xi zi xg zg]
         
         if (alpha < -pi)
             alpha = alpha + (2*pi);
@@ -275,8 +314,8 @@ while wb_robot_step(TIME_STEP) ~= -1
         e = [xi - xg; zi - zg];
         u = -Klqr*e;
         % Difeomorfismo:
-        v = u(1)*cos(theta) + u(2)*sin(theta);
-        w = (-u(1)*sin(theta) + u(2)*cos(theta))/ell;
+        v = u(1)*cos(270-theta) + u(2)*sin(270-theta);
+        w = (-u(1)*sin(270-theta) + u(2)*cos(270-theta))/ell;
         
     elseif controlador == 7
         R = 2000*eye(2);
@@ -288,8 +327,8 @@ while wb_robot_step(TIME_STEP) ~= -1
         sigma = (1 - bv_i)*sigma;
         
         % Difeomorfismo:
-        v = u(1)*cos(theta) + u(2)*sin(theta);
-        w = (-u(1)*sin(theta) + u(2)*cos(theta))/ell;
+        v = u(1)*cos(270-theta) + u(2)*sin(270-theta);
+        w = (-u(1)*sin(270-theta) + u(2)*cos(270-theta))/ell;
     elseif controlador == 8
         % Error total de posicion
         eP = sqrt((xg - xi)^2 + (zg - zi)^2);
@@ -316,8 +355,17 @@ while wb_robot_step(TIME_STEP) ~= -1
         end
         
         % Hardstop filter
-        if abs(speed(k) - old_speed(k)) > MAX_CHANGE
-            speed(k) = (speed(k) + 2*old_speed(k))/3;
+        %         if abs(speed(k) - old_speed(k)) > MAX_CHANGE
+        %             speed(k) = (speed(k) + 2*old_speed(k))/3;
+        %         end
+        
+        if (abs(speed(k)) < 1) && (controlador ~= 0)
+            if path_node >= length(goals)-1
+                speed(k) = (speed(k)+ MAX_SPEED/2)*exp(-stop_counter);
+                stop_counter = stop_counter + 0.0375;
+            else
+                speed(k) = speed(k) + MAX_SPEED/2;
+            end
         end
     end
     old_speed = speed;
@@ -326,6 +374,13 @@ while wb_robot_step(TIME_STEP) ~= -1
     wb_motor_set_velocity(left_motor, left_speed);
     wb_motor_set_velocity(right_motor, right_speed);
 
+    trajectory = [trajectory; [xi, zi]];
+    v_hist = [v_hist; v];
+    w_hist = [w_hist; w];
+    rwheel_hist = [rwheel_hist; right_speed];
+    lwheel_hist = [lwheel_hist; left_speed];
+    goal = [xg, zg];
+    save('analysis.mat', 'trajectory', 'v_hist', 'w_hist', 'rwheel_hist', 'lwheel_hist', 'goal','-append')
 end
 
 % cleanup code goes here: write data to files, etc.

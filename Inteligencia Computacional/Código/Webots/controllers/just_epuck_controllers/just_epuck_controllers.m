@@ -60,7 +60,7 @@ step = 0;
 old_speed = zeros(2, 1);
 epsilon = 0.05;
 
-%% Variables PID
+%% Variables de controladores
 % Acercamiento exponencial
 alpha = 0.9;
 
@@ -120,7 +120,8 @@ sigma = zeros(2, 1);
 bv_p = 0.95;          % Reducir velocidad de control proporcional en 95% evitando aceleracion brusca por actualizacion PSO
 bv_i = 0.01;          % Reducir velocidad de control integrador en 1% cada iteracion para frenado al acercarse a Meta PSO
 
-controlador = 8;
+controlador = 1;
+save('analysis.mat', 'controlador')
 % controlador
 % 0 - OFF
 % 1 - PID de acercamiento exponencial
@@ -131,6 +132,15 @@ controlador = 8;
 % 6 - LQR
 % 7 - LQI
 % 8 - TUC
+
+%% Variables para graficar
+pos = wb_gps_get_values(position_sensor);
+xi = pos(1);  zi = pos(3);
+trajectory = [xi, zi];
+v_hist = [];
+w_hist = [];
+rwheel_hist = [];
+lwheel_hist = [];
 
 % main loop:
 % perform simulation steps of TIME_STEP milliseconds
@@ -275,8 +285,8 @@ while wb_robot_step(TIME_STEP) ~= -1
         e = [xi - xg; zi - zg];
         u = -Klqr*e;
         % Difeomorfismo:
-        v = u(1)*cos(theta) + u(2)*sin(theta);
-        w = (-u(1)*sin(theta) + u(2)*cos(theta))/ell;
+        v = u(1)*cos(270-theta) + u(2)*sin(270-theta);
+        w = (-u(1)*sin(270-theta) + u(2)*cos(270-theta))/ell;
         
     elseif controlador == 7
         R = 2000*eye(2);
@@ -288,8 +298,8 @@ while wb_robot_step(TIME_STEP) ~= -1
         sigma = (1 - bv_i)*sigma;
         
         % Difeomorfismo:
-        v = u(1)*cos(theta) + u(2)*sin(theta);
-        w = (-u(1)*sin(theta) + u(2)*cos(theta))/ell;
+        v = u(1)*cos(270-theta) + u(2)*sin(270-theta);
+        w = (-u(1)*sin(270-theta) + u(2)*cos(270-theta))/ell;
     elseif controlador == 8
         % Error total de posicion
         eP = sqrt((xg - xi)^2 + (zg - zi)^2);
@@ -299,7 +309,7 @@ while wb_robot_step(TIME_STEP) ~= -1
         u2 = I*tanh(k*(zg - zi)/MAX_SPEED);
         v = u1*cos(270-theta) + u2*sin(270-theta);
         w = (-u1*sin(270-theta) + u2*cos(270-theta))/ell;
-        % Ni idea de por que 270-theta, pero asi me funciona xd    
+        % Ni idea de por que 270-theta, pero asi me funciona xd 
     end
     
     % velocidad uniciclo
@@ -326,6 +336,12 @@ while wb_robot_step(TIME_STEP) ~= -1
     wb_motor_set_velocity(left_motor, left_speed);
     wb_motor_set_velocity(right_motor, right_speed);
 
+    trajectory = [trajectory; [xi, zi]];
+    v_hist = [v_hist; v];
+    w_hist = [w_hist; w];
+    rwheel_hist = [rwheel_hist; right_speed];
+    lwheel_hist = [lwheel_hist; left_speed];
+    save('analysis.mat', 'trajectory', 'v_hist', 'w_hist', 'rwheel_hist', 'lwheel_hist', 'goal','-append')
 end
 
 % cleanup code goes here: write data to files, etc.
