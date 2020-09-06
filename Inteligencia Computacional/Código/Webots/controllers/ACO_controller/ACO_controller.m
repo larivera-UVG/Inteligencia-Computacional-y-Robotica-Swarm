@@ -10,7 +10,7 @@
 desktop;
 % keyboard;
 load('webots_test.mat');
-controlador = 8;
+controlador = 7;
 % get and enable devices, e.g.:
 %  camera = wb_robot_get_device('camera');
 %  wb_camera_enable(camera, TIME_STEP);
@@ -52,15 +52,24 @@ y = [pos(3); webots_path(:, 2)];
 if controlador == 3 || controlador == 4
     interpolate_step = 0.02;
     epsilon = 0.01;
-else
+elseif controlador == 8
     interpolate_step = 0.005;
+    epsilon = interpolate_step/2;
+elseif controlador == 6
+    interpolate_step = 0.01;
+    epsilon = 3*interpolate_step/5;
+elseif controlador == 7
+    interpolate_step = 0.3;
+    epsilon = interpolate_step/2;
+elseif controlador == 5
+    interpolate_step = 0.1;
     epsilon = interpolate_step/2;
 end
 
 xi = (x(1):interpolate_step:x(end))';
 yi = interp1q(x, y, xi);
 % plot(x,y,'o',xi,yi,'r*')
-goals = [xi(2:end), yi(2:end)]; % [- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];%
+goals = [- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];%[xi(2:end), yi(2:end)]; % 
 xg = goals(1, 1);  
 zg = goals(1, 2);
 step = 0;
@@ -179,9 +188,9 @@ while wb_robot_step(TIME_STEP) ~= -1
 %         fprintf(formatSpec, xi, zi, eP, theta, theta_g, eO);
     
     theta = pi - rad;  % Se corrige el ángulo para que esté igual que theta_g
-    if xg == goals(length(goals), 1) && zg == goals(length(goals), 2)
-        epsilon = 0.05;
-    end
+%     if xg == goals(length(goals), 1) && zg == goals(length(goals), 2)
+%         epsilon = 0.05;
+%     end
    
     if sqrt((xg - xi)^2 + (zg - zi)^2) <= epsilon
         controlador = 0;
@@ -329,9 +338,11 @@ while wb_robot_step(TIME_STEP) ~= -1
         e = [xi - xg; zi - zg];
         sigma = sigma + (Cr*[xi; zi] - ref)*TIME_STEP/1000;
         u = -Klqi*[e*(1-bv_p); sigma];
-        sigma = sigma + [xg - xi; zg - zi]*TIME_STEP/1000;
+        sigma = sigma + e*TIME_STEP/1000;
+        bv_i = -0.05;
         sigma = (1 - bv_i)*sigma;
         [controlador xi zi xg zg]
+        
         % Difeomorfismo:
         v = u(1)*cos(-theta) + u(2)*sin(-theta);
         w = (-u(1)*sin(-theta) + u(2)*cos(-theta))/ell;
@@ -357,9 +368,9 @@ while wb_robot_step(TIME_STEP) ~= -1
         
         
         % Hardstop filter
-%         if abs(speed(k) - old_speed(k)) > MAX_CHANGE
-%             speed(k) = (speed(k) + 2*old_speed(k))/3;
-%         end
+        %         if abs(speed(k) - old_speed(k)) > MAX_CHANGE
+        %             speed(k) = (speed(k) + 2*old_speed(k))/3;
+        %         end
         if controlador == 3 || controlador == 4
             if (abs(speed(k)) < 1) && (controlador ~= 0)
                 if path_node >= length(goals)-1
@@ -369,7 +380,7 @@ while wb_robot_step(TIME_STEP) ~= -1
                     speed(k) = speed(k) + MAX_SPEED/2;
                 end
             end
-        else
+        elseif controlador == 8
             lambda = 0.95;
             
             if path_node <= 10
@@ -386,17 +397,40 @@ while wb_robot_step(TIME_STEP) ~= -1
                 end
             end
             
-
-            if speed(k) < -MAX_SPEED
-                speed(k) = -MAX_SPEED;
-            elseif speed(k) > MAX_SPEED
-                speed(k) = MAX_SPEED;
+        elseif controlador == 6
+            lambda = 0.95;
+            
+            if path_node <= 5
+                x_n(k) = speed(k);
+                yn(k) = ((1-lambda)*x_n(k) + lambda*yn_1(k));
+                speed(k) = yn(k);
+                yn_1(k) = yn(k);
+            else
+                if (abs(speed(k)) < 1) && (controlador ~= 0)
+                    x_n(k) = speed(k)-1;
+                    yn(k) = ((1-lambda)*x_n(k) + lambda*yn_1(k));
+                    speed(k) = yn(k);
+                    yn_1(k) = yn(k);
+                end
             end
             
+        elseif controlador == 7
+%                 if (abs(speed(k)) < 1) && (controlador ~= 0)
+%                    speed(k) = speed(k);
+%                 end
         end
         
         
+        if speed(k) < -MAX_SPEED
+            speed(k) = -MAX_SPEED;
+        elseif speed(k) > MAX_SPEED
+            speed(k) = MAX_SPEED;
+        end
+        
     end
+    
+            
+       
     old_speed = speed;
     
     left_speed = speed(1); right_speed = speed(2);
