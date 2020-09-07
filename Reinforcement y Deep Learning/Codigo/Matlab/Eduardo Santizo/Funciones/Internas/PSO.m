@@ -341,8 +341,8 @@ classdef PSO < handle
                     obj.VelMax = 0.2*diff(Lims);                                    % Velocidad máx: Dims = (1,2). Valor máx = 20% del ancho/alto del plano 
                     obj.VelMin = -obj.VelMax;                                    	% Velocidad mín: Dims = (1,2). Negativo de la velocidad máxima
                     obj.Chi = IP.Results.Chi;                                      	% Igualado a 1 para que el efecto del coeficiente de constricción sea nulo
-                    obj.Phi1 = IP.Results.Phi1; 
-                    obj.Phi2 = IP.Results.Phi2;
+                    obj.Phi1 = 1; 
+                    obj.Phi2 = 1;
 
                 % Coeficiente de Constricción ====
                 % Basado en la constricción tipo 1'' propuesta en el paper por Clerc y Kennedy (2001) 
@@ -445,14 +445,13 @@ classdef PSO < handle
                 obj.Costo_LocalBest = min(obj.Costo_LocalBest, obj.Costo_Local);                            % Se sustituyen los costos que son menores al "Local Best" previo
                 Costo_Change = (obj.Costo_Local < obj.Costo_LocalBest);                                     % Vector binario que indica con un 0 cuales son las filas de "Costo_Local" que son menores que las filas de "PartCosto_LocalBest"
                 obj.Posicion_LocalBest = obj.Posicion_LocalBest .* Costo_Change + obj.Posicion_Actual;      % Se sustituyen las posiciones correspondientes a los costos a cambiar en la linea previa
-                
-                % Actualización de Global Best
-                
+                                
                 % Modificación a Actualización de Global Best basada en
                 % paper por Jabandzic y Velagic (2016)
                 % [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);      
                 % obj.Posicion_GlobalBest = obj.Posicion_Actual(Fila, :); 
                 
+                % Actualización de Global Best
                 [Actual_GlobalBest, Fila] = min(obj.Costo_LocalBest);                  	% Actual_GlobalBest = Valor mínimo de entre los valores de "Costo_Local"
                 if Actual_GlobalBest < obj.Costo_GlobalBest                            	% Si el "Actual_GlobalBest" es menor al "Global Best" previo 
                     obj.Costo_GlobalBest = Actual_GlobalBest;                         	% Se actualiza el valor del "Global Best" (Costo_GlobalBest)
@@ -463,10 +462,19 @@ classdef PSO < handle
                 obj.Costo_GlobalBestHistory(i) = obj.Costo_GlobalBest;
                 
                 % Actualización de Historial de Posiciones
-                obj.IteracionActual = obj.IteracionActual + 1;
-                
-                for j = 1:obj.NoDimensiones
-                    obj.Posicion_History{j}(:,obj.IteracionActual) = obj.Posicion_Actual(:,j); 	% Array dentro de la fila "j" de "Posicion_History" = Todos los valores de posición para la dimensión "j".
+                % Solo válido si la futura actualización corresponde a una
+                % iteración menor al número de iteraciones máximas.
+                if obj.IteracionActual + 1 <= obj.NoIteracionesMax
+                    
+                    % Se incrementa el valor de la iteración actual
+                    obj.IteracionActual = obj.IteracionActual + 1;
+                    
+                    % Array dentro de la fila "j" de "Posicion_History" = 
+                    % Todos los valores de posición para la dimensión "j".
+                    for j = 1:obj.NoDimensiones
+                        obj.Posicion_History{j}(:,obj.IteracionActual) = obj.Posicion_Actual(:,j); 	
+                    end
+                    
                 end
                 
                 % Actualización del coeficiente inercial
