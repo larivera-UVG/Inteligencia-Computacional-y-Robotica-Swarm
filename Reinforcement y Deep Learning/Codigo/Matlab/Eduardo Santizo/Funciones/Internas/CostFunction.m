@@ -156,28 +156,50 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
 
     switch FunctionName
         % Paraboloide o Esfera
+        % Fuente: https://www.sfu.ca/~ssurjano/spheref.html
         case {"Paraboloid", "Sphere"}                      
             Costo = sum(X.^2, 2);
             
-            Minimo = [0 0];
+            % Mínimo: Vector de zeros con tantas dimensiones como X
+            Minimo = zeros(1,size(X,2));    
             varargout{1} = Minimo;
-
+        
+        % Griewank Function
+        % Fuente: https://www.sfu.ca/~ssurjano/griewank.html
+        case "Griewank"
+            Sum = sum((X.^2) / 4000, 2);
+            
+            NoDims = size(X,2);
+            NoPuntos = size(X,1);
+            Indices = repmat(1:NoDims,NoPuntos,1);
+            Prod = prod(cos(X ./ sqrt(Indices)),2);
+            
+            Costo = Sum - Prod + 1;
+            
+            % Mínimo: Vector de zeros con tantas dimensiones como X
+            Minimo = zeros(1,size(X,2));
+            varargout{1} = Minimo;
+            
         % Ackley Function
+        % Fuente: https://www.sfu.ca/~ssurjano/ackley.html
         case "Ackley"                      
             a = 20; b = 0.2; c = 2*pi; d = size(X,2);              
             Sum1 = -b * sqrt((1/d) * sum(X.^2, 2));
             Sum2 = (1/d) * sum(cos(c*X), 2);
             Costo = -a*exp(Sum1) - exp(Sum2) + a + exp(1);
             
-            Minimo = [0 0];
+            % Mínimo: Vector de zeros con tantas dimensiones como X
+            Minimo = zeros(1,size(X,2));
             varargout{1} = Minimo;
 
         % Rastrigin Function
+        % Fuente: https://www.sfu.ca/~ssurjano/rastr.html
         case "Rastrigin"
             d = size(X,2);                                          
             Costo = 10*d + sum(X.^2 - 10*cos(2*pi*X), 2);
             
-            Minimo = [0 0];
+            % Mínimo: Vector de zeros con tantas dimensiones como X
+            Minimo = zeros(1,size(X,2));
             varargout{1} = Minimo;
 
         % Levy Function N.13
@@ -195,7 +217,8 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             Costo = -(1 + cos(NoWaves * sqrt(sum(X.^2, 2)))) ./ ...
                      (0.5 * sqrt(sum(X.^2, 2)) + 2);
             
-            Minimo = [0 0];
+            % Mínimo: Vector de zeros con tantas dimensiones como X
+            Minimo = zeros(1,size(X,2));
             varargout{1} = Minimo;
         
         % Schaffer F6 Function
@@ -203,7 +226,7 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             Costo = 0.5 + ((sin(sqrt(sum(X.^2, 2))).^2 - 0.5) ./ ...
                            (1 + (0.001 * sum(X.^2, 2))));
                        
-            Minimo = [0 0];
+            Minimo = zeros(1,size(X,2));
             varargout{1} = Minimo;
         
         % Rosenbrock / Banana Function

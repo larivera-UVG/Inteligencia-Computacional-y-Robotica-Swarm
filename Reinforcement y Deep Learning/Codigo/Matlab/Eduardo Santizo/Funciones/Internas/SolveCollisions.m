@@ -4,7 +4,7 @@ function [Posicion_Actual] = SolveCollisions(Posicion_Actual, RadioPuck)
 % diámetro de distancia entre si, y corrige su posición de manera acorde.
 % -------------------------------------------------------------------------
 
-DistsEntrePart = getDistsBetweenParticles(Posicion_Actual);                     % Escribir "help getDistsBetweenParticles" para más información
+DistsEntrePart = getDistsBetweenParticles(Posicion_Actual,"Triangular");       	% Escribir "help getDistsBetweenParticles" para más información
 [ColidingPartMain, ColidingPartAux] = find(DistsEntrePart < 2*RadioPuck);       % Se obtiene el "index" de los pucks sobrepuestos. Los valores NaN se ignoran.
 ColidingPart = [ColidingPartMain ColidingPartAux];                              % Se unen los ID's de los "Main" pucks (Filas con colisiones) y "Aux" pucks (Columnas).
 HayColisiones = ~isempty(ColidingPart);                                         % Se chequea si el vector con partículas en colisión está vacío 

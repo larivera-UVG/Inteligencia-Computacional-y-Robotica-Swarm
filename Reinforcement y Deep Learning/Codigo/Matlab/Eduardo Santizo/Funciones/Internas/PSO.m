@@ -383,7 +383,7 @@ classdef PSO < handle
             end
         end
         
-        function RunStandardPSO(obj, TipoEjecucion, Meta, EnvironmentParams)
+        function [varargout] = RunStandardPSO(obj, TipoEjecucion, Meta, EnvironmentParams)
             % -------------------------------------------------------------
             % RUNSTANDARDPSO Ejecutar el algoritmo de PSO con los
             % con los parámetros dados.
@@ -482,18 +482,14 @@ classdef PSO < handle
                 if strcmp(obj.TipoRestriccion, "Inercia") || strcmp(obj.TipoRestriccion, "Mixto")
                     obj.W = ComputeInertia(obj.TipoInercia, obj.IteracionActual, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);
                 end
-                               
-                % Criterio de Convergencia: Solo válido para tipo de
-                % ejecución "Full".
-                if strcmp(TipoEjecucion,"Full")
-                    
-                    % Evaluación de criterios de convergencia
-                    [StopPart] = getCriteriosConvergencia(obj.CriterioConv, Meta, obj.Posicion_Actual, i/IteracionesMax);
-                    
-                    if StopPart   
-                        break;      
-                    end  
-                end
+  
+                % Evaluación de criterios de convergencia
+                [StopPart] = getCriteriosConvergencia(obj.CriterioConv, Meta, obj.Posicion_Actual, obj.IteracionActual/obj.NoIteracionesMax);
+                varargout{1} = StopPart;
+                
+                if StopPart
+                    break;      
+                end  
             end
             
         end
