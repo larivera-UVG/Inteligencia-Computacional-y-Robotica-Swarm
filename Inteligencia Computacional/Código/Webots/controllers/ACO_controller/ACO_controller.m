@@ -10,7 +10,7 @@
 desktop;
 % keyboard;
 load('webots_test.mat');
-controlador = 7;
+controlador = 5;
 % get and enable devices, e.g.:
 %  camera = wb_robot_get_device('camera');
 %  wb_camera_enable(camera, TIME_STEP);
@@ -59,8 +59,8 @@ elseif controlador == 6
     interpolate_step = 0.01;
     epsilon = 3*interpolate_step/5;
 elseif controlador == 7
-    interpolate_step = 0.3;
-    epsilon = interpolate_step/2;
+    interpolate_step = 0.1;
+    epsilon = 3*interpolate_step/5;
 elseif controlador == 5
     interpolate_step = 0.1;
     epsilon = interpolate_step/2;
@@ -69,7 +69,7 @@ end
 xi = (x(1):interpolate_step:x(end))';
 yi = interp1q(x, y, xi);
 % plot(x,y,'o',xi,yi,'r*')
-goals = [- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];%[xi(2:end), yi(2:end)]; % 
+goals = [xi(2:end), yi(2:end)]; % [- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];%
 xg = goals(1, 1);  
 zg = goals(1, 2);
 step = 0;
@@ -414,10 +414,22 @@ while wb_robot_step(TIME_STEP) ~= -1
                 end
             end
             
-        elseif controlador == 7
-%                 if (abs(speed(k)) < 1) && (controlador ~= 0)
-%                    speed(k) = speed(k);
-%                 end
+        elseif controlador == 5
+            lambda = 0.95;
+            
+            if path_node <= 5
+                x_n(k) = speed(k);
+                yn(k) = ((1-lambda)*x_n(k) + lambda*yn_1(k));
+                speed(k) = yn(k);
+                yn_1(k) = yn(k);
+            else
+                if (abs(speed(k)) < 1) && (controlador ~= 0)
+                    x_n(k) = speed(k)*4;
+                    yn(k) = ((1-lambda)*x_n(k) + lambda*yn_1(k));
+                    speed(k) = yn(k);
+                    yn_1(k) = yn(k);
+                end
+            end
         end
         
         

@@ -72,8 +72,8 @@ set(h5, 'color', 'w');
 
 %% Guardando las plots
 
-saveas(h2, ['c',num2str(controlador),'_w.png'])
-saveas(h3, ['c',num2str(controlador),'_v.png']) 
+saveas(h2, ['c',num2str(controlador),'_v.png'])
+saveas(h3, ['c',num2str(controlador),'_w.png']) 
 saveas(h4, ['c',num2str(controlador),'_lr.png'])
 saveas(h5, ['c',num2str(controlador),'_pos.png'])
 
