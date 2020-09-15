@@ -2,13 +2,23 @@
 % GENERACIÓN DE DATASET
 % ===========================
 
+% Se limpian las variables del workspace, incluyendo las variables
+% persistentes presentes dentro de las diferentes funciones empleadas.
 clear;
+clear ComputeInertia;                               % Se limpian las variables persistentes dentro de "ComputeInertia.m"
+clear CostFunction;                                 % Se limpian las variables persistentes dentro de "CostFunction.m"
+clear getCriteriosConvergencia;                     % Se limpia la posición previa de entidad dentro de "getCriteriosConvergencia.m"
 
 % Parámetros generales
 NoParts = 1000;
-IterMaxPSO = 500;
+IterMaxPSO = 200;
 Runs = 20;
 NormalizarData = 0;
+
+% Tipo de dataset a generar: "Train" o "Test"
+% Nada cambia al alterar este parámetro, solo el nombre con el que se
+% guardará la data generada.
+TipoDataset = "Test";          
 
 % Creación de barra de progreso
 ProgressBar = waitbar(0,'Corriendo Pruebas PSO...');
@@ -339,10 +349,21 @@ for n = 1:numel(FuncionesCosto)
 end
 
 close(ProgressBar);
-save("Deep PSO Tuner\Datasets\PSOParameterSweep_Dataset - Output",'NetOutput');
-save("Deep PSO Tuner\Datasets\PSOParameterSweep_Dataset - Input",'NetInput');
-save("Deep PSO Tuner\Datasets\PSOParameterSweep_Dataset - Detalles",'DetallesRuns');
 
+% Dataset de entrenamiento
+if strcmp(TipoDataset,"Train")
+    save("Deep PSO Tuner\Datasets\PSO_" + TipoDataset + "Dataset - Output",'NetOutput');
+    save("Deep PSO Tuner\Datasets\PSO_" + TipoDataset + "Dataset - Input",'NetInput');
+    save("Deep PSO Tuner\Datasets\PSO_" + TipoDataset + "Dataset - Detalles",'DetallesRuns');
+
+% Dataset de validación
+else
+    TestInput = NetInput;
+    TestOutput = NetOutput;
+    save("Deep PSO Tuner\Datasets\PSO_" + TipoDataset + "Dataset - Output",'TestOutput');
+    save("Deep PSO Tuner\Datasets\PSO_" + TipoDataset + "Dataset - Input",'TestInput');
+    save("Deep PSO Tuner\Datasets\PSO_" + TipoDataset + "Dataset - Detalles",'DetallesRuns');
+end
 
 %% ==========================
 % NORMALIZACIÓN DE LA DATA

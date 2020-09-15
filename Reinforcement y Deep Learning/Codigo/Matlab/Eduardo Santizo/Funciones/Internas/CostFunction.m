@@ -1,7 +1,7 @@
 function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
 % COSTFUNCTION Evaluación de las posiciones de las partículas (X) en
 % la función de costo elegida. 
-% ------------------------------------------------------------------
+% -------------------------------------------------------------------------
 % Inputs:
 %   - X: Matriz (Nx2). Cada fila corresponde a las coordenadas de una
 %     partícula. La fila 1 corresponde a la coordenada X y la fila 2
@@ -28,7 +28,7 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
 %   - Costo: Vector columna con cada fila consistiendo del costo
 %     correspondiente a cada una de las partículas en el swarm.
 %
-% ------------------------------------------------------------------
+% -------------------------------------------------------------------------
 %
 % Parámetros:
 % 
