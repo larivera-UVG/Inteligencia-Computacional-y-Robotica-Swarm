@@ -1,13 +1,25 @@
 function [] = saveWorkspaceFigures(Path,Extension)
 % SAVEWORKSPACEFIGURES Todas las figuras guardadas por el usuario en la
 % workspace base de Matlab son guardadas en el Path especificado como 
-% imágenes en el formato especificado por el usuario.
+% imágenes en el formato especificado por el usuario. 
 % -------------------------------------------------------------------------
 % Input:
 %   - Path: Carpeta en la que se guardarán todas las figuras desplegadas y
 %     almacenadas actualmente en la workspace.
 %   - Extension: Formato de las imágenes en el que se guardarán las figuras
 %     generadas y guardadas. Ejemplos: "png" o "jpg".
+%
+% -------------------------------------------------------------------------
+%
+% Nota: Para que funcione correctamente la función, las figuras que desean 
+% guardarse como imágenes deben ser guardadas como variables en la 
+% workspace. Por ejemplo:
+%
+%   scatter(XData,YData,'LineWidth',1.5);
+%   No se guardará como imagen.
+%
+%   Puntos = (XData,YData,'LineWidth',1.5);
+%   Si se guardará como imagen.
 %
 % -------------------------------------------------------------------------
 
