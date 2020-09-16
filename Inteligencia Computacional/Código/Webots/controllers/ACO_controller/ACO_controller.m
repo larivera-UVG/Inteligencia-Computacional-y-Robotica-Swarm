@@ -68,7 +68,12 @@ end
 
 xi = (x(1):interpolate_step:x(end))';
 yi = interp1q(x, y, xi);
-% plot(x,y,'o',xi,yi,'r*')
+% Graficando la interpolación y el camino normal
+% subplot(1, 2, 1)
+% scatter(x,y,'Marker','o','MarkerFaceColor','k', 'MarkerEdgeColor', 'k')
+% subplot(1, 2, 2)
+% scatter(xi,yi,'Marker','o','MarkerFaceColor','k', 'MarkerEdgeColor', 'k')
+% plot(x,y,'k*',xi,yi,'r*')
 goals = [xi(2:end), yi(2:end)]; % [- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];%
 xg = goals(1, 1);  
 zg = goals(1, 2);
