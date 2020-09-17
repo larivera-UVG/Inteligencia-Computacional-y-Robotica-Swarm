@@ -137,6 +137,7 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
     IP.addParameter('ModoAPF', defaultModoAPF, @isstring);
     IP.addParameter('ComportamientoAPF', defaultComportamientoAPF, @isstring);
     IP.addParameter('NoWaves', defaultNoWaves, @isnumeric);
+    IP.addParameter('ConstanteM', 10, @isnumeric);
     IP.parse(X,FunctionName,varargin{:});
     
     % Se guardan los inputs "parseados" en variables útiles capaces
@@ -151,6 +152,7 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
     ObsMovilPosicion = IP.Results.ObsMovilPosicion;
     Comportamiento = IP.Results.ComportamientoAPF;
     NoWaves = IP.Results.NoWaves;
+    ConstanteM = IP.Results.ConstanteM;
     
 % ------------------------------------------------------------------
 
@@ -231,6 +233,13 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
         
         % Rosenbrock / Banana Function
         case {"Rosenbrock", "Banana"}
+            
+            % Error en caso se alimenten coordenadas de más de 2
+            % dimensiones
+            if size(X,2) > 2
+               error("Error: La función de costo" + FunctionName + "únicamente acepta coordenadas bidimensionales"); 
+            end
+            
             Costo = sum(100*(X(:,2)-X(:,1).^2).^2 + (X(:,1)-1).^2, 2);
             
             Minimo = [1 1];
@@ -238,6 +247,13 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
         
         % Booth Function
         case "Booth"
+            
+            % Error en caso se alimenten coordenadas de más de 2
+            % dimensiones
+            if size(X,2) > 2
+               error("Error: La función de costo" + FunctionName + "únicamente acepta coordenadas bidimensionales"); 
+            end
+            
             Costo = (X(:,1) + 2*X(:,2) - 7).^2 + (2*X(:,1) + X(:,2) - 5).^2;
             
             Minimo = [1 3];
@@ -245,6 +261,13 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
         
         % Himmelblau Function
         case "Himmelblau"
+            
+            % Error en caso se alimenten coordenadas de más de 2
+            % dimensiones
+            if size(X,2) > 2
+               error("Error: La función de costo" + FunctionName + "únicamente acepta coordenadas bidimensionales"); 
+            end
+            
             Costo = (X(:,1).^2 + X(:,2) - 11).^2 + (X(:,1) + X(:,2).^2 - 7).^2;
 
             Minimo = [      3       2; 
@@ -252,6 +275,68 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
                       -3.7793 -3.2831; 
                        3.5844 -1.8481];
             varargout{1} = Minimo;
+        
+        % Six-hump Camel Function
+        case {"Six-Hump Camel", "Camel"}
+            
+            if size(X,2) > 2
+               error("Error: La función de costo" + FunctionName + "únicamente acepta coordenadas bidimensionales"); 
+            end
+            
+            X1 = X(:,1);
+            X2 = X(:,2);
+            Costo = (4 - 2.1*X1.^2 + ((X1.^4) / 3)) .* X1.^2 + X1.*X2 + (-4 + 4*X2.^2).*X2.^2;
+            
+            Minimo = [ 0.0898 -0.7126;
+                      -0.0898  0.7126];
+            varargout{1} = Minimo;
+            
+        % Styblinski-Tang Function
+        case {"Styblinski-Tang", "Styblinski"}
+            
+            Costo = 0.5 * sum(X.^4 - 16*X.^2 + 5*X, 2);
+            
+            % Mínimo: Vector de -2.903534 con tantas dimensiones como X
+            Minimo = -2.903534 * ones(1,size(X,2));
+            varargout{1} = Minimo;
+            
+        case "Easom"
+            
+            % Error en caso se alimenten coordenadas de más de 2
+            % dimensiones
+            if size(X,2) > 2
+               error("Error: La función de costo" + FunctionName + "únicamente acepta coordenadas bidimensionales"); 
+            end
+            
+            X1 = X(:,1);
+            X2 = X(:,2); 
+            Costo = -cos(X1).*cos(X2).*exp(-(X1 - pi).^2 - (X2 - pi).^2);
+            
+            Minimo = [pi pi];
+            varargout{1} = Minimo;
+        
+        % Michalewicz Function
+        % Fuente: https://www.sfu.ca/~ssurjano/michal.html
+        case "Michalewicz"
+            
+            % Error en caso se alimenten coordenadas de más de 2
+            % dimensiones
+            if size(X,2) > 2
+               error("Error: Función soporta dimensiones arriba de 2, se desconoce el mínimo en estos puntos"); 
+            end
+            
+            % Matriz con el número de columna correspondiente a cada
+            % elemento
+            i = repmat(1:size(X,2), size(X,1),1);
+            
+            % Valor recomendado de parámetro: 10
+            m = ConstanteM;
+            
+            Costo = - sum(sin(X).*(sin((i.*X.^2)/pi)).^(2*m), 2);
+            
+            Minimo = [2.2 1.57];
+            varargout{1} = Minimo;
+            
             
         % Función basada en paper publicado por Jabandzic y Velagic (2016)
         case "Jabandzic"

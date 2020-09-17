@@ -34,20 +34,42 @@ PathArchivo = PathBase + "\" + NombreArchivo;
 
 % Número a agregar al final del nombre del archivo en caso ya exista el
 % archivo.
-Numero = 0;
+Numero = 1;
 
 % Si la carpeta ya existe se le agrega un número para evitar
 % sobre-escritura.
-while exist(Path,'file')
+while exist(PathArchivo + Extension,'file')
+       
+    % Si el número a agregar es igual o mayor a 2, entonces se elimina el
+    % número adjunto al final del nombre del archivo. Si el número es 1
+    % entonces se asume que el archivo no tiene dígito al final.
+    if Numero > 1
+        
+        % Cantidad de dígitos del número anterior al actual (El número que
+        % el archivo debería de tener).
+        NoDigitos = numel(num2str(Numero - 1));
+        
+        % Se convierte el string a un char que puede ser indexado por el
+        % usuario.
+        PathArchivo = char(PathArchivo);
+        
+        % Se eliminan los digitos al final del path. Si por ejemplo, el
+        % número al final del path es 10, entonces el número de dígitos es
+        % 2. Si el path tiene 10 caracteres, queremos eliminar los últimos
+        % dos. Entonces la indexación debería de ser: (end-1:end). Por eso
+        % la fórmula "end-(NoDigitos-1):end". Para el caso anterior esto
+        % esta fórmula retornaría la siguiente indexación "end-(2-1):end"
+        % exactamente lo que se deseaba.
+        PathArchivo(end-(NoDigitos - 1):end) = [];
+    end
 
-   % Si lo tiene, se borra el número adjunto al nombre del archivo.
-   PathArchivo = erase(PathArchivo, num2str(Numero));
-
-   % Se incrementa la cuenta del archivo y luego se agrega el siguiente
-   % número en la secuencia en caso se requiera.
-   Numero = Numero + 1; 
-   Path = PathArchivo + num2str(Numero) + Extension;
+    % Se incrementa la cuenta del archivo y luego se agrega el siguiente
+    % número en la secuencia en caso se requiera.
+    PathArchivo = string(PathArchivo) + num2str(Numero);
+  	Numero = Numero + 1; 
 end
+
+Path = PathArchivo + Extension;
 
 end
 
