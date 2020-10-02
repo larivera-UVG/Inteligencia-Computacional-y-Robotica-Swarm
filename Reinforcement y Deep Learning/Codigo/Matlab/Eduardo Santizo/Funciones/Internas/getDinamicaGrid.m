@@ -47,6 +47,9 @@ function [Recompensa,EstadoFuturo] = getDinamicaGrid(Accion,EstadoActual,MatrizE
 ColisionBorde = 0;
 ColisionParcial = 0;
 
+% Se asume que el movimiento no es diagonal
+isDiagonal = 0;
+
 % Se extraen las "coordenadas" del estado actual
 [FilaActual,ColumnaActual] = find(MatrizEstados == EstadoActual);
 
@@ -122,6 +125,9 @@ switch Accion
         elseif ~ismember(EstadoIzquierda,EstadosObs) && ismember(EstadoArriba,EstadosObs)
             ColisionParcial = 1;    
         end
+        
+        % El agente se mueve en diagonal
+        isDiagonal = 1;
 
     % Arriba-derecha
     case 6
@@ -144,6 +150,9 @@ switch Accion
         elseif ~ismember(EstadoDerecha,EstadosObs) && ismember(EstadoArriba,EstadosObs)
             ColisionParcial = 1;
         end
+        
+        % El agente se mueve en diagonal
+        isDiagonal = 1;
 
     % Abajo-izquierda
     case 7
@@ -166,6 +175,9 @@ switch Accion
         elseif ~ismember(EstadoAbajo,EstadosObs) && ismember(EstadoIzquierda,EstadosObs)
             ColisionParcial = 1;
         end
+        
+        % El agente se mueve en diagonal
+        isDiagonal = 1;
 
     % Abajo-derecha
     case 8
@@ -174,7 +186,8 @@ switch Accion
             ColisionBorde = 1;                  % Hubo colisión
             EstadoFuturo = EstadoActual;        % Se queda en el mismo lugar.
         end
-
+        
+        % Colisiones:
         % Colisión por movimiento en diagonal
         if ismember(EstadoAbajo,EstadosObs) && ismember(EstadoDerecha,EstadosObs)
             ColisionBorde = 1;
@@ -188,34 +201,39 @@ switch Accion
         elseif ~ismember(EstadoAbajo,EstadosObs) && ismember(EstadoDerecha,EstadosObs)
             ColisionParcial = 1;
         end
+        
+        % El agente se mueve en diagonal
+        isDiagonal = 1;
 end
 
 % ===================================
 % Recompensas
 % ===================================
 
-% Si se llega a la meta se recibe una recompensa
-if ismember(EstadoFuturo,EstadosMeta)
-    Recompensa = 1000;
+% R0: Recompensa inicial
+Recompensa = 0;
 
-% Recompensa por no haber llegado a la meta
+% R1: Llega a la meta
+if ismember(EstadoFuturo,EstadosMeta)
+    Recompensa = Recompensa + 100000;
+
+% R2: Agente no ha llegado a la meta
 else
-    Recompensa = -1;
+    Recompensa = Recompensa - 1;
 end
 
-% Si el estado futuro consiste de un obstáculo el agente
-% recibe un castigo y se regresa al estado pasado
-if ismember(EstadoFuturo,EstadosObs)
-    Recompensa = Recompensa - 1;
+% R3: Movimiento es diagonal
+if isDiagonal
+   Recompensa = Recompensa - 1; 
+end
+
+% R4: Agente choca con un borde
+if ismember(EstadoFuturo,EstadosObs) || ColisionBorde
+    Recompensa = Recompensa - 0;
     EstadoFuturo = EstadoActual;
 end
 
-% Si el agente choca con un borde recibe un castigo
-if ColisionBorde
-    Recompensa = Recompensa - 0;
-end
-
-% Si el agente se "medio choca" se le agrega un pequeño castigo
+% R5: El agente se "medio choca" o topa con borde
 if ColisionParcial
     Recompensa = Recompensa - 1;
 end

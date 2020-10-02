@@ -67,6 +67,7 @@ IP.parse(MetaActual,PosRobots,Trayectorias,isCiclica,varargin{:});
 % de ser utilizadas por el programa.
 ThresholdDist_MetaUnica = IP.Results.ThresholdDist_MetaUnica;
 ThresholdDist_MultiMeta = IP.Results.ThresholdDist_MultiMeta;
+NoPucks = size(PosRobots,1);
 
 % Caso: Meta Única
 if size(MetaActual,1) == 1
@@ -102,7 +103,7 @@ if size(MetaActual,1) == 1
         MetaActual = Trayectorias(NoMeta,:);
 
     end
-
+    
 % Caso: Meta distinta por Robot
 elseif size(MetaActual,1) == NoPucks
 

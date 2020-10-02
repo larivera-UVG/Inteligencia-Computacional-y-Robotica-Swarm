@@ -73,7 +73,7 @@ while HayColisiones && (Iteraciones < IteracionesMax)
     Posicion_Actual(ColidingPart,1) = Posicion_Actual(ColidingPart,1) + (DistAjusteX .* SignoSumaX);
     Posicion_Actual(ColidingPart,2) = Posicion_Actual(ColidingPart,2) + (DistAjusteY .* SignoSumaY);
     
-    DistsEntrePart = getDistsBetweenParticles(Posicion_Actual);                     % Se re-obtienen las distancias entre partículas luego de la primera corrección.
+    DistsEntrePart = getDistsBetweenParticles(Posicion_Actual,"Triangular");        % Se re-obtienen las distancias entre partículas luego de la primera corrección.
     [ColidingPartMain, ColidingPartAux] = find(DistsEntrePart < 2*RadioPuck);       % Se obtiene el "index" de los pucks sobrepuestos. Los valores NaN se ignoran.
     ColidingPart = [ColidingPartMain ColidingPartAux];                              % Se unen los ID's de los "Main" pucks (Filas con colisiones) y "Aux" pucks (Columnas).
     HayColisiones = ~isempty(ColidingPart);                                         % Se re-evalúa si no hay colisiones.

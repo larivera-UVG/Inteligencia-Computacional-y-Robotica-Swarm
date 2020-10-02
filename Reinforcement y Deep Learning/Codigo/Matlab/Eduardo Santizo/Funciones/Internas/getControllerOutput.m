@@ -222,7 +222,7 @@ switch ControllerType
         ErrorPos = PuckPosicion_Actual - Meta;
         
         % Controlador LQR
-    	K = 0.1;              	% Parámetros de controlador (Nadalini, pág 82)
+    	K = 1;              	% Parámetros de controlador (Nadalini, pág 82)
         U = -K * (ErrorPos);  	% Retroalimentación (Nadalini, pág 36)
         
         % Actualización de velocidades

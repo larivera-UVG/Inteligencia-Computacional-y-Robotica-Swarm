@@ -224,7 +224,7 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             varargout{1} = Minimo;
         
         % Schaffer F6 Function
-        case "Schaffer F6"
+        case {"Schaffer F6", "Schaffer N2"}
             Costo = 0.5 + ((sin(sqrt(sum(X.^2, 2))).^2 - 0.5) ./ ...
                            (1 + (0.001 * sum(X.^2, 2))));
                        
