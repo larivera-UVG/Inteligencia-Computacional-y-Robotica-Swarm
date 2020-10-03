@@ -10,7 +10,7 @@
 desktop;
 % keyboard;
 load('webots_test.mat');
-controlador = 5;
+controlador = 3;
 % get and enable devices, e.g.:
 %  camera = wb_robot_get_device('camera');
 %  wb_camera_enable(camera, TIME_STEP);
@@ -45,36 +45,54 @@ wb_compass_enable(orientation_sensor, TIME_STEP);
 % wb_receiver_enable(receiver,TIME_STEP);
 
 %% Valores iniciales
-pos = [-0.94 0 0.94];
-x = [pos(1); webots_path(:, 1)]; 
-y = [pos(3); webots_path(:, 2)];
 
-if controlador == 3 || controlador == 4
-    interpolate_step = 0.02;
-    epsilon = 0.01;
-elseif controlador == 8
-    interpolate_step = 0.005;
-    epsilon = interpolate_step/2;
-elseif controlador == 6
-    interpolate_step = 0.01;
-    epsilon = 3*interpolate_step/5;
-elseif controlador == 7
-    interpolate_step = 0.1;
-    epsilon = 3*interpolate_step/5;
-elseif controlador == 5
-    interpolate_step = 0.1;
-    epsilon = interpolate_step/2;
+if graph_type == "grid"
+    pos = [-0.94 0 0.94];
+    if controlador == 3 || controlador == 4
+        interpolate_step = 0.02;
+        epsilon = 0.01;
+    elseif controlador == 8
+        interpolate_step = 0.005;
+        epsilon = interpolate_step/2;
+    elseif controlador == 6
+        interpolate_step = 0.01;
+        epsilon = 3*interpolate_step/5;
+    elseif controlador == 7
+        interpolate_step = 0.1;
+        epsilon = 3*interpolate_step/5;
+    elseif controlador == 5
+        interpolate_step = 0.1;
+        epsilon = interpolate_step/2;
+    end
+    x = [pos(1); webots_path(:, 1)]; 
+    y = [pos(3); webots_path(:, 2)];
+    xi = (x(1):interpolate_step:x(end))';
+    yi = interp1q(x, y, xi);
+    goals = [xi(2:end), yi(2:end)]; % [- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];%
+else   
+    pos = [0.4376 0 0.4659];
+    % epsilon = 0.02;
+    % goals = [webots_path(2:end, 1), webots_path(2:end, 2)];
+    if controlador == 3 || controlador == 4
+        interpolate_step = 0.02;
+        epsilon = 0.01;
+    end
+    x = [pos(1); webots_path(:, 1)]; 
+    y = [pos(3); webots_path(:, 2)];
+    xi = (x(1):interpolate_step:x(end))';
+    yi = spline(x, y, xi);
+    goals = [xi(2:end), yi(2:end)];
 end
 
-xi = (x(1):interpolate_step:x(end))';
-yi = interp1q(x, y, xi);
+
 % Graficando la interpolación y el camino normal
-% subplot(1, 2, 1)
-% scatter(x,y,'Marker','o','MarkerFaceColor','k', 'MarkerEdgeColor', 'k')
-% subplot(1, 2, 2)
-% scatter(xi,yi,'Marker','o','MarkerFaceColor','k', 'MarkerEdgeColor', 'k')
-% plot(x,y,'k*',xi,yi,'r*')
-goals = [xi(2:end), yi(2:end)]; % [- 0.8, 0.8;-0.6, 0.6; -0.4, 0.4; -0.2, 0.2; 0, 0;0.2, -0.2];%
+subplot(1, 2, 1)
+scatter(x,y,'Marker','o','MarkerFaceColor','k', 'MarkerEdgeColor', 'k')
+subplot(1, 2, 2)
+scatter(xi,yi,'Marker','o','MarkerFaceColor','k', 'MarkerEdgeColor', 'k')
+plot(x,y,'k*',xi,yi,'r*')
+drawnow;
+
 xg = goals(1, 1);  
 zg = goals(1, 2);
 step = 0;

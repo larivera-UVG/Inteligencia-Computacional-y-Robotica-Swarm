@@ -11,7 +11,7 @@
 tic  % Para medir el tiempo que se tarda el algoritmo en correr.
 
 %% Graph generation
-graph_type = "grid";
+graph_type = "visibility";
 
 if strcmp(graph_type, "grid")
     % Creamos grid cuadrado con la cantidad de nodos indicada:
@@ -208,6 +208,11 @@ tiempofinal = toc;
 formatSpec = 'iter: %d - t: %.2f - cost: %.2f \n';
 fprintf(formatSpec, t-1, tiempofinal, moda)
 bpath = [G.Nodes.X(best_path), G.Nodes.Y(best_path)];
-webots_path = (bpath - grid_size/2).*[1/5 -1/5];
+if graph_type == "grid"
+    webots_path = (bpath - grid_size/2).*[1/5 -1/5];
+else
+    %max_bpath = max(max(bpath));
+    webots_path = bpath.*[1/grid_size -1/grid_size];
+end
 wb_pc_path = 'C:\Users\Gaby\Documents\UVG\5A2S\tesis\git-tesis\Inteligencia Computacional\Código\Webots\controllers\ACO_controller\';
-save(strcat(wb_pc_path, 'webots_test.mat'), 'bpath', 'webots_path')
+save(strcat(wb_pc_path, 'webots_test.mat'), 'bpath', 'webots_path', 'graph_type')

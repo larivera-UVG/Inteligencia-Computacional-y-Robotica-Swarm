@@ -1,0 +1,27 @@
+#VRML_SIM R2020a utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 1 0 0 4.71238898038469
+  position 7.631550377726291e-05 3.817557970375362 8.995236056651921e-07
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 2 2
+  floorTileSize 0.4 0.4
+  wallHeight 0.05
+}
+E-puck {
+  translation 0.4376 0 0.4659
+  rotation 0 1 0 3.14159
+  controller "ACO_controller"
+  turretSlot [
+    GPS {
+    }
+    Compass {
+    }
+  ]
+}
