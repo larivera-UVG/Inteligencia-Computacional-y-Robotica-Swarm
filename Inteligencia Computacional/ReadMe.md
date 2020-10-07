@@ -1,14 +1,16 @@
-![version](https://img.shields.io/badge/version-v1.2-blueviolet)
+![version](https://img.shields.io/badge/version-v2.0-blueviolet)
 ![buil](https://img.shields.io/badge/build-success-brightgreen)
 ![Matlab](https://img.shields.io/badge/Matlab-R2017a-blue)
-![license](https://img.shields.io/badge/license-no%20se%20Luis%20cu%C3%A1l%20ponemos%3F-green)
-![issues](https://img.shields.io/badge/issues-1%20open-orange)
+![Matlab](https://img.shields.io/badge/Matlab-R2018b-blue)
+![Matlab](https://img.shields.io/badge/Matlab-R2020a-blue)
 # Aprendizaje Automático, Computación Evolutiva e Inteligencia de Enjambre para Aplicaciones de Robótica
-En este proyecto se implementa el algoritmo **Ant Colony System** (AS) :ant: :ant: en Matlab para su posterior uso en robots similares a el robot E-Puck en aplicaciones de búsqueda.
+En este proyecto se implementa el algoritmo **Ant System** (AS) :ant: :ant: en Matlab para su posterior uso como planificador de trayectorias en robots similares a el robot E-Puck en aplicaciones de búsqueda y rescate. Además, también se tiene el código que implementa el **algoritmo genético** (GA) 🧬 con codificación binaria y entera.
 
 ## Tabla de contenido
 
 1. [ Prerrequisitos ](#desc)
+   1. [ Conexión Webots+Matlab ](#webmat)
+   2.  [ Toolboxes adicionales ](#tool)
 2. [ Algoritmo ](#alg)
 3. [ Código ](#usage)
    1. [ ACO.m ](#aco)
@@ -25,7 +27,13 @@ En este proyecto se implementa el algoritmo **Ant Colony System** (AS) :ant: :an
 <a name="desc"></a>
 ## 1. Prerrequisitos
 
-Para correr los programas de esta sección del repositorio es necesario tener instalada alguna versión de Matlab. Para hacer esta versión del código se utilizó Matlab R2017a, pero podría utilizar una diferente.
+Para correr los programas de esta sección del repositorio es necesario tener instalada alguna versión de Matlab. Para elaborar el código en este repositorio se utilizó Matlab 2017 y 2018, sin embargo, parte del código también fue probado en la versión 2020. Además de Matlab, también se cuenta con código para Webots 2020 rev1, por lo que será necesario instalarlo. 
+
+<a name="webmat"></a>
+### 1.1 Conexión Webots+Matlab
+
+<a name="tool"></a>
+### 1.2 Toolboxes adicionales
 
 <a name="alg"></a>
 ## 2. Algoritmo
@@ -101,4 +109,3 @@ Por lo tanto, el algoritmo necesita regresar en el path que recorrió para salir
 
 Este código es básicamente ACO pero modificado para no tener simulación y correr el barrido de los parámetros rho, alpha y beta.
 
-## License
