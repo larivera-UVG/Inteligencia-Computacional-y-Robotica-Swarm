@@ -27,10 +27,15 @@ En este proyecto se implementa el algoritmo **Ant System** (AS) :ant: :ant: en M
 <a name="desc"></a>
 ## 1. Prerrequisitos
 
-Para correr los programas de esta sección del repositorio es necesario tener instalada alguna versión de Matlab. Para elaborar el código en este repositorio se utilizó Matlab 2017 y 2018, sin embargo, parte del código también fue probado en la versión 2020. Además de Matlab, también se cuenta con código para Webots 2020 rev1, por lo que será necesario instalarlo. 
+Para correr los programas de esta sección del repositorio es necesario tener instalada alguna versión de Matlab. Para elaborar el código en este repositorio se utilizó Matlab 2017 y 2018, sin embargo, parte del código también fue probado en la versión 2020. Además de Matlab, también se cuenta con código para Webots 2020 rev1, por lo que será necesario instalarlo.
 
 <a name="webmat"></a>
 ### 1.1 Conexión Webots+Matlab
+En la carpeta **Conexión Webots-Matlab** están todos los archivos necesarios y una guía extra para realizar la conexión. Es posible que no funciona, pues algunos de mis compañeros no pudieron hacer la conexión. La guía de conexión fue originalmente proporcionada por MSc. Miguel Zea en Robótica 2, ciclo 2 2020.
+1. Colocar los archivos launcher.m y allincludes.h dentro de la carpeta *C:\Users\<usuario>\AppData\Local\Programs\Webots\lib\controller\matlab* Esta carpeta debería de existir si se instaló Webots de manera estándar.
+2. Abrir el archivo mingw.mpkginstall dentro de Matlab. Es decir, desde Matlab dirigirse a la carpeta donde está guardado el archivo y darle doble click o escribir su nombre en la consola.
+3. Verificar que este archivo quedó bien instalado siguiendo la guía en el siguiente enlace (https://la.mathworks.com/help/matlab/matlab_external/install-mingw-support-package.html).
+4. Verificar que Webots sí pueda comunicarse con MATLAB al abrir  y correr un ejemplo como el de *languages>matlab>e-puck_matlab.wbt* en *Open Sample World...*
 
 <a name="tool"></a>
 ### 1.2 Toolboxes adicionales
@@ -108,4 +113,3 @@ Por lo tanto, el algoritmo necesita regresar en el path que recorrió para salir
 :no_entry: :construction: En construcción :construction: :no_entry:
 
 Este código es básicamente ACO pero modificado para no tener simulación y correr el barrido de los parámetros rho, alpha y beta.
-

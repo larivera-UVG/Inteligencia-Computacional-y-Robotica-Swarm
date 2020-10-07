@@ -1,0 +1,10 @@
+Guía dada por Miguel Zea en Robótica 2 2020
+
+Donde colocar los archivos launcher.m y allincludes.h
+Deben colocar estos archivos dentro de la carpeta C:\Users\<usuario>\AppData\Local\Programs\Webots\lib\controller\matlab, esta carpeta existirá siempre y cuando hayan instalado Webots de manera estándar.
+
+El archivo mingw.mpkginstall deben correrlo adentro de MATLAB y pueden verificar que sí quedó bien instalado siguiendo la guía en el siguiente enlace (https://la.mathworks.com/help/matlab/matlab_external/install-mingw-support-package.html). Finalmente, para verificar que Webots sí pueda comunicarse con MATLAB abran y corran el ejemplo languages>matlab>e-puck_matlab.wbt en Open Sample World...
+
+https://www.cyberbotics.com/doc/guide/using-matlab
+
+https://la.mathworks.com/matlabcentral/answers/520512-error-while-using-webots-matlab-controller
