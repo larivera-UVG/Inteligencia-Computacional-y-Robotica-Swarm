@@ -28,7 +28,7 @@ Para correr los programas de esta sección del repositorio es necesario tener in
 <a name="webmat"></a>
 ### 1.1 Conexión Webots+Matlab
 En la carpeta **Conexión Webots-Matlab** están todos los archivos necesarios y una guía extra para realizar la conexión. Es posible que no funciona, pues algunos de mis compañeros no pudieron hacer la conexión. La guía de conexión fue originalmente proporcionada por MSc. Miguel Zea en Robótica 2, ciclo 2 2020.
-1. Colocar los archivos launcher.m y allincludes.h dentro de la carpeta :open_file_folder: *C:\Users\<usuario>\AppData\Local\Programs\Webots\lib\controller\matlab* Esta carpeta debería de existir si se instaló Webots de manera estándar.
+1. Colocar los archivos launcher.m y allincludes.h dentro de la carpeta :open_file_folder: *C:\Users\\<usuario>\AppData\Local\Programs\Webots\lib\controller\matlab* Esta carpeta debería de existir si se instaló Webots de manera estándar.
 2. Abrir el archivo mingw.mpkginstall dentro de Matlab. Es decir, desde Matlab dirigirse a la carpeta donde está guardado el archivo y darle doble click o escribir su nombre en la consola.
 3. Verificar que este archivo quedó bien instalado siguiendo la guía en el siguiente enlace: https://la.mathworks.com/help/matlab/matlab_external/install-mingw-support-package.html
 4. Verificar que Webots sí pueda comunicarse con MATLAB al abrir  y correr un ejemplo como el de *languages>matlab>e-puck_matlab.wbt* en *Open Sample World...*
