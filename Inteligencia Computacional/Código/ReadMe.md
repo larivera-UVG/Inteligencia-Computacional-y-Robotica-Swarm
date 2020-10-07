@@ -3,7 +3,6 @@
 ![Matlab](https://img.shields.io/badge/Matlab-R2017a-blue)
 ![Matlab](https://img.shields.io/badge/Matlab-R2018b-blue)
 ![Matlab](https://img.shields.io/badge/Matlab-R2020a-blue)
-![Matlab](https://img.shields.io/badge/Webots-R2020aRev.1-red)
 # Aprendizaje Automático, Computación Evolutiva e Inteligencia de Enjambre para Aplicaciones de Robótica
 En este proyecto se implementa el algoritmo **Ant System** (AS) :ant: :ant: en Matlab para su posterior uso como planificador de trayectorias en robots similares a el robot E-Puck en aplicaciones de búsqueda y rescate. Además, también se tiene el código que implementa el **algoritmo genético** (GA) 🧬 con codificación binaria y entera.
 
@@ -13,10 +12,17 @@ En este proyecto se implementa el algoritmo **Ant System** (AS) :ant: :ant: en M
    1. [ Conexión Webots+Matlab ](#webmat)
    2.  [ Toolboxes adicionales ](#tool)
 2. [ Generalidades del algoritmo ](#alg)
-3. [ Uso del código ](#usage)
-   1. [ Código ](#cod)
-   2.  [ Documentos ](#docs)
-   3. [ git-images ](#images)
+3. [ Código ](#usage)
+   1. [ ACO.m ](#aco)
+   2.  [ nodes.m ](#nodes)
+   3. [ nodeid.m ](#id)
+   4.  [ neighbors.m ](#nei)
+   5. [ tabu.m ](#tabu)
+   6.  [ ant_decision.m ](#dec)
+   7. [ rouletteWheel.m ](#rou)
+   8. [ loop_remover.m ](#loop)
+   9.  [ ACO_params_ev.m ](#aco2)
+
 
 <a name="desc"></a>
 ## 1. Prerrequisitos
@@ -43,7 +49,7 @@ En la carpeta **Conexión Webots-Matlab** están todos los archivos necesarios y
 
 Primero se implementó el algoritmo Simple Ant Colony (SACO) con movimiento sin diagonales, pero el algoritmo final fue el Ant System de Marco Dorigo por tener más flexibilidad de parámetros. Este último algoritmo fue codificado en el mismo archivo de ACO.m, por lo que se sobreescribió el AS por el ACO y le agregué el movimiento diagonal. El algoritmo fue codificado según el pseudocódigo brindado por Andries P. Engelbrecht en su libro :blue_book: _Computational Intelligence An Introduction_, segunda edición, página 371 (algoritmo 17.3).
 
-![alg](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Marco teórico/alg17.3.PNG)
+![alg](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/alg17.3.PNG)
 
 Básicamente el algoritmo consta de 3 distintas partes que se repiten :repeat: hasta que se haya encontrado una solución o se haya llegado a un máximo de iteraciones (t):
 - **Construcción de camino por hormiga**
@@ -57,40 +63,60 @@ Cada enlace entre los nodos tiene asociado un nivel de feromona que "con el tiem
 Se deposita feromona en cada link entre cada nodo del path construido por cada hormiga, inversamente proporcional a la distancia de ese camino. De este modo, caminos grandes tendrán poca feromona y por ende, menos probabilidad de ser escogidos.
 
 <a name="usage"></a>
-## 3. Uso del código
-A continuación se presenta el resumen de lo que contienen las carpetas del repositorio. En la carpeta de Código se encuentra otro archivo ReadMe.md que explica más a detalle los scripts.
-<a name="cod"></a>
-### 3.1 Código
-En esta carpeta se encuentran las carpetas siguientes:
-* ACO
-* Analytics
-* GA-bin
-* GA-int
-* Webots
+## 3. Código
+<a name="aco"></a>
+### 3.1 ACO.m
+El archivo main de la carpeta es ACO.m. Si se desea correr el resultado de una simulación de Ant System debe de tener todos los archivos mencionados en este documento en la misma carpeta o agregados al path :open_file_folder:. Luego de esto, presione el botón de Run :arrow_forward: en Matlab y la simulación debería de correr sin problemas.
 
-Donde se guarda el código actualizado de cada algoritmo (ACO/GA-bin/GA-int/Webots). En el caso de Analytics, se encuentra el código para analizar las ejecuciones del barrido de parámetros de ACO.
+<a name="nodes"></a>
+### 3.2 nodes.m
+Utilizado en la línea 15 de ACO.m. Su trabajo es generar los nodos a partir de un tamaño de espacio de trabajo. Para esta versión se utilizó una cuadrícula de 10x10 unidades. La función devuelve todos los puntos de la cuadrícula en forma de vectores fila:
 
-<a name="docs"></a>
-### 3.2 Documentos
-En esta carpeta se encuentra el cronograma, protocolo y tesis. También se encuentra un backup del LaTeX de la tesis por si algo malo pasaba con :leaves: Overleaf :leaves:.
+x | y
+-- | --
+1 | 1
+2 | 1
+... | ...
+9 | 10
+10 | 10
 
-<a name="images"></a>
-### 3.3 git-images
-Como el nombre lo dice, aquí se encuentran todas las imágenes que utilicé en la tesis y en los archivos ReadMe.
+<a name="id"></a>
+### 3.3 nodeid.m
+Utilizando en las líneas 82,124,132,146 y 171 de ACO.m. Esta función acepta como parámetros un nodo y la lista de todos los nodos (generada por nodes.m). Utilizando la función `ismember` de Matlab se regresa el índice del nodo con respecto a la lista de todos los nodos.
 
-* **Controlador ACO v1**: ACO en Webots sin modificaciones (interpolación ni filtro)
-* **Controlador ACO v2**: ACO en Webots con modificaciones
-* **Controladores**: Controladores en Webots sin ACO
-* **GA**: Algoritmo genético en Matlab para minimizar funciones de costo
-* **Grid**: ACO en Matlab con grafo tipo cuadrícula
-* **Marco teórico**: Imágenes tomadas de otros sitios o en general relevantes en el marco teórico de la tesis
-* **PRM**: ACO en Matlab con grafo tipo PRM
-* **RRT controller v1** (**): Intento fallido de ACO con RRT e interpolación
-* **RRT**: ACO en Matlab con grafo tipo RRT
-* **Readme**: Imágenes utilizadas solo en los archivos ReadMe de GitHub.
-* **Visibility**: ACO con grafo de visibilidad
+<a name="nei"></a>
+### 3.4 neighbors.m
+Utilizando en la línea 40 y 63 de ACO.m. Esta función acepta como parámetros: un nodo y los límites en x y y del grid. Devuelve a todos los vecinos del nodo (norte, sur, este, oeste y las diagonales) en el mismo formato de vector fila como lo devuelve nodes.m.
 
-(**) No se puede interpolar cuando la trayectoria no sea una función. Esto sobre complicaba la tesis, sacándolo del alcance. Por tanto, no se continuó con ese trabajo.
+<a name="tabu"></a>
+### 3.5 tabu.m
+Utilizando en la línea 128 de ACO.m. Esta función devuelve la lista de vecinos a los que sí se puede viajar, la lista de nodos bloqueados (ya visitados) y una bandera binaria. Lo que se busca es no repetir nodos para no regresar y dar vueltas donde no es necesario.
+
+<a name="dec"></a>
+### 3.6 ant_decision.m
+Utilizado en la línea 125 de ACO.m. Toma la decisión de a qué nodo debe de dirigirse la hormiga según la ecuación de probabilidad descrita en la imagen de abajo. La probabilidad se elige utilizando el algoritmo **Roulette Wheel** :ferris_wheel:, que se describe en la siguiente sección.
+
+![prob](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/probabilidad_AS.PNG)
+
+<a name="rou"></a>
+### 3.7 rouletteWheel.m
+Utilizado en la línea 35 de ant_decision.m. Algoritmo utilizado en computación evolutiva para seleccionar de forma aleatoria un valor. El pseudocódigo fue extraído del libro :blue_book: antes mencionado (_Computational Intelligence An Introduction_).
+
+![rou](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/roullete.PNG)
+
+<a name="loop"></a>
+### 3.8 loop_remover.m
+Utilizado en la línea 139 de ACO.m. En algunas ocasiones el algoritmo se encuentra con topes como el de la siguiente figura:
+
+![fail](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/fallo.png)
+
+Por lo tanto, el algoritmo necesita regresar en el path que recorrió para salir del callejón. Esta función lo que hace es quitar los nodos a los que recorrió y que no le llevaron a ningún lugar útil, por lo que se hace más corto el camino. Este comportamiento está mejor explicado en el libro :orange_book: _Ant Colony Optimization_ de Marco Dorigo y Thomas Stützle.
+
+<a name="aco2"></a>
+### 3.9 ACO_params_ev.m
+:no_entry: :construction: En construcción :construction: :no_entry:
+
+Este código es básicamente ACO pero modificado para no tener simulación y correr el barrido de los parámetros rho, alpha y beta.
 
 ***
 Readme.md
