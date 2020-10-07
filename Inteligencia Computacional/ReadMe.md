@@ -28,14 +28,14 @@ Para correr los programas de esta sección del repositorio es necesario tener in
 <a name="webmat"></a>
 ### 1.1 Conexión Webots+Matlab
 En la carpeta **Conexión Webots-Matlab** están todos los archivos necesarios y una guía extra para realizar la conexión. Es posible que no funciona, pues algunos de mis compañeros no pudieron hacer la conexión. La guía de conexión fue originalmente proporcionada por MSc. Miguel Zea en Robótica 2, ciclo 2 2020.
-1. Colocar los archivos launcher.m y allincludes.h dentro de la carpeta :open_file_folder: *C:\Users\\<usuario>\AppData\Local\Programs\Webots\lib\controller\matlab* Esta carpeta debería de existir si se instaló Webots de manera estándar.
+1. Colocar los archivos launcher.m y allincludes.h dentro de la carpeta :open_file_folder: *C:\Users\\<usuario>\AppData\Local\Programs\Webots\lib\controller\matlab* (Solo un / después de Users, no sé por qué aquí lo duplica). Esta carpeta debería de existir si se instaló Webots de manera estándar.
 2. Abrir el archivo mingw.mpkginstall dentro de Matlab. Es decir, desde Matlab dirigirse a la carpeta donde está guardado el archivo y darle doble click o escribir su nombre en la consola.
-3. Verificar que este archivo quedó bien instalado siguiendo la guía en el siguiente enlace: https://la.mathworks.com/help/matlab/matlab_external/install-mingw-support-package.html :link:
+3. Verificar que este archivo quedó bien instalado siguiendo la guía en el siguiente enlace: :link: https://la.mathworks.com/help/matlab/matlab_external/install-mingw-support-package.html
 4. Verificar que Webots sí pueda comunicarse con MATLAB al abrir  y correr un ejemplo como el de *languages>matlab>e-puck_matlab.wbt* en *Open Sample World...*
 
 <a name="tool"></a>
 ### 1.2 Toolboxes adicionales
-1. **Instalación**: Aparte de lo mencionado anteriormente, también necesitamos descargar e instalar el Toolbox de robótica de Peter Corke. Dicho Toolbox puede ser descargado de: https://petercorke.com/toolboxes/robotics-toolbox/ :link: La instalación es la misma que para el archivo mingw.mpkginstall.
+1. **Instalación**: Aparte de lo mencionado anteriormente, también necesitamos descargar e instalar el Toolbox de robótica de Peter Corke. Dicho Toolbox puede ser descargado de: :link: https://petercorke.com/toolboxes/robotics-toolbox/ La instalación es la misma que para el archivo mingw.mpkginstall.
 2. **Modificación**: Con las funciones de prm y rrt del toolbox de Peter Corke se utilizan funciones que él nombró igual que las *built in* de Matlab. Por tanto, es necesario mover las funciones **PENDIENTE** hasta arriba en *HOME>Set Path*. Es decir, cuando ya se está en set path, esas funciones deben de ser arrastradas hasta arriba para que Matlab las encuentre antes que las *built in* de Matlab.
 
 <a name="alg"></a>
@@ -91,6 +91,7 @@ Como el nombre lo dice, aquí se encuentran todas las imágenes que utilicé en 
 * **Visibility**: ACO con grafo de visibilidad
 
 (*) Perdón que no tiene tilde porque no me deja meter imágenes :disappointed:
+
 (**) No se puede interpolar cuando la trayectoria no sea una función. Esto sobre complicaba la tesis, sacándolo del alcance. Por tanto, no se continuó con ese trabajo.
 
 ***
