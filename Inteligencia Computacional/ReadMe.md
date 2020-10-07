@@ -39,7 +39,7 @@ En la carpeta **Conexión Webots-Matlab** están todos los archivos necesarios y
 
 ![matlogo](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Readme/Matlab-logo.png)
 
-![welogo](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Readme/webots-logo.png =250x250)
+![welogo](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Readme/webots-logo.png)
 
 <a name="tool"></a>
 ### 1.2 Toolboxes adicionales
