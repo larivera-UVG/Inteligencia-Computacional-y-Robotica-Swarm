@@ -37,9 +37,9 @@ En la carpeta **Conexión Webots-Matlab** están todos los archivos necesarios y
 3. Verificar que este archivo quedó bien instalado siguiendo la guía en el siguiente enlace (https://la.mathworks.com/help/matlab/matlab_external/install-mingw-support-package.html).
 4. Verificar que Webots sí pueda comunicarse con MATLAB al abrir  y correr un ejemplo como el de *languages>matlab>e-puck_matlab.wbt* en *Open Sample World...*
 
-![matlogo](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Readme/Matlab-logo.PNG)
+![matlogo](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Readme/Matlab-logo.png)
 
-![welogo](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Readme/Webots-logo.PNG)
+![welogo](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Readme/webots-logo.png)
 
 <a name="tool"></a>
 ### 1.2 Toolboxes adicionales
