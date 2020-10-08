@@ -19,7 +19,7 @@ if iteraciones == 70
     dd = cell2table(d(2:end, :), 'VariableNames', {'tiempo','costo','iteraciones','path','rho'});
     rho_data = [aa; bb; cc; dd];
 elseif iteraciones == 150
-    load('sweep_data.mat')
+    load('sweep_data5.mat')
     rho_data = cell2table(rho_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','iteraciones','path','rho'});
 end
 

@@ -5,7 +5,7 @@
 % 11/07/2020
 % Descripción: Barrido para encontrar mejores parámetros para Q.
 %% Graph generation
-% start_mail();
+start_mail();
 try
 graph_type = "grid";
 
@@ -39,28 +39,25 @@ end
 
 
 %% ACO init
-t_max = 70;
-hormigas = 50;
-beta = 2;  % cte. positiva que regula el depósito de feromona
+t_max = 150;
 epsilon = 0.9;  % Porcentaje de hormigas que queremos siguiendo la misma solución
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                C A M B I A R  E L  P A R Á M E T R O S
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Q = 2;
-rho = 0.5;
+rho = 0.6;
 alpha = 1;  % Le da más peso al costo del link en la probabilidad
-
-% Preallocation
-ants(1:hormigas) = struct('blocked_nodes', [], 'last_node', nodo_init, 'current_node', nodo_init, 'path', nodo_init, 'L', zeros(1, t_max));
-sweep = 55:5:60;%100
-repetitions = 2;%10
+beta = 1;  % cte. positiva que regula el depósito de feromona
+Q = 2.1;
+hormigas = 50;
+sweep = 50:10:100;
+repetitions = 150;
 ant_sweep_data = cell(numel(sweep) * repetitions + 1, 5);
 ant_sweep_data(1, :) = {'tiempo', 'costo', 'iteraciones', 'path', 'hormigas'};
 sweep_count = 1;
 t_acumulado = 0;
 
-for rep = 1:1:repetitions
+for rep = 1:1:repetitions    
     for hormigas = sweep
+        % Preallocation
+        ants(1:hormigas) = struct('blocked_nodes', [], 'last_node', nodo_init, 'current_node', nodo_init, 'path', nodo_init, 'L', zeros(1, t_max));
+
         %% ACO loop
         timer = tic;
         G = G_cpy;
@@ -156,11 +153,11 @@ end
 % Guardado final
 save('sweep_data', 'ant_sweep_data', '-append')
 disp("Done.")
-%end_mail();
+end_mail();
 
 catch
     disp("Oh rayos....\n")
-    % error_mail();
+    error_mail();
 end
 
 % sum(cell2mat(rho_sweep_data(2:end, 1))) % Tiempo total de operación de la
