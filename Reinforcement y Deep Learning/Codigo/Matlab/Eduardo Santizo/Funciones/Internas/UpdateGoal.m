@@ -60,7 +60,7 @@ IP.addRequired('isCiclica', @isnumeric);
 % usuario debe escribir el nombre del parámetro a modificar seguido
 % de su valor. Si no se provee un valor Matlab asume uno "default".
 IP.addParameter('ThresholdDist_MetaUnica', 0.6, @isnumeric);
-IP.addParameter('ThresholdDist_MultiMeta', 0.3, @isnumeric);
+IP.addParameter('ThresholdDist_MultiMeta', 0.4, @isnumeric);
 IP.parse(MetaActual,PosRobots,Trayectorias,isCiclica,varargin{:});
 
 % Se guardan los inputs "parseados" en variables útiles capaces
@@ -78,7 +78,13 @@ if size(MetaActual,1) == 1
     % Si la media de las distancias es menor al threshold, se
     % cambia a una nueva meta.
     if mean(RobotDist_Meta) < ThresholdDist_MetaUnica
-
+        
+        % En caso el vector de trayectorias sea tridimensional (ndims == 3)
+        % este se convierte en una matriz bidimensional
+        if ndims(Trayectorias) == 3
+            Trayectorias = squeeze(Trayectorias)';
+        end
+        
         % Se extrae el número de meta actual.
         [~,NoMetaActual] = ismember(MetaActual,Trayectorias,'rows');
 
