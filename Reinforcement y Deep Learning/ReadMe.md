@@ -5,10 +5,10 @@
 
 # Reinforcement y Deep Learning en Aplicaciones de Robótica de Enjambre
 
-<center>
+<div style="text-align:center">
    <img src="./Media/Animación_PlanificatorTrayectorias.gif" width="49%" />
    <img src="./Media/Animación_PSOTuner.gif" width="49%" /> 
-</center>
+</div>
 
 ## Índice
 
@@ -237,7 +237,7 @@ Los pasos para la ejecución de ambos scripts son los siguientes:
 - Hacer click en la sección y presionar el botón `Run Section` de Matlab. Esto cambiará automáticamente el directorio actual de Matlab, incluirá todas las subcarpetas necesarias para la operación de los scripts y comprobará que el archivo `functionSignatures.json` no contenga errores.
 
 <center>
-   <img src="./Media/RunSection.png" width="40%" />
+   <img src="./Media/RunSection.PNG" width="40%" />
 </center>
 
 - Bajar a la sección "*Parámetros y Settings*". 
@@ -252,9 +252,9 @@ Los pasos para la ejecución de ambos scripts son los siguientes:
 - El usuario puede alterar las diferentes propiedades de la simulación. Se provee una breve descripción de cada parámetro al lado de cada variable. La propiedad principal a alterar es la de `Metodo` (*SR Toolbox*) o `CostFunc` (*Pruebas PSO Tuner*). Para observar el generador de trayectorias, elegir la opción `Dynamic Programming` como método en `SR_Toolbox.mlx`.
 - Presionar `Run Section`. El programa debería de desplegar una figura de simulación acorde al `Metodo` / `CostFunc` elegido. Si se desea generar una nueva simulación, presionar nuevamente `Run Section`.
 
-<center>
+<div style="text-align:center">
    <img src="./Media/CorriendoSimulacion.gif" width="90%" />
-</center>
+</div>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size:9pt;">Nota: El GIF fue acelerado artificialmente. La inicialización del script toma más tiempo del mostrado. </span>
 
