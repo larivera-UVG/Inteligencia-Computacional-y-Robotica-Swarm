@@ -191,17 +191,15 @@ Eduardo Santizo
 
 ### Aldo Aguilar (2019)
 
-<p><center>
-   <img src="./Media/Aldo.gif" width="90%" />
-</center></p>
+<center>
+   <img src="./Media/Aldo.gif" width="50%" />
+</center>
 
 Tomó como base el algoritmo PSO y lo utilizó como un método de planificación de movimiento para robots diferenciales. Realizó  pruebas con 8 controladores diferentes y encontró que aquellos con mejor rendimiento eran el LQR y LQI. La única desventaja que notó era que los robots describían trayectorias muy rectas, lo cual evitaba que los robots esquivaran obstáculos.
 
 ### Juan Pablo Cahueque (2019)
 
-<center>
-   <img src="./Media/JuanPablo.gif" width="50%" />
-</center>
+<img align="center" src="./Media/JuanPablo.gif" width="40%"/>
 
 Tomó los avances de Aldo y los utilizó en conjunto con "*Artificial Potential Fields*" para permitir que los robots esquivaran obstáculos presentes en el camino hacia la meta. En este caso, el controlador LQR resultó efectivo para esquivar obstáculos grandes, mientras que el PID con un filtro de "*Hard-Stops*" resultó efectivo para esquivar obstáculos pequeños y numerosos.
 
