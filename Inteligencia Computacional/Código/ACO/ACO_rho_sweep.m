@@ -40,7 +40,7 @@ end
 
 
 %% ACO init
-t_max = 70;
+t_max = 150;
 hormigas = 50;
 Q = 2;  % cte. positiva que regula el depósito de feromona
 epsilon = 0.9;  % Porcentaje de hormigas que queremos siguiendo la misma solución

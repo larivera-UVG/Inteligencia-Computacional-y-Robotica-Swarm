@@ -1,4 +1,4 @@
-% IE Diseño e Innovación
+% IE Diseño e Innovación 1
 % Ant Colony Optimization - Ant System
 % Gabriela Iriarte Colmenares
 % 16009
@@ -39,20 +39,17 @@ end
 
 
 %% ACO init
-t_max = 70;
+t_max = 150;
 hormigas = 50;
-beta = 2;  % cte. positiva que regula el depósito de feromona
+beta = 1;  % cte. positiva que regula el depósito de feromona
 epsilon = 0.9;  % Porcentaje de hormigas que queremos siguiendo la misma solución
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                C A M B I A R  E L  P A R Á M E T R O S
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-rho = 0.5;
+rho = 0.6;
 alpha = 1;  % Le da más peso al costo del link en la probabilidad
 
 % Preallocation
 ants(1:hormigas) = struct('blocked_nodes', [], 'last_node', nodo_init, 'current_node', nodo_init, 'path', nodo_init, 'L', zeros(1, t_max));
-sweep = 1:0.1:3;
-repetitions = 10;
+sweep = 1.2:0.1:2.4;
+repetitions = 150;
 Q_sweep_data = cell(numel(sweep) * repetitions + 1, 5);
 Q_sweep_data(1, :) = {'tiempo', 'costo', 'iteraciones', 'path', 'Q'};
 sweep_count = 1;

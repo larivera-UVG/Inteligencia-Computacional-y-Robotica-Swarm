@@ -31,6 +31,8 @@ En este proyecto se implementa el algoritmo **Ant System** (AS) :ant: :ant: en M
 
 Para correr los programas de esta sección del repositorio es necesario tener instalada alguna versión de Matlab. Para elaborar el código en este repositorio se utilizó Matlab 2017 y 2018, sin embargo, parte del código también fue probado en la versión 2020. Además de Matlab, también se cuenta con código para Webots 2020 rev1, por lo que será necesario instalarlo.
 
+Hay que prender el parallel pool de preferencia antes.
+
 <a name="webmat"></a>
 ### 1.1 Conexión Webots+Matlab
 En la carpeta **Conexión Webots-Matlab** están todos los archivos necesarios y una guía extra para realizar la conexión. Es posible que no funciona, pues algunos de mis compañeros no pudieron hacer la conexión. La guía de conexión fue originalmente proporcionada por MSc. Miguel Zea en Robótica 2, ciclo 2 2020.

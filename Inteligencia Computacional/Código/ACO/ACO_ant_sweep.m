@@ -1,9 +1,10 @@
-% IE Diseño e Innovación
+% IE Diseño e Innovación 1
 % Ant Colony Optimization - Ant System
 % Gabriela Iriarte Colmenares
 % 16009
 % 11/07/2020
-% Descripción: Barrido para encontrar mejores parámetros para Q.
+% Descripción: Barrido para encontrar mejor valor para el número de 
+% hormigas. Este se ejecutó después del barrido para Q.
 %% Graph generation
 start_mail();
 try

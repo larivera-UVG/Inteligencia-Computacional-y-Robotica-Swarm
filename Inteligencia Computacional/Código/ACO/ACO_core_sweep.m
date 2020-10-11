@@ -1,10 +1,11 @@
-% IE Diseño e Innovación
+% IE Diseño e Innovación 1
 % Ant Colony Optimization - Ant System
 % Gabriela Iriarte Colmenares
 % 16009
 % 8/08/2020
-% Descripción: Barrido para encontrar mejores parámetros para alpha.
-% Le da más peso a la feromona en la probabilidad.
+% Descripción: Barrido de cores. Con esto deberíamos de observar una
+% minimización del tiempo que le toma a Matlab empezar conforme se aumenta
+% el número de cores.
 %% Graph generation
 start_mail();
 

@@ -5,7 +5,7 @@
 %% Importar las matrices
 iteraciones = 1;
 if iteraciones == 1
-    load('sweep_data.mat') 
+    load('sweep_data10.mat') 
     Q_data = cell2table(Q_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','iteraciones','path','Q'});
     valores = {'1.2','1.3','1.4','1.5','1.6','1.7','1.8','1.9','2','2.1','2.2','2.3','2.4'};
     [grupo, id] = findgroups(Q_data.Q);

@@ -1,4 +1,4 @@
-% IE Diseño e Innovación
+% IE Diseño e Innovación 1
 % Ant Colony Optimization - Ant System
 % Gabriela Iriarte Colmenares
 % 16009
@@ -7,10 +7,13 @@
 % primero leer el algoritmo 17.3 del libro Computational Intelligence
 
 %% Detectar funciones lentas
-% profile on
+% profile on % El profiler se utiliza para detectar funciones lentas
+% Para que funcione hay que descomentarlo y descomentar el profile viewer
+% de abajo (casi al final del código)
 tic  % Para medir el tiempo que se tarda el algoritmo en correr.
 
 %% Graph generation
+% Se elige el tipo de grafo que se va a utilizar
 graph_type = "visibility";
 
 if strcmp(graph_type, "grid")
@@ -79,6 +82,7 @@ mean_plot = zeros(t_max, 1);
 t = 1;
 stop = 1;
 % Gradient Color para la animación
+% Solo es para personalizar los colores de la animación
 map = [255 255 255
     245 215 250
     255 166 216
@@ -158,7 +162,7 @@ while (t <= t_max && stop)
         dtau = Q/numel(ants(k).path);
         edge_index = findedge(G, ants(k).path(1:end - 1), ants(k).path(2:end));
         G.Edges.Weight(edge_index) = G.Edges.Weight(edge_index) + dtau;
-        ants(k).path = nodo_init;  % Borramos el path de la hormiga k
+        ants(k).path = nodo_init;
     end
     
     [mode_plot(t), F] = mode(L(:,t));
@@ -203,7 +207,7 @@ else
 
 end
 
-% profile viewer
+% profile viewer % Es parte del profiler, descomentar para ver
 tiempofinal = toc;
 formatSpec = 'iter: %d - t: %.2f - cost: %.2f \n';
 fprintf(formatSpec, t-1, tiempofinal, moda)
@@ -211,7 +215,6 @@ bpath = [G.Nodes.X(best_path), G.Nodes.Y(best_path)];
 if graph_type == "grid"
     webots_path = (bpath - grid_size/2).*[1/5 -1/5];
 else
-    %max_bpath = max(max(bpath));
     webots_path = bpath.*[1/grid_size -1/grid_size];
 end
 wb_pc_path = 'C:\Users\Gaby\Documents\UVG\5A2S\tesis\git-tesis\Inteligencia Computacional\Código\Webots\controllers\ACO_controller\';
