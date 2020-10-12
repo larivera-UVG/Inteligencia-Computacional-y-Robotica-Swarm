@@ -1,4 +1,4 @@
-function [XVerts,YVerts,ZVerts] = polyshape2fill3(CoordsX,CoordsY)
+function [XVerts,YVerts,ZVerts] = polyshape2fill3(CoordsX,CoordsY,CoordsZ)
 % POLYSHAPE2FILL3 Función que cambia el formato de los vértices de un
 % polígono destinado para ser utilizado en funciones como polyshape
 % (Vértices en una sola columna separando con NaN cada objeto) a vértices
@@ -46,7 +46,11 @@ function [XVerts,YVerts,ZVerts] = polyshape2fill3(CoordsX,CoordsY)
     NoPuntos = size(XVerts,1);
     XVerts = repmat(XVerts,1,2);
     YVerts = repmat(YVerts,1,2);
-    ZVerts = [repmat(zeros(NoPuntos,1),1,NoObjetos) repmat(ones(NoPuntos,1),1,NoObjetos)];
+    
+    AlturaBase = CoordsZ(1,1);
+    AlturaTapa = CoordsZ(1,2);
+    ZVerts = [repmat(AlturaBase*ones(NoPuntos,1),1,NoObjetos) ... 
+              repmat(AlturaTapa*ones(NoPuntos,1),1,NoObjetos)];
 
 end
 

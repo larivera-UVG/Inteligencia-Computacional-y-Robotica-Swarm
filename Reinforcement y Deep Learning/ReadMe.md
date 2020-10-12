@@ -5,10 +5,12 @@
 
 # Reinforcement y Deep Learning en Aplicaciones de Robótica de Enjambre
 
-<div style="text-align:center">
+<p align="center">
+   <center>
    <img src="./Media/Animación_PlanificatorTrayectorias.gif" width="49%" />
    <img src="./Media/Animación_PSOTuner.gif" width="49%" /> 
-</div>
+   </center>
+</p>
 
 ## Índice
 
@@ -191,24 +193,32 @@ Eduardo Santizo
 
 ### Aldo Aguilar (2019)
 
-<center>
-   <img src="./Media/Aldo.gif" width="50%" />
-</center>
+<p align="center">
+   <center>
+   <img src="./Media/Aldo.gif" width="40%" />
+   </center>
+</p>
 
 Tomó como base el algoritmo PSO y lo utilizó como un método de planificación de movimiento para robots diferenciales. Realizó  pruebas con 8 controladores diferentes y encontró que aquellos con mejor rendimiento eran el LQR y LQI. La única desventaja que notó era que los robots describían trayectorias muy rectas, lo cual evitaba que los robots esquivaran obstáculos.
 
 ### Juan Pablo Cahueque (2019)
 
-<img align="center" src="./Media/JuanPablo.gif" width="40%"/>
+<p align="center">
+   <center>
+   <img src="./Media/JuanPablo.gif" width="40%"/>
+   </center>
+</p>
 
 Tomó los avances de Aldo y los utilizó en conjunto con "*Artificial Potential Fields*" para permitir que los robots esquivaran obstáculos presentes en el camino hacia la meta. En este caso, el controlador LQR resultó efectivo para esquivar obstáculos grandes, mientras que el PID con un filtro de "*Hard-Stops*" resultó efectivo para esquivar obstáculos pequeños y numerosos.
 
 ### Eduardo Santizo (2020)
 
-<center>
+<p align="center">
+   <center>
    <img src="./Media/Animación_PlanificatorTrayectorias.gif" width="49%" />
    <img src="./Media/Animación_PSOTuner.gif" width="49%" /> 
-</center>
+   </center>
+</p>
 
 Las dos investigaciones previas fueron exitosas, pero requerían de la selección manual de los parámetros <img src="https://latex.codecogs.com/gif.latex?\inline&space;\phi_1"/>, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\phi_2"/> y <img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/> propios del algoritmo PSO. Para automatizar su selección se diseñó una red neuronal recurrente (RNN) capaz de tomar diferentes métricas del PSO y en base a estas generar valores para los parámetros del algoritmo. A la red neuronal se le denominó  *PSO Tuner* y permitió mejorar la velocidad y precisión del algoritmo estándar PSO significativamente (figura de la derecha).
 
@@ -222,39 +232,49 @@ Los pasos para la ejecución de ambos scripts son los siguientes:
 
 - Bajar a la primera sección: "*Setup: Path*".
 
-<center>
-   <img src="./Media/SetupPath.gif" width="80%" />
-</center>
+<p align="center">
+   <center>
+   <img src="./Media/SetupPath.gif" width="70%" />
+   </center>
+</p>
 
 - De ser necesario, cambiar la raíz del path donde se encuentra actualmente el repositorio.
 
-<center>
-   <img src="./Media/RaizPath.png" width="90%" />
-</center>
+<p align="center">
+   <center>
+   <img src="./Media/RaizPath.png" width="70%" />
+   </center>
+</p>
 
 - Hacer click en la sección y presionar el botón `Run Section` de Matlab. Esto cambiará automáticamente el directorio actual de Matlab, incluirá todas las subcarpetas necesarias para la operación de los scripts y comprobará que el archivo `functionSignatures.json` no contenga errores.
 
-<center>
-   <img src="./Media/RunSection.PNG" width="40%" />
-</center>
+<p align="center">
+   <center>
+   <img src="./Media/RunSection.PNG" width="30%" />
+   </center>
+</p>
 
 - Bajar a la sección "*Parámetros y Settings*". 
 - Algunas propiedades en esta sección se cambian por medio de *dropdown menus*. Si es la primera vez que se utiliza alguno de los livescripts, Matlab ejecutará el script cada vez que se intente cambiar una opción en los menús. Para evitar esto, el usuario debe deshabilitar manualmente esta opción para cada *dropdown menu* de la siguiente forma:
 
-<center>
-   <img src="./Media/DropdownAutorun.gif" width="50%" />
-</center>
+<p align="center">
+   <center>
+   <img src="./Media/DropdownAutorun.gif" width="40%" />
+   </center>
+</p>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size:9pt;"> Nota: Una vez cambiado, no es necesario volver a repetir este proceso.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <sub> Nota: Una vez cambiado, no es necesario volver a repetir este proceso. </sub>
 
 - El usuario puede alterar las diferentes propiedades de la simulación. Se provee una breve descripción de cada parámetro al lado de cada variable. La propiedad principal a alterar es la de `Metodo` (*SR Toolbox*) o `CostFunc` (*Pruebas PSO Tuner*). Para observar el generador de trayectorias, elegir la opción `Dynamic Programming` como método en `SR_Toolbox.mlx`.
 - Presionar `Run Section`. El programa debería de desplegar una figura de simulación acorde al `Metodo` / `CostFunc` elegido. Si se desea generar una nueva simulación, presionar nuevamente `Run Section`.
 
-<div style="text-align:center">
-   <img src="./Media/CorriendoSimulacion.gif" width="90%" />
-</div>
+<p align="center">
+   <center>
+   <img src="./Media/CorriendoSimulacion.gif" width="80%" />
+   </center>
+</p>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size:9pt;">Nota: El GIF fue acelerado artificialmente. La inicialización del script toma más tiempo del mostrado. </span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <sub>Nota: El GIF fue acelerado artificialmente. La inicialización del script toma más tiempo del mostrado.</sub>
 
 ## Hardware y Software
 
@@ -280,73 +300,402 @@ A continuación se describen todas las secciones que conforman al script `SR_Too
 
 #### Limpieza de Workspace
 
-<center>
-   <img src="./Media/LimpiezaWorkspace.png" width="100%" />
-</center>
+<p align="center">
+   <center>
+   <img src="./Media/LimpiezaWorkspace.PNG" width="95%" />
+   </center>
+</p>
 
-Esta sección se encarga de limpiar todas las variables del *Workspace* en caso existieran variables pre-existentes propias de otros scripts o de ejecuciones previas del *Toolbox*. Además de esto, también se limpian las **variables persistentes** empleadas dentro de diferentes funciones del *Toolbox*.
+Esta sección se encarga de limpiar todas las variables del *Workspace* en caso existieran variables pre-existentes propias de otros scripts o de ejecuciones previas del *Toolbox*. También se limpian las **variables persistentes** empleadas dentro de diferentes funciones del *Toolbox*.
 
 <details>
-<summary> <span style="font-size:10pt;"><strong>Variables Persistentes</strong> (Hacer click para más información)</span> </summary>
-<span style="font-size:10pt;"> En Matlab, los valores de las variables dentro de una función desaparecen luego de que la misma finaliza su ejecución. Para poder mantener el valor de una variable entre diferentes llamadas a la función, se declara a la variable como <tt>persistent</tt>. La desventaja de declarar variables de este tipo, es que su valor se restablece hasta que el usuario reinicia Matlab. Para limpiar estas variables de forma programática, se debe escribir <tt>clear</tt> seguido del nombre de la función que contiene variables persistentes.
-</span> </details> <br/>
+<summary> <sub><strong>Variables Persistentes</strong> (Hacer click para más información)</sub> </summary>
+<sub> En Matlab, los valores de las variables dentro de una función desaparecen luego de que la misma finaliza su ejecución. Para poder mantener el valor de una variable entre diferentes llamadas a la función, se declara a la variable como <tt>persistent</tt>. La desventaja de declarar variables de este tipo, es que su valor se restablece hasta que el usuario reinicia Matlab. Para limpiar estas variables de forma programática, se debe escribir <tt>clear</tt> seguido del nombre de la función que contiene variables persistentes.
+</sub> </details> <br/>
 
 #### Parámetros y Settings
 
-Esta sección permite controlar una gran variedad de elementos propios de la simulación, desde parámetros dimensionales y visuales, hasta el generador de números aleatorios a emplear por el programa (la *seed*). A continuación se presenta una breve explicación de cada uno de los parámetros que pueden llegar a ser cambiados. Hacer click en cada parámetro para desplegar más información.
+Esta sección permite controlar una gran variedad de elementos propios de la simulación, desde parámetros dimensionales y visuales, hasta la *seed* a utilizar. A continuación se presenta una breve explicación de cada uno de los parámetros que pueden llegar a ser cambiados. **Hacer click en el nombre de cada parámetro para desplegar más información**.
 
-##### Método
+<ins>*Método a Utilizar*</ins>
 
 <details>
-<summary> <span style="font-size:10pt;"><tt>Metodo</tt></span> </summary>
-<span style="font-size:10pt;"> Tipo de método que se simulará. Se incluye un *dropdown menu* que permite elegir entre las opciones disponibles. El usuario puede elegir tres tipos de método: Métodos dependientes de PSO, métodos basados en el seguimiento de una trayectoria y métodos mixtos (mezcla PSO y seguimiento de trayectorias). En el caso de los métodos PSO, escribir en consola `help CostFunction`, para más información. Si se elige un método PSO, el método corresponde a una función de costo. En la sección [funciones de costo](#funciones-de-costo), se provee la visualización y ecuaciones para algunas de las funciones de costo disponibles como parte de la *Toolbox*</span> </details>
+<summary> <tt>Metodo</tt> </summary>
+<sub> Tipo de método que se simulará. Se incluye un dropdown menu que permite elegir entre las opciones disponibles. El usuario puede elegir tres tipos de método: Métodos dependientes de PSO (APF, Jabandzic y funciones de costo benchmark como Dropwave, Banana, Levy, etc.), métodos basados en el seguimiento de una trayectoria (Dynamic programming y Demo Trayectorias) y métodos dinámicos (que no requieren de planeación previa para explorar la mesa de trabajo). En el caso de los métodos PSO, la propiedad de <tt>Metodo</tt> pasa a llamarse función de costo o <tt>CostFunc</tt>. En la sección de "Funciones de Costo", se provee la visualización y ecuaciones para algunas de las funciones de costo disponibles como parte de la Toolbox</sub> </details> <br/>
 
-- `Metodo`: Tipo de método que se simulará. Se incluye un *dropdown menu* que permite elegir entre las opciones disponibles. El usuario puede elegir tres tipos de método: Métodos dependientes de PSO, métodos basados en el seguimiento de una trayectoria y métodos mixtos (mezcla PSO y seguimiento de trayectorias). En el caso de los métodos PSO, escribir en consola `help CostFunction`, para más información. Si se elige un método PSO, el método corresponde a una función de costo. En la sección [funciones de costo](#funciones-de-costo), se provee la visualización y ecuaciones para algunas de las funciones de costo disponibles como parte de la *Toolbox*.
+<ins>*Dimensiones de Mesa de Trabajo*</ins>
 
-- `NoParticulas`: Cantidad de robots a simular 
-- CostFunc: Función de costo a minimizar por las partículas. Puede seleccionarse por medio de un dropdown menu o escribirse manualmente. Se ofrecen 10 funciones de costo distintas: 9 funciones "Benchmark" y 1 función dependiente de los obstáculos colocados en el escenario denominada "APF". Para más información sobre las opciones disponibles escribir en consola: *`help CostFunction`*
-- DimsMesa: Dimensiones de la mesa sobre la que se moverán los robots
-- EndTime: Tiempo que durará la simulación
-- EnablePucks: Booleano. Habilita o deshabilita la animación de los robots.
+<details>
+<summary> <tt>AnchoMesa</tt> </summary>
+<sub> Ancho de la mesa de trabajo. Unidades en metros.</sub>
+<p align="center">
+   <center>
+   <img src="./Media/DimsMesa.png" width="80%" />
+   </center>
+</p>
+</details>
 
-![Enable Pucks](./Media/EnablePucks.png)
+<details>
+<summary> <tt>AltoMesa</tt> </summary>
+<sub> Alto de la mesa de trabajo. Unidades en metros.</sub>
+<p align="center">
+   <center>
+   <img src="./Media/DimsMesa.png" width="80%" />
+   </center>
+</p>
+</details>
 
-- RadioLlantasPuck: Radio de las ruedas que emplea el robot diferencial
-- RadioCuerpoPuck: Distancia del centro del robot a sus ruedas.
-- PuckVelMax: Velocidad máxima del puck en función de sus actuadores
-- ModoVisualización: 2D, 3D o None. El 3D se recomienda para observar más fácilmente la forma de la función de costo. El 2D es más útil para observar el movimiento de los marcadores y/o robots.  
+<details>
+<summary> <tt>Margen</tt> </summary>
+<sub> Ancho del margen uniforme que existirá alrededor de los bordes de la mesa de trabajo. Unidades en metros. </sub>
+<p align="center">
+   <center>
+   <img src="./Media/Margen.png" width="80%" />
+   </center>
+</p>
+</details><br/>
 
-![Modo Visualización](./Media/ModoVisualizacion.png)
+<ins>*Settings de Simulación*</ins>
+
+<details>
+<summary> <tt>EndTime</tt> </summary>
+<sub> Duración total de la simulación en segundos. </sub>
+</details>
+
+<details>
+<summary> <tt>dt</tt> </summary>
+<sub> Delta de tiempo, tiempo de muestreo o cantidad de segundos que transcurrirán entre cada una de las iteraciones del main loop del algoritmo. </sub>
+</details><br/>
+
+<ins>*Settings de Partículas PSO*</ins>
+
+<details>
+<summary> <tt>NoParticulas</tt> </summary>
+<sub> Cantidad de partículas a utilizar dentro del algoritmo de PSO. En los métodos dependientes de PSO, el número de partículas tiende a sobre-escribir el número de E-Pucks a utilizar también. </sub>
+</details>
+
+<details>
+<summary> <tt>PartPosDims</tt> </summary>
+<sub> El algoritmo de PSO consiste de un algoritmo de optimización. Debido a esto, el algoritmo es capaz de ser utilizado en problemas de cualquier dimensionalidad. Este parámetro permite cambiar el número de dimensiones que contiene el vector de posición de cada una de las partículas PSO. Se recomienda mantener su valor en 2 para no interferir con el funcionamiento de la mayor parte de métodos. </sub>
+</details>
+
+<details>
+<summary> <tt>IteracionesMaxPSO</tt> </summary>
+<sub> Número de iteraciones máximas a utilizar por el algoritmo PSO. Este parámetro existe porque no en todos los métodos se desea que el tiempo de simulación coincida con el tiempo que le toma al PSO correr por completo. </sub>
+</details>
+
+<details>
+<summary> <tt>CriterioPart</tt> </summary>
+<sub> Criterio de convergencia que utilizará el algoritmo PSO para evaluar el momento en el que debe dar fin al algoritmo. Se ofrecen tres opciones: Meta Alcanzada, Entidades Detenidas e Iteraciones Max. Para más información escribir <tt>help getCriteriosConvergencia</tt>. </sub>
+<p align="center">
+   <center>
+   <img src="./Media/CriterioConvergencia.png" width="98%" />
+   </center>
+</p>
+</details>
+
+<details>
+<summary> <tt>Restriccion</tt> </summary>
+<sub>  Tipo de restricción a utilizar en la regla de actualización de velocidad en el PSO.
+<p align="center">
+   <center>
+   <img src="https://latex.codecogs.com/gif.latex?\inline&space;v(t+1)=\chi\left(\omega v(t)+\vec{U}\left(0, \phi_{1}\right) \odot\left(\overrightarrow{p_{\text {local }}}-\vec{x}_{i}\right)+\vec{U}\left(0, \phi_{2}\right) \odot\left(\overrightarrow{p_{\text {global }}}-\vec{x}_{i}\right)\right)"/>
+   </center>
+</p>
+Se ofrecen tres opciones:
+<ul>
+  <li>Inercia: Se multiplica a la velocidad previa por una constante denominada inercia (<img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/>). Se ofrecen 5 tipos de inercia: Constante, Linealmente Decreciente, Decreciente Caótica, Aleatoria y Exponencial Natural. Para más información escribir en la ventana de comandos <tt>help ComputeInertia</tt>. La constante <img src="https://latex.codecogs.com/gif.latex?\inline&space;\chi"/> se iguala a 1 para impedir la intervención de la restricción por constricción. </li>
+  <li>Constricción: Criterio de convergencia propuesto por Clerc (1999). Este criterio asegura la convergencia del algoritmo siempre y cuando <img src="https://latex.codecogs.com/gif.latex?\inline&space;\kappa = 1$ y $\phi_1 + \phi_2 > 4"/>. La constante <img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/> se iguala a 1 para impedir la intervención de la restricción por inercia.</li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/Restricciones.png" width="40%" />
+   </center>
+</p>
+<ul>
+  <li>Mixto: Uso de inercia "Exponencial Natural" junto con los parámetros de constricción propuestos por Clerc (1999). Propuesto por Aldo en su tesis.</li>
+</ul>
+</sub>
+</details><br/>
+
+<ins>*Settings de E-Pucks*</ins>
+
+<details>
+<summary> <tt>NoPucks</tt> </summary>
+<sub> Cantidad de robots diferenciales a simular. </sub>
+</details>
+
+<details>
+<summary> <tt>EnablePucks</tt> </summary>
+<sub> Si únicamente se desea visualizar el movimiento de las partículas en un método dependiente de PSO, se permite que el usuario desactive la simulación de los robots E-Puck.
+<p align="center">
+   <center>
+   <img src="./Media/EnablePucks.png" width="90%" />
+   </center>
+</p>
+</sub>
+</details>
+
+<details>
+<summary> <tt>RadioLlantasPuck</tt> </summary>
+<sub> Radio de las ruedas que emplea el robot diferencial. Unidades en metros. </sub>
+</details>
+
+<details>
+<summary> <tt>RadioCuerpoPuck</tt> </summary>
+<sub> Distancia del centro del robot a sus ruedas. Unidades en metros. </sub>
+</details>
+
+<details>
+<summary> <tt>RadioDifeomorfismo</tt> </summary>
+<sub> Al sacar la cinemática directa de un robot diferencial, el modelo derivado es altamente no lineal. Para poder aplicar control a dicho robot, entonces se supone que no se controlará la posición y velocidad del centro del robot como tal, sino de un punto delante de él (comúnmente ubicado en los extremos de su radio en caso se trate de un robot circular). La distancia que existe entre el centro del robot y este punto a controlar se le denomina radio de difeomorfismo. Unidades en metros. </sub>
+</details>
+
+<details>
+<summary> <tt>PuckVelMax</tt> </summary>
+<sub> Velocidad angular máxima que pueden alcanzar las ruedas del robot. Unidades en rad/s. </sub>
+</details>
+
+<details>
+<summary> <tt>ControladorPucks</tt> </summary>
+<sub> Controlador para el movimiento punto a punto de los E-Pucks. Existen 5 opciones. Basados en los controladores implementados por Aldo:
+<p align="center">
+   <center>
+   <img src="./Media/Controlador - LQR.png" width="50%" />
+   </center>
+</p>
+<ul>
+  <li>Linear Quadratic Regulator (LQR): Movimiento rápido que desacelera conforme el robot se acerca a la meta. Para cambiar de dirección el robot se detiene completamente, gira y luego se mueve.</li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/Controlador - LQI.png" width="50%" />
+   </center>
+</p>
+<ul>
+  <li>Linear Quadratic Integral Control (LQI): Movimiento parecido al LQR, pero con una desaceleración menos pronunciada y sin giros agudos en el cambio de meta a meta. El robot no se detiene completamente para girar.</li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/Controlador - Pose Simple.png" width="50%" />
+   </center>
+</p>
+<ul>
+  <li>Controlador de Pose Simple: Movimiento con velocidad menor a aquella observada en los controladores LQR y LQI. Debido a su aceleración angular menor, las trayectorias generadas son más suaves y largas.</li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/Controlador - Pose Simple.png" width="50%" />
+   </center>
+</p>
+<ul>
+  <li>Controlador de Pose con Criterio de Estabilidad de Lyapunov: Misma velocidad que en el controlador de pose simple. Giros agudos, pero aceleraciones angulares bajas al momento de girar e iniciar el movimiento lineal.</li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/Controlador - Pose Simple.png" width="50%" />
+   </center>
+</p>
+<ul>
+  <li>Controlador de Direccionamiento de Lazo Cerrado: Controlador con la menor velocidad de entre los 5 presentados. El robot busca alinear su dirección con la meta, pero no su sentido. Por lo tanto, no importando si su eje +X (línea rojo vivo del robot) o -X apunta en la dirección de la meta, este se moverá hacia la misma. Esto implica que según le sea conveniente, el robot se desplazará hacia adelante o en reversa hacia la meta. La aceleración angular es baja, produciendo giros sumamente suaves; no obstante, debido a la alta velocidad lineal asociada al movimiento, el robot tiende a desviarse ligeramente del punto hacia el que desea orientarse, causando que las trayectorias tengan una mayor longitud.</li>
+</ul>
+Entre estos, los dos mejores se consideran el LQI y LQR, con el peor siendo el de Closed-Loop Steering. Para más información escribir en consola <tt>help getControllerOutput</tt>. </sub>
+</details>
+
+<details>
+<summary> <tt>CriterioPuck</tt> </summary>
+<sub> Similar al parámetro <tt>CriterioPart</tt>. Determina el criterio de convergencia que utilizará el ciclo principal para determinar el momento en el que debe finalizar su ejecución según la posición de los robots diferenciales. Existen tres opciones: Meta Alcanzada, Entidades Detenidas e Iteraciones Max.
+<p align="center">
+   <center>
+   <img src="./Media/CriterioConvergencia.png" width="98%" />
+   </center>
+</p>
+</sub>
+</details><br/>
+
+<ins>*Settings de Seguimiento de Trayectorias*</ins>
+
+<details>
+<summary> <tt>TrayectoriaCiclica</tt> </summary>
+<sub> En métodos de seguimiento de trayectorias, el robot está activamente siguiendo un conjunto de puntos en orden secuencial. Si se establece que se desea una trayectoria cíclica, cuando el robot alcance el último punto de su trayectoria, este tomará como siguiente punto a seguir el primer punto en la trayectoria. Si la trayectoria no es cíclica, el último punto de la misma no cambia aunque se llegue a ella. </sub>
+</details>
+
+<details>
+<summary> <tt>DemoMultimeta</tt> </summary>
+<sub> El método "Demo Trayectorias" consiste de un método en el que un cierto número de robots (dado por la variable <tt>NoPucks</tt>) siguen una trayectoria común predeterminada por el usuario. Si <tt>DemoMultimeta = 1</tt>, entonces el número de robots se limitará a tres y cada uno de estos seguirá una meta distinta. </sub>
+<p align="center">
+   <center>
+   <img src="./Media/DemoTrayectoriasUnicaMeta.gif" width="49%" />
+   <img src="./Media/DemoTrayectoriasMultimeta.gif" width="49%" /> 
+   </center>
+</p>
+</details><br/>
+
+<ins>*Animación*</ins>
+
+<details>
+<summary> <tt>ModoVisualizacion</tt> </summary>
+<sub> 2D, 3D o None. El modo 3D se recomienda para observar más fácilmente la forma de la función de costo en métodos dependientes de PSO. El 2D es más útil para observar el movimiento de las partículas y/o robots.</sub>
+<p align="center">
+   <center>
+   <img src="./Media/ModoVisualizacion.png" width="80%" />
+   </center>
+</p>
+</details>
+
+<details>
+<summary> <tt>EnableRotacionCamara</tt> </summary>
+<sub>Cuando Matlab grafica en 3D, este elige un ángulo óptimo para posicionar la cámara que enfoca el plot. Al habilitar esta opción, Matlab gira la cámara alrededor del plot a una velocidad constante. Únicamente válido para el modo de visualización 3D. </sub>
+<p align="center">
+   <center>
+   <img src="./Media/RotacionCamaraDisabled.gif" width="49%" />
+   <img src="./Media/RotacionCamaraEnabled.gif" width="49%" />
+   </center>
+</p>
+</details>
+
+<details>
+<summary> <tt>VelocidadRotacion</tt> </summary>
+<sub>Cantidad de grados que rota la cámara alrededor del plot en cada iteración del main loop. Mientras más bajo el valor absoluto de esta cantidad más lenta será la rotación. Si la velocidad es positiva, la cámara rota a favor de las manecillas del reloj. Si la velocidad es negativa, la cámara rota en contra de las manecillas. </sub>
+</details>
+
+<details>
+<summary> <tt>OverwriteTitle</tt> </summary>
+<sub>Por defecto, la simulación utiliza el título como un cronómetro o contador para el tiempo de simulación. Si <tt>OverwriteTitle = 1</tt> se reemplaza este contador por un string dado por el usuario. </sub>
+</details>
+
+<details>
+<summary> <tt>OverwriteTitle_String</tt> </summary>
+<sub> String que reemplaza el título por defecto de la simulación si <tt>OverwriteTitle = 1</tt>. </sub>
+</details><br/>
+
+<ins>*Obstáculos*</ins>
+
+<details>
+<summary> <tt>TipoObstaculo</tt> </summary>
+<sub>Tipo de obstáculo a colocar en la mesa de trabajo. Existen 5 opciones:
+
+<ul>
+  <li>Polígono: El usuario puede dibujar el polígono que desee. La interfaz de creación incluye la región de partida y el/los puntos meta para que el usuario evite colocar el obstáculo sobre estos (aunque aún puede hacerlo). Para cerrar el polígono y finalizar la creación del obstáculo, se puede dar doble click en cualquier parte del plot o se puede hacer click sobre el primer vértice colocado. Una vez creado el polígono, este no puede moverse. Esta herramienta solo es capaz de crear un solo polígono (no importando su complejidad). Si se desean crear múltiples polígonos, se recomienda utilizar la herramienta de Imagen.
+  </li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/CreandoPoligono.png" width="80%" />
+   </center>
+</p>
+
+<ul>
+  <li>Cilindro: Coloca un cilindro en el centro de la mesa de trabajo. El radio puede cambiarse manualmente alterando el parámetro <tt>RadioObstaculo</tt>.
+  </li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/Cilindro.png" width="40%" />
+   </center>
+</p>
+<ul>
+  <li>Imagen: El usuario puede tomar una imagen en blanco y negro de un mapa (con los obstáculos en negro y el espacio vacío en blanco), colocarla en el directorio base del script principal (o dentro de la carpeta <tt>.../Mapas/Imágenes</tt>) y luego procesarla para convertirla en un obstáculo utilizable dentro del Toolbox.
   
-### Obstáculos
+  Para su funcionamiento, esta herramienta hace uso de la función <tt>ImportarMapa.m</tt>. Dicha función toma como entrada una imagen y extrae los vértices de los obstáculos presentes en la imagen. Este proceso puede llegar a tomar mucho tiempo según la complejidad del obstáculo, entonces la función puede revisar si ya existen datos previamente procesados de la imagen elegida por el usuario. Si este es el caso, el usuario puede elegir reutilizar los datos guardados para así evitar la carga computacional asociada. También se incluyen medidas para revisar el nivel de similitud de la imagen elegida con el de las imágenes guardadas. Si es lo suficientemente parecido, el programa nuevamente pregunta si el usuario desea reutilizar datos previos.
+  
+  Si se desea comprender más a profundidad la forma en la que funciona dicha función (o refinar el montón de parámetros de los que depende la función), existe una versión alternativa (<tt>.../Ejemplos y Scripts Auxiliares/Importador_Mapas.mlx</tt>) con figuras y métodos alternativos para realizar el mismo proceso de extracción de vértices.
+  </li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/MapaImagen.png" width="80%" />
+   </center>
+</p>
 
-Basado en la implementación de "Artificial Potential Fields" de Juan Pablo Cahueque. Si se seleccionó "APF" como función de costo, esta funcionalidad permite que el usuario diseñe los obstáculos a posicionar en la mesa de trabajo. Se ofrecen 5 opciones diferentes.
+<ul>
+  <li>Caso A: Réplica del escenario A utilizado en la tesis de Juan Pablo.
+  </li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/CasoA.png" width="50%" />
+   </center>
+</p>
 
-- Polígono: El usuario puede dibujar el polígono que desee. Para colocar un vértice hacer click. Para finalizar, cerrar el polígono regresando al primer vértice colocado y haciendo click en este punto.
+<ul>
+  <li>Caso B: Réplica del escenario B utilizado en la tesis de Juan Pablo.
+  </li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/CasoB.png" width="40%" />
+   </center>
+</p>
 
-![Creando Polígono](./Media/CreandoPoligono.png)
+<ul>
+  <li>Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
+  </li>
+</ul>
+<p align="center">
+   <center>
+   <img src="./Media/CasoC.png" width="40%" />
+   </center>
+</p>
+</sub>
+</details>
 
-- Cilindro: Coloca un cilindro de radio 2 en el centro de la mesa de trabajo.
-- Caso A: Réplica del escenario A utilizado en la tesis de Juan Pablo. 
+<details>
+<summary> <tt>RadioObstaculo</tt> </summary>
+<sub> Radio de obstáculo "Cilindro". </sub>
+<p align="center">
+   <center>
+   <img src="./Media/RadioObstaculo.png" width="85%" />
+   </center>
+</p>
+</details>
 
-![Caso A](./Media/CasoA.png)
+<details>
+<summary> <tt>AlturaObstaculo</tt> </summary>
+<sub> Altura de los obstáculos en el modo de visualización 3D. </sub>
+<p align="center">
+   <center>
+   <img src="./Media/AlturaObstaculo.png" width="95%" />
+   </center>
+</p>
+</details>
 
-- Caso B: Réplica del escenario B utilizado en la tesis de Juan Pablo.
-- Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo. Debido a que consiste de múltiples obstáculos, aún existe un error en su renderización. De aquí viene el artefacto de la línea negra observada entre obstáculos y su falta de coloración.
+<details>
+<summary> <tt>OffsetObstaculo</tt> </summary>
+<sub> Altura por encima del "suelo de la mesa" donde se colocará la base de los obstáculos en el modo de visualización 3D. </sub>
+<p align="center">
+   <center>
+   <img src="./Media/OffsetObstaculo.png" width="95%" />
+   </center>
+</p>
+</details>
 
-![Caso C](./Media/CasoC.png)
+<details>
+<summary> <tt>NombreImagenMapa</tt> </summary>
+<sub> Nombre de la imagen en blanco y negro que buscará la función <tt>ImportarMapa.m</tt> al momento de generar/cargar los vértices de los obstáculos en la mesa de trabajo. </sub>
+</details><br/>
 
-### Tipo de Restricción
+<ins>*Meta y Región de Partida*</ins>
 
-Como se mencionó previamente, el algoritmo canónico de PSO es dependiente de los parámetros <img src="https://latex.codecogs.com/gif.latex?\inline&space;C_1"/>, <img src="https://latex.codecogs.com/gif.latex?\inline&space;C_2"/> y <img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/>. Existen múltiples maneras de elegir estos parámetros, pero en el toolbox se ofrecen tres opciones:
+<details>
+<summary> <tt>Meta</tt> </summary>
+<sub> Coordenadas (X,Y) para el punto meta que buscarán alcanzar los robots diferenciales. </sub>
+</details>
 
-- Inercia: Si se desea abandonar el esquema que asegura la convergencia propuesto por Clerc (1999), el usuario puede obviar la ecuación <img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega&space;=\chi"/> y utilizar el valor de <img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/>, o inercia, que desee. Se ofrecen 5 tipos diferentes de inercia. Para más información escribir en consola: *`help ComputeInertia`* 
-- Constricción: Se siguen las ideas propuestas por Clerc (1999) que aseguran la convergencia del algoritmo PSO. Se pueden elegir los parámetros
-<img src="https://latex.codecogs.com/gif.latex?\inline&space;\phi_1"/>, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\phi_2"/> y <img src="https://latex.codecogs.com/gif.latex?\inline&space;\kappa"/>. Por defecto se utilizan los valores recomendados en el artículo científico.
+<details>
+<summary> <tt>RegionPartida_Centro</tt> </summary>
+<sub> Coordenadas (X,Y) para el centro del rectángulo que define la región de partida o la región dentro de la cual saldrán los robots y/o partículas PSO. </sub>
+</details>
 
-![Caso C](./Media/Restricciones.png)
+<details>
+<summary> <tt>RegionPartida_Ancho</tt> </summary>
+<sub> Ancho del rectángulo que define la región de partida o la región de la cual saldrán los robots y/o partículas PSO. </sub>
+</details>
 
-- Mixto: Uso simultáneo de un tipo de inercia (Por defecto exponencialmente decreciente), en conjunto con los parámetros de constricción propuestos por Clerc. Utilizado por Aldo en su tesis.  
+<details>
+<summary> <tt>RegionPartida_Alto</tt> </summary>
+<sub> Alto del rectángulo que define la región de partida o la región de la cual saldrán los robots y/o partículas PSO. </sub>
+</details>
 
 ### Colisiones
 
@@ -369,17 +718,6 @@ Los controladores son los encargados de seguir estas sugerencias hasta llegar a 
 ![IK](./Media/CinematicaInversa.png)
 
 a las velocidades angulares de las ruedas del robot. No obstante, en el caso de la Toolbox, las velocidades se utilizan directamente para guiar el movimiento de los robots. Para más información escribir en consola *`help getControllerOutput`*
-
-### Criterios de Convergencia
-
-La función *`EvalCriteriosConvergencia.m`* permite que el usuario diseñe sus propios criterios de convergencia y los agregue a una lista de condiciones que se evalúan durante cada iteración. La salida de la función es una lista de cuales son los criterios cumplidos, en conjunto con su nombre. Por defecto la Toolbox ofrece 4 opciones
-
-1. "Mínimo Alcanzado": Cierto porcentaje de partículas llega a alguno de los mínimos de la función.
-2. "Mínimo Alcanzado (80%)": Criterio 1 cumplido y ha transcurrido el 80% de las iteraciones máx.
-3. "Posición Convergió": Todas las partículas se han quedado "quietas" o se han movido poco desde la última iteración
-4. "Iter. Máx Alcanzadas": Se ha alcanzado el número máximo de iteraciones.
-
-Para más información escribir en consola *`help EvalCriteriosConvergencia`*
 
 ### Análisis de Resultados
 
