@@ -562,16 +562,12 @@ Cilindro: Coloca un cilindro en el centro de la mesa de trabajo. El radio puede 
 
 <p><ul><li><sub>
 Imagen: El usuario puede tomar una imagen en blanco y negro de un mapa (con los obstáculos en negro y el espacio vacío en blanco), colocarla en el directorio base del script principal (o dentro de la carpeta <tt>.../Mapas/Imágenes</tt>) y luego procesarla para convertirla en un obstáculo utilizable dentro del Toolbox.
-  
-Para su funcionamiento, esta herramienta hace uso de la función <tt>ImportarMapa.m</tt>. Dicha función toma como entrada una imagen y extrae los vértices de los obstáculos presentes en la imagen. Este proceso puede llegar a tomar mucho tiempo según la complejidad del obstáculo, entonces la función puede revisar si ya existen datos previamente procesados de la imagen elegida por el usuario. Si este es el caso, el usuario puede elegir reutilizar los datos guardados para así evitar la carga computacional asociada. También se incluyen medidas para revisar el nivel de similitud de la imagen elegida con el de las imágenes guardadas. Si es lo suficientemente parecido, el programa nuevamente pregunta si el usuario desea reutilizar datos previos.
-  
-Si se desea comprender más a profundidad la forma en la que funciona dicha función (o refinar el montón de parámetros de los que depende la función), existe una versión alternativa (<tt>.../Ejemplos y Scripts Auxiliares/Importador_Mapas.mlx</tt>) con figuras y métodos alternativos para realizar el mismo proceso de extracción de vértices.
+<br/><br/>Para su funcionamiento, esta herramienta hace uso de la función <tt>ImportarMapa.m</tt>. Dicha función toma como entrada una imagen y extrae los vértices de los obstáculos presentes en la imagen. Este proceso puede llegar a tomar mucho tiempo según la complejidad del obstáculo, entonces la función puede revisar si ya existen datos previamente procesados de la imagen elegida por el usuario. Si este es el caso, el usuario puede elegir reutilizar los datos guardados para así evitar la carga computacional asociada. También se incluyen medidas para revisar el nivel de similitud de la imagen elegida con el de las imágenes guardadas. Si es lo suficientemente parecido, el programa nuevamente pregunta si el usuario desea reutilizar datos previos.
+<br/><br/>Si se desea comprender más a profundidad la forma en la que funciona dicha función (o refinar el montón de parámetros de los que depende la función), existe una versión alternativa (<tt>.../Ejemplos y Scripts Auxiliares/Importador_Mapas.mlx</tt>) con figuras y métodos alternativos para realizar el mismo proceso de extracción de vértices.
 </sub></li></ul></p>
 
 <p align="center">
-   <center>
    <img src="./Media/MapaImagen.png" width="80%" />
-   </center>
 </p>
 
 <p><ul><li><sub>
@@ -579,9 +575,7 @@ Caso A: Réplica del escenario A utilizado en la tesis de Juan Pablo.
 </sub></li></ul></p>
 
 <p align="center">
-   <center>
    <img src="./Media/CasoA.png" width="50%" />
-   </center>
 </p>
 
 <p><ul><li><sub>
@@ -589,9 +583,7 @@ Caso B: Réplica del escenario B utilizado en la tesis de Juan Pablo.
 </sub></li></ul></p>
 
 <p align="center">
-   <center>
-   <img src="./Media/CasoB.png" width="40%" />
-   </center>
+   <img src="./Media/CasoB.PNG" width="40%" />
 </p>
 
 <p><ul><li><sub>
@@ -599,9 +591,7 @@ Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
 </sub></li></ul></p>
 
 <p align="center">
-   <center>
    <img src="./Media/CasoC.png" width="40%" />
-   </center>
 </p>
 
 </details>
@@ -610,9 +600,7 @@ Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
 <summary> <tt>RadioObstaculo</tt> </summary>
 <sub> Radio de obstáculo "Cilindro". </sub>
 <p align="center">
-   <center>
    <img src="./Media/RadioObstaculo.png" width="85%" />
-   </center>
 </p>
 </details>
 
@@ -620,9 +608,7 @@ Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
 <summary> <tt>AlturaObstaculo</tt> </summary>
 <sub> Altura de los obstáculos en el modo de visualización 3D. </sub>
 <p align="center">
-   <center>
    <img src="./Media/AlturaObstaculo.png" width="95%" />
-   </center>
 </p>
 </details>
 
@@ -630,9 +616,7 @@ Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
 <summary> <tt>OffsetObstaculo</tt> </summary>
 <sub> Altura por encima del "suelo de la mesa" donde se colocará la base de los obstáculos en el modo de visualización 3D. </sub>
 <p align="center">
-   <center>
    <img src="./Media/OffsetObstaculo.png" width="95%" />
-   </center>
 </p>
 </details>
 
