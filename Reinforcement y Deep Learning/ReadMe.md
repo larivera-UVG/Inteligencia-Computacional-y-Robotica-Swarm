@@ -409,9 +409,7 @@ Mixto: Uso de inercia "Exponencial Natural" junto con los parámetros de constri
 <summary> <tt>EnablePucks</tt> </summary>
 <sub> Si únicamente se desea visualizar el movimiento de las partículas en un método dependiente de PSO, se permite que el usuario desactive la simulación de los robots E-Puck.</sub>
 <p align="center">
-   <center>
    <img src="./Media/EnablePucks.png" width="90%" />
-   </center>
 </p>
 </details>
 
@@ -440,9 +438,7 @@ Mixto: Uso de inercia "Exponencial Natural" junto con los parámetros de constri
 <sub> Controlador para el movimiento punto a punto de los E-Pucks. Existen 5 opciones. Basados en los controladores implementados por Aldo:</sub>
 
 <p align="center">
-   <center>
    <img src="./Media/Controlador - LQR.png" width="50%" />
-   </center>
 </p>
 
 <p><ul><li><sub>
@@ -450,9 +446,7 @@ Linear Quadratic Regulator (LQR): Movimiento rápido que desacelera conforme el 
 </sub></li></ul></p>
 
 <p align="center">
-   <center>
    <img src="./Media/Controlador - LQI.png" width="50%" />
-   </center>
 </p>
 
 <p><ul><li><sub>
@@ -460,9 +454,7 @@ Linear Quadratic Integral Control (LQI): Movimiento parecido al LQR, pero con un
 </sub></li></ul></p>
 
 <p align="center">
-   <center>
    <img src="./Media/Controlador - Pose Simple.png" width="50%" />
-   </center>
 </p>
 
 <p><ul><li><sub>
@@ -470,9 +462,7 @@ Controlador de Pose Simple: Movimiento con velocidad menor a aquella observada e
 </sub></li></ul></p>
 
 <p align="center">
-   <center>
    <img src="./Media/Controlador - Pose Simple.png" width="50%" />
-   </center>
 </p>
 
 <p><ul><li><sub>
@@ -480,9 +470,7 @@ Controlador de Pose con Criterio de Estabilidad de Lyapunov: Misma velocidad que
 </sub></li></ul></p>
 
 <p align="center">
-   <center>
    <img src="./Media/Controlador - Pose Simple.png" width="50%" />
-   </center>
 </p>
 
 <p><ul><li><sub>
@@ -496,9 +484,7 @@ Controlador de Direccionamiento de Lazo Cerrado: Controlador con la menor veloci
 <summary> <tt>CriterioPuck</tt> </summary>
 <sub> Similar al parámetro <tt>CriterioPart</tt>. Determina el criterio de convergencia que utilizará el ciclo principal para determinar el momento en el que debe finalizar su ejecución según la posición de los robots diferenciales. Existen tres opciones: Meta Alcanzada, Entidades Detenidas e Iteraciones Max.</sub>
 <p align="center">
-   <center>
    <img src="./Media/CriterioConvergencia.png" width="98%" />
-   </center>
 </p>
 </details><br/>
 
@@ -524,9 +510,7 @@ Controlador de Direccionamiento de Lazo Cerrado: Controlador con la menor veloci
 <summary> <tt>ModoVisualizacion</tt> </summary>
 <sub> 2D, 3D o None. El modo 3D se recomienda para observar más fácilmente la forma de la función de costo en métodos dependientes de PSO. El 2D es más útil para observar el movimiento de las partículas y/o robots.</sub>
 <p align="center">
-   <center>
    <img src="./Media/ModoVisualizacion.png" width="80%" />
-   </center>
 </p>
 </details>
 
@@ -534,10 +518,8 @@ Controlador de Direccionamiento de Lazo Cerrado: Controlador con la menor veloci
 <summary> <tt>EnableRotacionCamara</tt> </summary>
 <sub>Cuando Matlab grafica en 3D, este elige un ángulo óptimo para posicionar la cámara que enfoca el plot. Al habilitar esta opción, Matlab gira la cámara alrededor del plot a una velocidad constante. Únicamente válido para el modo de visualización 3D. </sub>
 <p align="center">
-   <center>
    <img src="./Media/RotacionCamaraDisabled.gif" width="49%" />
    <img src="./Media/RotacionCamaraEnabled.gif" width="49%" />
-   </center>
 </p>
 </details>
 
@@ -567,9 +549,7 @@ Polígono: El usuario puede dibujar el polígono que desee. La interfaz de creac
 </sub></li></ul></p>
 
 <p align="center">
-   <center>
    <img src="./Media/CreandoPoligono.png" width="80%" />
-   </center>
 </p>
 
 <p><ul><li><sub>
@@ -577,9 +557,7 @@ Cilindro: Coloca un cilindro en el centro de la mesa de trabajo. El radio puede 
 </sub></li></ul></p>
 
 <p align="center">
-   <center>
    <img src="./Media/Cilindro.png" width="40%" />
-   </center>
 </p>
 
 <p><ul><li><sub>
