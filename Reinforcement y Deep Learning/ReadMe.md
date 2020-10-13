@@ -6,23 +6,22 @@
 # Reinforcement y Deep Learning en Aplicaciones de Robótica de Enjambre
 
 <p align="center">
-   <center>
    <img src="./Media/Animación_PlanificatorTrayectorias.gif" width="49%" />
    <img src="./Media/Animación_PSOTuner.gif" width="49%" /> 
-   </center>
 </p>
 
 ## Índice
 
-1. [Estructura General de Carpetas](#estructura-general-de-carpetas)
-2. [Estructura de Carpeta "Eduardo Santizo"](#estructura-de-carpeta-"eduardo-santizo")
-3. [Antecedentes](#antecedentes)
+1. [Estructura de Carpetas](#estructura-de-carpetas)
+   - [Repositorio](#repositorio)
+   - [Tesis Eduardo Santizo](#tesis-eduardo-santizo)
+2. [Antecedentes](#antecedentes)
    - [Aldo Aguilar (2019)](#aldo-aguilar-(2019))
    - [Juan Pablo Cahueque (2019)](#juan-pablo-cahueque-(2019))
    - [Eduardo Santizo (2020)](#eduardo-santizo-(2020))
-4. [Guía de Uso](#guia-de-uso)
-5. [Hardware y Software](#hardware-y-software)
-6. [Swarm Robotics Toolbox](#swarm-robotics-toolbox-(sr-toolbox))
+3. [Guía de Uso](#guia-de-uso)
+4. [Hardware y Software](#hardware-y-software)
+5. [Swarm Robotics Toolbox](#swarm-robotics-toolbox-(sr-toolbox))
    - [Estructura de Programa](#estructura-de-programa)
    - [Funciones](#funciones)
      - [Evolución del Global Best](#evolución-del-global-best)
@@ -30,11 +29,13 @@
      - [Velocidad de Motores](#velocidad-de-motores)
      - [Suavidad de Velocidades](#suavidad-de-velocidades)
    - [Grabación de Videos / Frames](#grabación-de-videos--frames)
-7. [Demostración](#demostración)
+6. [Demostración](#demostración)
    - [Partículas Esquivando Obstáculo](#partículas-esquivando-obstáculo)
    - [Polígono Personalizado](#polígono-personalizado)
 
-## Estructura General de Carpetas
+## Estructura de Carpetas
+
+### Repositorio
 
 Estructura general de las carpetas existentes en el repositorio.
 
@@ -65,7 +66,7 @@ Reinforcement y Deep Learning
 |
 └─── Literatura
 │   │
-│   └─── Lectures: 
+│   └─── Lectures:
 |   |    Clases, presentaciones o lecciones
 |   |
 │   └─── Libros
@@ -102,7 +103,7 @@ Reinforcement y Deep Learning
      Imágenes y GIFs utilizados en el Readme.
 ```
 
-## Estructura de Carpeta "*Eduardo Santizo*"
+### Tesis Eduardo Santizo
 
 Estructura para la carpeta que contiene el código de Matlab de la tesis "*Reinforcement y Deep Learning en Aplicaciones de Robótica de Enjambre*" realizada por Eduardo Santizo.
 
@@ -194,9 +195,7 @@ Eduardo Santizo
 ### Aldo Aguilar (2019)
 
 <p align="center">
-   <center>
    <img src="./Media/Aldo.gif" width="40%" />
-   </center>
 </p>
 
 Tomó como base el algoritmo PSO y lo utilizó como un método de planificación de movimiento para robots diferenciales. Realizó  pruebas con 8 controladores diferentes y encontró que aquellos con mejor rendimiento eran el LQR y LQI. La única desventaja que notó era que los robots describían trayectorias muy rectas, lo cual evitaba que los robots esquivaran obstáculos.
@@ -204,9 +203,7 @@ Tomó como base el algoritmo PSO y lo utilizó como un método de planificación
 ### Juan Pablo Cahueque (2019)
 
 <p align="center">
-   <center>
    <img src="./Media/JuanPablo.gif" width="40%"/>
-   </center>
 </p>
 
 Tomó los avances de Aldo y los utilizó en conjunto con "*Artificial Potential Fields*" para permitir que los robots esquivaran obstáculos presentes en el camino hacia la meta. En este caso, el controlador LQR resultó efectivo para esquivar obstáculos grandes, mientras que el PID con un filtro de "*Hard-Stops*" resultó efectivo para esquivar obstáculos pequeños y numerosos.
@@ -214,10 +211,8 @@ Tomó los avances de Aldo y los utilizó en conjunto con "*Artificial Potential 
 ### Eduardo Santizo (2020)
 
 <p align="center">
-   <center>
    <img src="./Media/Animación_PlanificatorTrayectorias.gif" width="49%" />
    <img src="./Media/Animación_PSOTuner.gif" width="49%" /> 
-   </center>
 </p>
 
 Las dos investigaciones previas fueron exitosas, pero requerían de la selección manual de los parámetros <img src="https://latex.codecogs.com/gif.latex?\inline&space;\phi_1"/>, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\phi_2"/> y <img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/> propios del algoritmo PSO. Para automatizar su selección se diseñó una red neuronal recurrente (RNN) capaz de tomar diferentes métricas del PSO y en base a estas generar valores para los parámetros del algoritmo. A la red neuronal se le denominó  *PSO Tuner* y permitió mejorar la velocidad y precisión del algoritmo estándar PSO significativamente (figura de la derecha).
@@ -233,34 +228,26 @@ Los pasos para la ejecución de ambos scripts son los siguientes:
 - Bajar a la primera sección: "*Setup: Path*".
 
 <p align="center">
-   <center>
    <img src="./Media/SetupPath.gif" width="70%" />
-   </center>
 </p>
 
 - De ser necesario, cambiar la raíz del path donde se encuentra actualmente el repositorio.
 
 <p align="center">
-   <center>
    <img src="./Media/RaizPath.png" width="70%" />
-   </center>
 </p>
 
 - Hacer click en la sección y presionar el botón `Run Section` de Matlab. Esto cambiará automáticamente el directorio actual de Matlab, incluirá todas las subcarpetas necesarias para la operación de los scripts y comprobará que el archivo `functionSignatures.json` no contenga errores.
 
 <p align="center">
-   <center>
    <img src="./Media/RunSection.PNG" width="30%" />
-   </center>
 </p>
 
 - Bajar a la sección "*Parámetros y Settings*". 
 - Algunas propiedades en esta sección se cambian por medio de *dropdown menus*. Si es la primera vez que se utiliza alguno de los livescripts, Matlab ejecutará el script cada vez que se intente cambiar una opción en los menús. Para evitar esto, el usuario debe deshabilitar manualmente esta opción para cada *dropdown menu* de la siguiente forma:
 
 <p align="center">
-   <center>
    <img src="./Media/DropdownAutorun.gif" width="40%" />
-   </center>
 </p>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <sub> Nota: Una vez cambiado, no es necesario volver a repetir este proceso. </sub>
@@ -269,9 +256,7 @@ Los pasos para la ejecución de ambos scripts son los siguientes:
 - Presionar `Run Section`. El programa debería de desplegar una figura de simulación acorde al `Metodo` / `CostFunc` elegido. Si se desea generar una nueva simulación, presionar nuevamente `Run Section`.
 
 <p align="center">
-   <center>
    <img src="./Media/CorriendoSimulacion.gif" width="80%" />
-   </center>
 </p>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <sub>Nota: El GIF fue acelerado artificialmente. La inicialización del script toma más tiempo del mostrado.</sub>
@@ -301,9 +286,7 @@ A continuación se describen todas las secciones que conforman al script `SR_Too
 #### Limpieza de Workspace
 
 <p align="center">
-   <center>
    <img src="./Media/LimpiezaWorkspace.PNG" width="95%" />
-   </center>
 </p>
 
 Esta sección se encarga de limpiar todas las variables del *Workspace* en caso existieran variables pre-existentes propias de otros scripts o de ejecuciones previas del *Toolbox*. También se limpian las **variables persistentes** empleadas dentro de diferentes funciones del *Toolbox*.
@@ -321,37 +304,32 @@ Esta sección permite controlar una gran variedad de elementos propios de la sim
 
 <details>
 <summary> <tt>Metodo</tt> </summary>
-<sub> Tipo de método que se simulará. Se incluye un dropdown menu que permite elegir entre las opciones disponibles. El usuario puede elegir tres tipos de método: Métodos dependientes de PSO (APF, Jabandzic y funciones de costo benchmark como Dropwave, Banana, Levy, etc.), métodos basados en el seguimiento de una trayectoria (Dynamic programming y Demo Trayectorias) y métodos dinámicos (que no requieren de planeación previa para explorar la mesa de trabajo). En el caso de los métodos PSO, la propiedad de <tt>Metodo</tt> pasa a llamarse función de costo o <tt>CostFunc</tt>. En la sección de "Funciones de Costo", se provee la visualización y ecuaciones para algunas de las funciones de costo disponibles como parte de la Toolbox</sub> </details> <br/>
+<sub>Tipo de método que se simulará. Se incluye un dropdown menu que permite elegir entre las opciones disponibles. El usuario puede elegir tres tipos de método: Métodos dependientes de PSO (APF, Jabandzic y funciones de costo benchmark como Dropwave, Banana, Levy, etc.), métodos basados en el seguimiento de una trayectoria (Dynamic programming y Demo Trayectorias) y métodos dinámicos (que no requieren de planeación previa para explorar la mesa de trabajo). En el caso de los métodos PSO, la propiedad de <tt>Metodo</tt> pasa a llamarse función de costo o <tt>CostFunc</tt>. En la sección de "Funciones de Costo", se provee la visualización y ecuaciones para algunas de las funciones de costo disponibles como parte de la Toolbox. </sub>
+</details> <br/>
 
 <ins>*Dimensiones de Mesa de Trabajo*</ins>
 
 <details>
 <summary> <tt>AnchoMesa</tt> </summary>
-<sub> Ancho de la mesa de trabajo. Unidades en metros.</sub>
+<sub>Ancho de la mesa de trabajo. Unidades en metros.</sub>
 <p align="center">
-   <center>
    <img src="./Media/DimsMesa.png" width="80%" />
-   </center>
 </p>
 </details>
 
 <details>
 <summary> <tt>AltoMesa</tt> </summary>
-<sub> Alto de la mesa de trabajo. Unidades en metros.</sub>
+<sub>Alto de la mesa de trabajo. Unidades en metros.</sub>
 <p align="center">
-   <center>
    <img src="./Media/DimsMesa.png" width="80%" />
-   </center>
 </p>
 </details>
 
 <details>
 <summary> <tt>Margen</tt> </summary>
-<sub> Ancho del margen uniforme que existirá alrededor de los bordes de la mesa de trabajo. Unidades en metros. </sub>
+<sub>Ancho del margen uniforme que existirá alrededor de los bordes de la mesa de trabajo. Unidades en metros.</sub>
 <p align="center">
-   <center>
    <img src="./Media/Margen.png" width="80%" />
-   </center>
 </p>
 </details><br/>
 
@@ -359,81 +337,82 @@ Esta sección permite controlar una gran variedad de elementos propios de la sim
 
 <details>
 <summary> <tt>EndTime</tt> </summary>
-<sub> Duración total de la simulación en segundos. </sub>
+<sub>Duración total de la simulación en segundos.</sub>
 </details>
 
 <details>
 <summary> <tt>dt</tt> </summary>
-<sub> Delta de tiempo, tiempo de muestreo o cantidad de segundos que transcurrirán entre cada una de las iteraciones del main loop del algoritmo. </sub>
+<sub>Delta de tiempo, tiempo de muestreo o cantidad de segundos que transcurrirán entre cada una de las iteraciones del main loop del algoritmo.</sub>
 </details><br/>
 
 <ins>*Settings de Partículas PSO*</ins>
 
 <details>
 <summary> <tt>NoParticulas</tt> </summary>
-<sub> Cantidad de partículas a utilizar dentro del algoritmo de PSO. En los métodos dependientes de PSO, el número de partículas tiende a sobre-escribir el número de E-Pucks a utilizar también. </sub>
+<sub>Cantidad de partículas a utilizar dentro del algoritmo de PSO. En los métodos dependientes de PSO, el número de partículas tiende a sobre-escribir el número de E-Pucks a utilizar también.</sub>
 </details>
 
 <details>
 <summary> <tt>PartPosDims</tt> </summary>
-<sub> El algoritmo de PSO consiste de un algoritmo de optimización. Debido a esto, el algoritmo es capaz de ser utilizado en problemas de cualquier dimensionalidad. Este parámetro permite cambiar el número de dimensiones que contiene el vector de posición de cada una de las partículas PSO. Se recomienda mantener su valor en 2 para no interferir con el funcionamiento de la mayor parte de métodos. </sub>
+<sub>Cantidad de dimensiones que tendrán las posiciones de las partículas PSO. El objeto <tt>PSO.m</tt> tiene la capacidad de manejar tantas dimensiones como se le soliciten, no obstante, se recomienda mantener su valor en 2 dimensiones para no interferir con el funcionamiento de la mayor parte de métodos.</sub>
 </details>
 
 <details>
 <summary> <tt>IteracionesMaxPSO</tt> </summary>
-<sub> Número de iteraciones máximas a utilizar por el algoritmo PSO. Este parámetro existe porque no en todos los métodos se desea que el tiempo de simulación coincida con el tiempo que le toma al PSO correr por completo. </sub>
+<sub>Número de iteraciones máximas a utilizar por el algoritmo PSO. Este parámetro existe porque no en todos los métodos se desea que el tiempo de simulación coincida con el tiempo que le toma al PSO correr por completo.</sub>
 </details>
 
 <details>
 <summary> <tt>CriterioPart</tt> </summary>
-<sub> Criterio de convergencia que utilizará el algoritmo PSO para evaluar el momento en el que debe dar fin al algoritmo. Se ofrecen tres opciones: Meta Alcanzada, Entidades Detenidas e Iteraciones Max. Para más información escribir <tt>help getCriteriosConvergencia</tt>. </sub>
+<sub> Criterio de convergencia que utilizará el algoritmo PSO para evaluar el momento en el que debe dar fin al algoritmo. Se ofrecen tres opciones: Meta Alcanzada, Entidades Detenidas e Iteraciones Max. Para más información escribir <tt>help getCriteriosConvergencia</tt>.</sub>
 <p align="center">
-   <center>
    <img src="./Media/CriterioConvergencia.png" width="98%" />
-   </center>
 </p>
 </details>
 
 <details>
 <summary> <tt>Restriccion</tt> </summary>
-<sub>  Tipo de restricción a utilizar en la regla de actualización de velocidad en el PSO.
+<sub>Tipo de restricción a utilizar en la regla de actualización de velocidad en el PSO.</sub>
+
 <p align="center">
-   <center>
-   <img src="https://latex.codecogs.com/gif.latex?\inline&space;v(t+1)=\chi\left(\omega v(t)+\vec{U}\left(0, \phi_{1}\right) \odot\left(\overrightarrow{p_{\text {local }}}-\vec{x}_{i}\right)+\vec{U}\left(0, \phi_{2}\right) \odot\left(\overrightarrow{p_{\text {global }}}-\vec{x}_{i}\right)\right)"/>
-   </center>
+   <img src="./Media/ActualizacionVelocidad.png" width="70%" />
 </p>
-Se ofrecen tres opciones:
-<ul>
-  <li>Inercia: Se multiplica a la velocidad previa por una constante denominada inercia (<img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/>). Se ofrecen 5 tipos de inercia: Constante, Linealmente Decreciente, Decreciente Caótica, Aleatoria y Exponencial Natural. Para más información escribir en la ventana de comandos <tt>help ComputeInertia</tt>. La constante <img src="https://latex.codecogs.com/gif.latex?\inline&space;\chi"/> se iguala a 1 para impedir la intervención de la restricción por constricción. </li>
-  <li>Constricción: Criterio de convergencia propuesto por Clerc (1999). Este criterio asegura la convergencia del algoritmo siempre y cuando <img src="https://latex.codecogs.com/gif.latex?\inline&space;\kappa = 1$ y $\phi_1 + \phi_2 > 4"/>. La constante <img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/> se iguala a 1 para impedir la intervención de la restricción por inercia.</li>
-</ul>
+
+<sub>Se ofrecen tres opciones:</sub>
+
+<p><ul><li><sub>
+Inercia: Se multiplica a la velocidad previa por una constante denominada inercia (<img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/>). Se ofrecen 5 tipos de inercia: Constante, Linealmente Decreciente, Decreciente Caótica, Aleatoria y Exponencial Natural. Para más información escribir en la ventana de comandos <tt>help ComputeInertia</tt>. La constante <img src="https://latex.codecogs.com/gif.latex?\inline&space;\chi"/> se iguala a 1 para impedir la intervención de la restricción por constricción.
+</sub></li></ul></p>
+
+<p><ul><li><sub>
+Constricción: Criterio de convergencia propuesto por Clerc (1999). Este criterio asegura la convergencia del algoritmo siempre y cuando <img src="https://latex.codecogs.com/gif.latex?\inline&space;\kappa = 1$ y $\phi_1 + \phi_2 > 4"/>. La constante <img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/> se iguala a 1 para impedir la intervención de la restricción por inercia.
+</sub></li></ul></p>
+
 <p align="center">
-   <center>
    <img src="./Media/Restricciones.png" width="40%" />
-   </center>
 </p>
-<ul>
-  <li>Mixto: Uso de inercia "Exponencial Natural" junto con los parámetros de constricción propuestos por Clerc (1999). Propuesto por Aldo en su tesis.</li>
-</ul>
-</sub>
+
+<p><ul><li><sub>
+Mixto: Uso de inercia "Exponencial Natural" junto con los parámetros de constricción propuestos por Clerc (1999). Propuesto por Aldo en su tesis.
+</sub></li></ul></p>
+
 </details><br/>
 
 <ins>*Settings de E-Pucks*</ins>
 
 <details>
 <summary> <tt>NoPucks</tt> </summary>
-<sub> Cantidad de robots diferenciales a simular. </sub>
+<sub> Cantidad de robots diferenciales a simular. No, no dice NoFucks.</sub>
 </details>
 
 <details>
 <summary> <tt>EnablePucks</tt> </summary>
-<sub> Si únicamente se desea visualizar el movimiento de las partículas en un método dependiente de PSO, se permite que el usuario desactive la simulación de los robots E-Puck.
+<sub> Si únicamente se desea visualizar el movimiento de las partículas en un método dependiente de PSO, se permite que el usuario desactive la simulación de los robots E-Puck.</sub>
 <p align="center">
    <center>
    <img src="./Media/EnablePucks.png" width="90%" />
    </center>
 </p>
-</sub>
 </details>
 
 <details>
@@ -458,59 +437,69 @@ Se ofrecen tres opciones:
 
 <details>
 <summary> <tt>ControladorPucks</tt> </summary>
-<sub> Controlador para el movimiento punto a punto de los E-Pucks. Existen 5 opciones. Basados en los controladores implementados por Aldo:
+<sub> Controlador para el movimiento punto a punto de los E-Pucks. Existen 5 opciones. Basados en los controladores implementados por Aldo:</sub>
+
 <p align="center">
    <center>
    <img src="./Media/Controlador - LQR.png" width="50%" />
    </center>
 </p>
-<ul>
-  <li>Linear Quadratic Regulator (LQR): Movimiento rápido que desacelera conforme el robot se acerca a la meta. Para cambiar de dirección el robot se detiene completamente, gira y luego se mueve.</li>
-</ul>
+
+<p><ul><li><sub>
+Linear Quadratic Regulator (LQR): Movimiento rápido que desacelera conforme el robot se acerca a la meta. Para cambiar de dirección el robot se detiene completamente, gira y luego se mueve.
+</sub></li></ul></p>
+
 <p align="center">
    <center>
    <img src="./Media/Controlador - LQI.png" width="50%" />
    </center>
 </p>
-<ul>
-  <li>Linear Quadratic Integral Control (LQI): Movimiento parecido al LQR, pero con una desaceleración menos pronunciada y sin giros agudos en el cambio de meta a meta. El robot no se detiene completamente para girar.</li>
-</ul>
+
+<p><ul><li><sub>
+Linear Quadratic Integral Control (LQI): Movimiento parecido al LQR, pero con una desaceleración menos pronunciada y sin giros agudos en el cambio de meta a meta. El robot no se detiene completamente para girar.
+</sub></li></ul></p>
+
 <p align="center">
    <center>
    <img src="./Media/Controlador - Pose Simple.png" width="50%" />
    </center>
 </p>
-<ul>
-  <li>Controlador de Pose Simple: Movimiento con velocidad menor a aquella observada en los controladores LQR y LQI. Debido a su aceleración angular menor, las trayectorias generadas son más suaves y largas.</li>
-</ul>
+
+<p><ul><li><sub>
+Controlador de Pose Simple: Movimiento con velocidad menor a aquella observada en los controladores LQR y LQI. Debido a su aceleración angular menor, las trayectorias generadas son más suaves y largas.
+</sub></li></ul></p>
+
 <p align="center">
    <center>
    <img src="./Media/Controlador - Pose Simple.png" width="50%" />
    </center>
 </p>
-<ul>
-  <li>Controlador de Pose con Criterio de Estabilidad de Lyapunov: Misma velocidad que en el controlador de pose simple. Giros agudos, pero aceleraciones angulares bajas al momento de girar e iniciar el movimiento lineal.</li>
-</ul>
+
+<p><ul><li><sub>
+Controlador de Pose con Criterio de Estabilidad de Lyapunov: Misma velocidad que en el controlador de pose simple. Giros agudos, pero aceleraciones angulares bajas al momento de girar e iniciar el movimiento lineal.
+</sub></li></ul></p>
+
 <p align="center">
    <center>
    <img src="./Media/Controlador - Pose Simple.png" width="50%" />
    </center>
 </p>
-<ul>
-  <li>Controlador de Direccionamiento de Lazo Cerrado: Controlador con la menor velocidad de entre los 5 presentados. El robot busca alinear su dirección con la meta, pero no su sentido. Por lo tanto, no importando si su eje +X (línea rojo vivo del robot) o -X apunta en la dirección de la meta, este se moverá hacia la misma. Esto implica que según le sea conveniente, el robot se desplazará hacia adelante o en reversa hacia la meta. La aceleración angular es baja, produciendo giros sumamente suaves; no obstante, debido a la alta velocidad lineal asociada al movimiento, el robot tiende a desviarse ligeramente del punto hacia el que desea orientarse, causando que las trayectorias tengan una mayor longitud.</li>
-</ul>
-Entre estos, los dos mejores se consideran el LQI y LQR, con el peor siendo el de Closed-Loop Steering. Para más información escribir en consola <tt>help getControllerOutput</tt>. </sub>
+
+<p><ul><li><sub>
+Controlador de Direccionamiento de Lazo Cerrado: Controlador con la menor velocidad de entre los 5 presentados. El robot busca alinear su dirección con la meta, pero no su sentido. Por lo tanto, no importando si su eje +X (línea rojo vivo del robot) o -X apunta en la dirección de la meta, este se moverá hacia la misma. Esto implica que según le sea conveniente, el robot se desplazará hacia adelante o en reversa hacia la meta. La aceleración angular es baja, produciendo giros sumamente suaves; no obstante, debido a la alta velocidad lineal asociada al movimiento, el robot tiende a desviarse ligeramente del punto hacia el que desea orientarse, causando que las trayectorias tengan una mayor longitud.
+</sub></li></ul></p>
+
+<sub> Entre estos, los dos mejores se consideran el LQI y LQR, con el peor siendo el de Closed-Loop Steering. Para más información escribir en consola <tt>help getControllerOutput</tt>. </sub>
 </details>
 
 <details>
 <summary> <tt>CriterioPuck</tt> </summary>
-<sub> Similar al parámetro <tt>CriterioPart</tt>. Determina el criterio de convergencia que utilizará el ciclo principal para determinar el momento en el que debe finalizar su ejecución según la posición de los robots diferenciales. Existen tres opciones: Meta Alcanzada, Entidades Detenidas e Iteraciones Max.
+<sub> Similar al parámetro <tt>CriterioPart</tt>. Determina el criterio de convergencia que utilizará el ciclo principal para determinar el momento en el que debe finalizar su ejecución según la posición de los robots diferenciales. Existen tres opciones: Meta Alcanzada, Entidades Detenidas e Iteraciones Max.</sub>
 <p align="center">
    <center>
    <img src="./Media/CriterioConvergencia.png" width="98%" />
    </center>
 </p>
-</sub>
 </details><br/>
 
 <ins>*Settings de Seguimiento de Trayectorias*</ins>
@@ -524,10 +513,8 @@ Entre estos, los dos mejores se consideran el LQI y LQR, con el peor siendo el d
 <summary> <tt>DemoMultimeta</tt> </summary>
 <sub> El método "Demo Trayectorias" consiste de un método en el que un cierto número de robots (dado por la variable <tt>NoPucks</tt>) siguen una trayectoria común predeterminada por el usuario. Si <tt>DemoMultimeta = 1</tt>, entonces el número de robots se limitará a tres y cada uno de estos seguirá una meta distinta. </sub>
 <p align="center">
-   <center>
    <img src="./Media/DemoTrayectoriasUnicaMeta.gif" width="49%" />
    <img src="./Media/DemoTrayectoriasMultimeta.gif" width="49%" /> 
-   </center>
 </p>
 </details><br/>
 
@@ -573,71 +560,72 @@ Entre estos, los dos mejores se consideran el LQI y LQR, con el peor siendo el d
 
 <details>
 <summary> <tt>TipoObstaculo</tt> </summary>
-<sub>Tipo de obstáculo a colocar en la mesa de trabajo. Existen 5 opciones:
+<sub>Tipo de obstáculo a colocar en la mesa de trabajo. Existen 5 opciones:</sub>
 
-<ul>
-  <li>Polígono: El usuario puede dibujar el polígono que desee. La interfaz de creación incluye la región de partida y el/los puntos meta para que el usuario evite colocar el obstáculo sobre estos (aunque aún puede hacerlo). Para cerrar el polígono y finalizar la creación del obstáculo, se puede dar doble click en cualquier parte del plot o se puede hacer click sobre el primer vértice colocado. Una vez creado el polígono, este no puede moverse. Esta herramienta solo es capaz de crear un solo polígono (no importando su complejidad). Si se desean crear múltiples polígonos, se recomienda utilizar la herramienta de Imagen.
-  </li>
-</ul>
+<p><ul><li><sub>
+Polígono: El usuario puede dibujar el polígono que desee. La interfaz de creación incluye la región de partida y el/los puntos meta para que el usuario evite colocar el obstáculo sobre estos (aunque aún puede hacerlo). Para cerrar el polígono y finalizar la creación del obstáculo, se puede dar doble click en cualquier parte del plot o se puede hacer click sobre el primer vértice colocado. Una vez creado el polígono, este no puede moverse. Esta herramienta solo es capaz de crear un solo polígono (no importando su complejidad). Si se desean crear múltiples polígonos, se recomienda utilizar la herramienta de Imagen.
+</sub></li></ul></p>
+
 <p align="center">
    <center>
    <img src="./Media/CreandoPoligono.png" width="80%" />
    </center>
 </p>
 
-<ul>
-  <li>Cilindro: Coloca un cilindro en el centro de la mesa de trabajo. El radio puede cambiarse manualmente alterando el parámetro <tt>RadioObstaculo</tt>.
-  </li>
-</ul>
+<p><ul><li><sub>
+Cilindro: Coloca un cilindro en el centro de la mesa de trabajo. El radio puede cambiarse manualmente alterando el parámetro <tt>RadioObstaculo</tt>.
+</sub></li></ul></p>
+
 <p align="center">
    <center>
    <img src="./Media/Cilindro.png" width="40%" />
    </center>
 </p>
-<ul>
-  <li>Imagen: El usuario puede tomar una imagen en blanco y negro de un mapa (con los obstáculos en negro y el espacio vacío en blanco), colocarla en el directorio base del script principal (o dentro de la carpeta <tt>.../Mapas/Imágenes</tt>) y luego procesarla para convertirla en un obstáculo utilizable dentro del Toolbox.
+
+<p><ul><li><sub>
+Imagen: El usuario puede tomar una imagen en blanco y negro de un mapa (con los obstáculos en negro y el espacio vacío en blanco), colocarla en el directorio base del script principal (o dentro de la carpeta <tt>.../Mapas/Imágenes</tt>) y luego procesarla para convertirla en un obstáculo utilizable dentro del Toolbox.
   
-  Para su funcionamiento, esta herramienta hace uso de la función <tt>ImportarMapa.m</tt>. Dicha función toma como entrada una imagen y extrae los vértices de los obstáculos presentes en la imagen. Este proceso puede llegar a tomar mucho tiempo según la complejidad del obstáculo, entonces la función puede revisar si ya existen datos previamente procesados de la imagen elegida por el usuario. Si este es el caso, el usuario puede elegir reutilizar los datos guardados para así evitar la carga computacional asociada. También se incluyen medidas para revisar el nivel de similitud de la imagen elegida con el de las imágenes guardadas. Si es lo suficientemente parecido, el programa nuevamente pregunta si el usuario desea reutilizar datos previos.
+Para su funcionamiento, esta herramienta hace uso de la función <tt>ImportarMapa.m</tt>. Dicha función toma como entrada una imagen y extrae los vértices de los obstáculos presentes en la imagen. Este proceso puede llegar a tomar mucho tiempo según la complejidad del obstáculo, entonces la función puede revisar si ya existen datos previamente procesados de la imagen elegida por el usuario. Si este es el caso, el usuario puede elegir reutilizar los datos guardados para así evitar la carga computacional asociada. También se incluyen medidas para revisar el nivel de similitud de la imagen elegida con el de las imágenes guardadas. Si es lo suficientemente parecido, el programa nuevamente pregunta si el usuario desea reutilizar datos previos.
   
-  Si se desea comprender más a profundidad la forma en la que funciona dicha función (o refinar el montón de parámetros de los que depende la función), existe una versión alternativa (<tt>.../Ejemplos y Scripts Auxiliares/Importador_Mapas.mlx</tt>) con figuras y métodos alternativos para realizar el mismo proceso de extracción de vértices.
-  </li>
-</ul>
+Si se desea comprender más a profundidad la forma en la que funciona dicha función (o refinar el montón de parámetros de los que depende la función), existe una versión alternativa (<tt>.../Ejemplos y Scripts Auxiliares/Importador_Mapas.mlx</tt>) con figuras y métodos alternativos para realizar el mismo proceso de extracción de vértices.
+</sub></li></ul></p>
+
 <p align="center">
    <center>
    <img src="./Media/MapaImagen.png" width="80%" />
    </center>
 </p>
 
-<ul>
-  <li>Caso A: Réplica del escenario A utilizado en la tesis de Juan Pablo.
-  </li>
-</ul>
+<p><ul><li><sub>
+Caso A: Réplica del escenario A utilizado en la tesis de Juan Pablo.
+</sub></li></ul></p>
+
 <p align="center">
    <center>
    <img src="./Media/CasoA.png" width="50%" />
    </center>
 </p>
 
-<ul>
-  <li>Caso B: Réplica del escenario B utilizado en la tesis de Juan Pablo.
-  </li>
-</ul>
+<p><ul><li><sub>
+Caso B: Réplica del escenario B utilizado en la tesis de Juan Pablo.
+</sub></li></ul></p>
+
 <p align="center">
    <center>
    <img src="./Media/CasoB.png" width="40%" />
    </center>
 </p>
 
-<ul>
-  <li>Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
-  </li>
-</ul>
+<p><ul><li><sub>
+Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
+</sub></li></ul></p>
+
 <p align="center">
    <center>
    <img src="./Media/CasoC.png" width="40%" />
    </center>
 </p>
-</sub>
+
 </details>
 
 <details>
