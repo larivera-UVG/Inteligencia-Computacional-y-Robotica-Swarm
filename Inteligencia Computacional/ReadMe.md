@@ -36,7 +36,13 @@ En la carpeta **Conexión Webots-Matlab** están todos los archivos necesarios y
 <a name="tool"></a>
 ### 1.2 Toolboxes adicionales
 1. **Instalación**: Aparte de lo mencionado anteriormente, también necesitamos descargar e instalar el Toolbox de robótica de Peter Corke. Dicho Toolbox puede ser descargado de: :link: https://petercorke.com/toolboxes/robotics-toolbox/ La instalación es la misma que para el archivo mingw.mpkginstall.
-2. **Modificación**: Con las funciones de prm y rrt del toolbox de Peter Corke se utilizan funciones que él nombró igual que las *built in* de Matlab. Por tanto, es necesario mover las funciones **PENDIENTE** hasta arriba en *HOME>Set Path*. Es decir, cuando ya se está en set path, esas funciones deben de ser arrastradas hasta arriba para que Matlab las encuentre antes que las *built in* de Matlab.
+2. **Modificación**: Con las funciones de prm y rrt del toolbox de Peter Corke se utilizan funciones que él nombró igual que las *built in* de Matlab. Por tanto, es necesario mover algunas funciones hasta arriba en *HOME>Set Path*. Es decir, cuando ya se está en set path, esas funciones deben de ser arrastradas hasta arriba para que Matlab las encuentre antes que las *built in* de Matlab.
+
+El problema de estas funciones se llama *shadowing*. Una de las funciones problemáticas es *angdiff*, por lo que se puede correr:
+```
+which angdiff
+>> C:\Program Files\MATLAB\R2018b\toolbox\robotics\robotcore\angdiff.m
+```
 
 <a name="alg"></a>
 ## 2. Generalidades del algoritmo

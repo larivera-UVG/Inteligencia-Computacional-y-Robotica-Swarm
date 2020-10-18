@@ -14,7 +14,7 @@ tic  % Para medir el tiempo que se tarda el algoritmo en correr.
 
 %% Graph generation
 % Se elige el tipo de grafo que se va a utilizar
-graph_type = "visibility";
+graph_type = "grid";
 
 if strcmp(graph_type, "grid")
     % Creamos grid cuadrado con la cantidad de nodos indicada:

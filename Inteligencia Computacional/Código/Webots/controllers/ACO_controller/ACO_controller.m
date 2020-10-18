@@ -46,6 +46,8 @@ wb_compass_enable(orientation_sensor, TIME_STEP);
 
 %% Valores iniciales
 
+graph_type = "grid";
+
 if graph_type == "grid"
     pos = [-0.94 0 0.94];
     if controlador == 3 || controlador == 4
@@ -85,13 +87,13 @@ else
 end
 
 
-% Graficando la interpolación y el camino normal
-subplot(1, 2, 1)
-scatter(x,y,'Marker','o','MarkerFaceColor','k', 'MarkerEdgeColor', 'k')
-subplot(1, 2, 2)
-scatter(xi,yi,'Marker','o','MarkerFaceColor','k', 'MarkerEdgeColor', 'k')
-plot(x,y,'k*',xi,yi,'r*')
-drawnow;
+% Graficando la interpolaciï¿½n y el camino normal
+% subplot(1, 2, 1)
+% scatter(x,y,'Marker','o','MarkerFaceColor','k', 'MarkerEdgeColor', 'k')
+% subplot(1, 2, 2)
+% scatter(xi,yi,'Marker','o','MarkerFaceColor','k', 'MarkerEdgeColor', 'k')
+% plot(x,y,'k*',xi,yi,'r*')
+% drawnow;
 
 xg = goals(1, 1);  
 zg = goals(1, 2);
@@ -104,11 +106,11 @@ old_speed = zeros(2, 1);
 % Acercamiento exponencial
 alpha = 0.9;
 
-% PID de orientación
+% PID de orientaciï¿½n
 eO_k_1 = 0; % Error derivativo
 EO_k = 0;   % Error integral
 
-% PID de posición
+% PID de posiciï¿½n
 eP_1 = 0;
 EP = 0;
 
@@ -210,7 +212,7 @@ while wb_robot_step(TIME_STEP) ~= -1
     %         formatSpec = 'xi: %.2f, zi: %.2f eP: %.2f | theta: %.2f theta g: %.2f eO: %.2f \n';
 %         fprintf(formatSpec, xi, zi, eP, theta, theta_g, eO);
     
-    theta = pi - rad;  % Se corrige el ángulo para que esté igual que theta_g
+    theta = pi - rad;  % Se corrige el ï¿½ngulo para que estï¿½ igual que theta_g
 %     if xg == goals(length(goals), 1) && zg == goals(length(goals), 2)
 %         epsilon = 0.05;
 %     end

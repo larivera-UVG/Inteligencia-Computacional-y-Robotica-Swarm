@@ -4,121 +4,96 @@
 ![Matlab](https://img.shields.io/badge/Matlab-R2018b-blue)
 ![Matlab](https://img.shields.io/badge/Matlab-R2020a-blue)
 # Aprendizaje Automático, Computación Evolutiva e Inteligencia de Enjambre para Aplicaciones de Robótica
-En este proyecto se implementa el algoritmo **Ant System** (AS) :ant: :ant: en Matlab para su posterior uso como planificador de trayectorias en robots similares a el robot E-Puck en aplicaciones de búsqueda y rescate. Además, también se tiene el código que implementa el **algoritmo genético** (GA) 🧬 con codificación binaria y entera.
+En este proyecto se implementa el algoritmo **Ant System** (AS) :ant: :ant: en Matlab para su posterior uso como planificador de trayectorias en robots similares a el robot E-Puck en aplicaciones de búsqueda y rescate. Además, también se tiene el código que implementa el **algoritmo genético** (GA) 🧬 con codificación binaria y entera. En esta carpeta (Código), se encuentran todos los *scripts* necesarios para ejecutar los algoritmos ACO y GA.
+
+:warning: :warning: **Por favor leer y hacer los prerrequisitos del ReadMe de la carpeta de inteligencia computacional antes de continuar con este readMe.** :warning: :warning:
 
 ## Tabla de contenido
 
-1. [ Prerrequisitos ](#desc)
-   1. [ Conexión Webots+Matlab ](#webmat)
-   2.  [ Toolboxes adicionales ](#tool)
-2. [ Generalidades del algoritmo ](#alg)
-3. [ Código ](#usage)
-   1. [ ACO.m ](#aco)
-   2.  [ nodes.m ](#nodes)
-   3. [ nodeid.m ](#id)
-   4.  [ neighbors.m ](#nei)
-   5. [ tabu.m ](#tabu)
-   6.  [ ant_decision.m ](#dec)
-   7. [ rouletteWheel.m ](#rou)
-   8. [ loop_remover.m ](#loop)
-   9.  [ ACO_params_ev.m ](#aco2)
+1. [ ACO ](#aco)
+   1. [ Código principal y funciones ](#cod)
+   2.  [ Archivos para barrido de parámetros ](#sweep)
+   3.  [ Archivos .mat ](#mat)
+   4.  [ Archivos privados ](#p)
+2. [ Analytics ](#analytics)
+3. [ GA-bin ](#bin)
+4. [ GA-int ](#int)
+5. [ Webots ](#webots)
 
 
-<a name="desc"></a>
-## 1. Prerrequisitos
-
-![matlogo](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Readme/Matlab-logo.png) ![welogo](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Readme/webots-logo.png)
-
-Para correr los programas de esta sección del repositorio es necesario tener instalada alguna versión de Matlab. Para elaborar el código en este repositorio se utilizó Matlab 2017 y 2018, sin embargo, parte del código también fue probado en la versión 2020. Además de Matlab, también se cuenta con código para Webots 2020 rev1, por lo que será necesario instalarlo.
-
-Hay que prender el parallel pool de preferencia antes.
-
-<a name="webmat"></a>
-### 1.1 Conexión Webots+Matlab
-En la carpeta **Conexión Webots-Matlab** están todos los archivos necesarios y una guía extra para realizar la conexión. Es posible que no funciona, pues algunos de mis compañeros no pudieron hacer la conexión. La guía de conexión fue originalmente proporcionada por MSc. Miguel Zea en Robótica 2, ciclo 2 2020.
-1. Colocar los archivos launcher.m y allincludes.h dentro de la carpeta :open_file_folder: *C:\Users\<usuario>\AppData\Local\Programs\Webots\lib\controller\matlab* Esta carpeta debería de existir si se instaló Webots de manera estándar.
-2. Abrir el archivo mingw.mpkginstall dentro de Matlab. Es decir, desde Matlab dirigirse a la carpeta donde está guardado el archivo y darle doble click o escribir su nombre en la consola.
-3. Verificar que este archivo quedó bien instalado siguiendo la guía en el siguiente enlace: https://la.mathworks.com/help/matlab/matlab_external/install-mingw-support-package.html
-4. Verificar que Webots sí pueda comunicarse con MATLAB al abrir  y correr un ejemplo como el de *languages>matlab>e-puck_matlab.wbt* en *Open Sample World...*
-
-<a name="tool"></a>
-### 1.2 Toolboxes adicionales
-1. **Instalación**: Aparte de lo mencionado anteriormente, también necesitamos descargar e instalar el Toolbox de robótica de Peter Corke. Dicho Toolbox puede ser descargado de: https://petercorke.com/toolboxes/robotics-toolbox/ La instalación es la misma que para el archivo mingw.mpkginstall.
-2. **Modificación**: Con las funciones de prm y rrt del toolbox de Peter Corke se utilizan funciones que él nombró igual que las *built in* de Matlab. Por tanto, es necesario mover las funciones **PENDIENTE** hasta arriba en *HOME>Set Path*. Es decir, cuando ya se está en set path, esas funciones deben de ser arrastradas hasta arriba para que Matlab las encuentre antes que las *built in* de Matlab.
-
-<a name="alg"></a>
-## 2. Generalidades del algoritmo
-
-Primero se implementó el algoritmo Simple Ant Colony (SACO) con movimiento sin diagonales, pero el algoritmo final fue el Ant System de Marco Dorigo por tener más flexibilidad de parámetros. Este último algoritmo fue codificado en el mismo archivo de ACO.m, por lo que se sobreescribió el AS por el ACO y le agregué el movimiento diagonal. El algoritmo fue codificado según el pseudocódigo brindado por Andries P. Engelbrecht en su libro :blue_book: _Computational Intelligence An Introduction_, segunda edición, página 371 (algoritmo 17.3).
-
-![alg](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/alg17.3.PNG)
-
-Básicamente el algoritmo consta de 3 distintas partes que se repiten :repeat: hasta que se haya encontrado una solución o se haya llegado a un máximo de iteraciones (t):
-- **Construcción de camino por hormiga**
-
-En esta etapa, **por cada hormiga** :ant:, hasta que el nodo destino se haya encontrado, se **selecciona el siguiente nodo** utilizando la ecuación de probabilidad definida para el algoritmo proporcional a la cantidad de feromona del link que relaciona a dichos nodos.
-- **Evaporación de feromona**
-
-Cada enlace entre los nodos tiene asociado un nivel de feromona que "con el tiempo se va evaporando". Esto se simula en esta etapa con una ecuación dada en el mismo libro :blue_book: del algoritmo.
-- **Actualización de feromona**
-
-Se deposita feromona en cada link entre cada nodo del path construido por cada hormiga, inversamente proporcional a la distancia de ese camino. De este modo, caminos grandes tendrán poca feromona y por ende, menos probabilidad de ser escogidos.
-
-<a name="usage"></a>
-## 3. Código
 <a name="aco"></a>
-### 3.1 ACO.m
-El archivo main de la carpeta es ACO.m. Si se desea correr el resultado de una simulación de Ant System debe de tener todos los archivos mencionados en este documento en la misma carpeta o agregados al path :open_file_folder:. Luego de esto, presione el botón de Run :arrow_forward: en Matlab y la simulación debería de correr sin problemas.
+## 1. ACO
+En esta carpeta se encuentran distintos tipos de código:
+1. Código del ACO (main y funciones) con extensión .m.
+2. Código para barrido de parámetros (..._sweep.m).
+3. Archivos .mat con información que será utilizada en el main.
+4. Funciones privadas .p que se mandan a llamar en los archivos de barrido.
 
-<a name="nodes"></a>
-### 3.2 nodes.m
-Utilizado en la línea 15 de ACO.m. Su trabajo es generar los nodos a partir de un tamaño de espacio de trabajo. Para esta versión se utilizó una cuadrícula de 10x10 unidades. La función devuelve todos los puntos de la cuadrícula en forma de vectores fila:
+<a name="cod"></a>
+### 1.1 Código principal y funciones
 
-x | y
--- | --
-1 | 1
-2 | 1
-... | ...
-9 | 10
-10 | 10
 
-<a name="id"></a>
-### 3.3 nodeid.m
-Utilizando en las líneas 82,124,132,146 y 171 de ACO.m. Esta función acepta como parámetros un nodo y la lista de todos los nodos (generada por nodes.m). Utilizando la función `ismember` de Matlab se regresa el índice del nodo con respecto a la lista de todos los nodos.
+<a name="sweep"></a>
+### 1.2 Archivos para barrido de parámetros
 
-<a name="nei"></a>
-### 3.4 neighbors.m
-Utilizando en la línea 40 y 63 de ACO.m. Esta función acepta como parámetros: un nodo y los límites en x y y del grid. Devuelve a todos los vecinos del nodo (norte, sur, este, oeste y las diagonales) en el mismo formato de vector fila como lo devuelve nodes.m.
+<a name="mat"></a>
+### 1.3 Archivos .mat
 
-<a name="tabu"></a>
-### 3.5 tabu.m
-Utilizando en la línea 128 de ACO.m. Esta función devuelve la lista de vecinos a los que sí se puede viajar, la lista de nodos bloqueados (ya visitados) y una bandera binaria. Lo que se busca es no repetir nodos para no regresar y dar vueltas donde no es necesario.
+<a name="p"></a>
+### 1.4 Archivos privados
+Debido a que los barridos de parámetros duraban mucho tiempo (entre 3 y 24 horas), necesitaba una manera de avisarme cuando pasara algo importante con el código. Por lo tanto, se me ocurrió enviarme un correo electrónico cada vez que iniciara el código, terminara u ocurriera un error. Para esto se utilizan los archivos:
+* end_mail.p
+* enviar_correo.p
+* error_mail.p
 
-<a name="dec"></a>
-### 3.6 ant_decision.m
-Utilizado en la línea 125 de ACO.m. Toma la decisión de a qué nodo debe de dirigirse la hormiga según la ecuación de probabilidad descrita en la imagen de abajo. La probabilidad se elige utilizando el algoritmo **Roulette Wheel** :ferris_wheel:, que se describe en la siguiente sección.
+Si se utilizan esos archivos, se enviara un mensaje a mi correo. Por tanto, si desea cambiar la dirección de correo se pueden generar los archivos .p con el código mandar_mail.m. Para que su correo (asumiendo gmail) permita que se envíen correos desde Matlab es necesario configurar el *acceso a aplicaciones poco seguras*. Para acceder a dicha configuración en Gmail hacer click en:
 
-![prob](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/probabilidad_AS.PNG)
+**la imagen de su foto de perfil>configuraciones>seguridad>Acceso a aplicaciones poco seguras>Permitir**
 
-<a name="rou"></a>
-### 3.7 rouletteWheel.m
-Utilizado en la línea 35 de ant_decision.m. Algoritmo utilizado en computación evolutiva para seleccionar de forma aleatoria un valor. El pseudocódigo fue extraído del libro :blue_book: antes mencionado (_Computational Intelligence An Introduction_).
 
-![rou](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/roullete.PNG)
 
-<a name="loop"></a>
-### 3.8 loop_remover.m
-Utilizado en la línea 139 de ACO.m. En algunas ocasiones el algoritmo se encuentra con topes como el de la siguiente figura:
+<a name="analytics"></a>
+## 2. Analytics
 
-![fail](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/fallo.png)
 
-Por lo tanto, el algoritmo necesita regresar en el path que recorrió para salir del callejón. Esta función lo que hace es quitar los nodos a los que recorrió y que no le llevaron a ningún lugar útil, por lo que se hace más corto el camino. Este comportamiento está mejor explicado en el libro :orange_book: _Ant Colony Optimization_ de Marco Dorigo y Thomas Stützle.
+<a name="bin"></a>
+## 3. GA-bin
 
-<a name="aco2"></a>
-### 3.9 ACO_params_ev.m
-:no_entry: :construction: En construcción :construction: :no_entry:
+<a name="int"></a>
+## 4. GA-int
 
-Este código es básicamente ACO pero modificado para no tener simulación y correr el barrido de los parámetros rho, alpha y beta.
+<a name="webots"></a>
+## 5. Webots
+En la carpeta de Webots se encuentran otras carpetas:
+* controllers
+* libraries
+* plugins
+* protos
+* worlds
+
+El verdadero código, y el que hay que modificar, se encuentra en la carpeta "ACO_controller". Además, el mundo que se utiliza está en la carpeta *worlds*, y se llama tesis. Las demás carpetas **no** deben de ser modificadas :warning:. El archivo del mundo se modifica únicamente en el programa de webots. El controlador puede editarse desde Webots o desde Matlab.
+
+1. En Matlab, abrir ACO.m y correrlo en modo grid. Por el momento *no* es posible probar PRM, RRT y grafo de visibilidad con Webots.
+~~~
+graph_type = "grid";
+~~~
+
+2. Arrastrar el archivo *webots_test.mat* a la carpeta *ACO_controller*. Es posible modificar el archivo ACO.m para que se guarde en dicha carpeta si así usted lo desea. Este programa solo fue probado con la línea recta que genera el ACO. :warning: Si por alguna razón, la ruta generada por el ACO NO es recta, volver a correr el algoritmo hasta que salga una línea recta.
+
+3. Abrir el mundo *tesis* en *file>open world*. Debería de verse el mundo como en la figura siguiente (sin la estrella). La estrella fue colocada en la imagen para marcar el punto a donde el robot debería de llegar.
+
+![setup](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/Controladores/setup.png)
+
+4. Darle al botón :arrow_forward: para correr la simulación o al botón :fast_forward: para correr la simulación más rápido.
+
+5. Para analizar el movimiento del robot de Webots luego de que este llego a la meta, ejecutar en Matlab el código controller_analysis (en la carpeta ACO_controller). Este código automáticamente guardará las 4 imágenes .png en esta misma carpeta. Si se quisiera guardar las imágenes en otra carpeta puede modificarse en Matlab. Incluso si no desea guardar las imágenes también es posible comentar la línea donde se guardan. Principalmente las guardé automáticamente para colocarlas en la tesis y no hacerlo a mano.
+
+
+(*) Si se quiere modificar la posición inicial en *ACO.m*, hay que modificar el vector pos en *ACO_controller*. En el siguiente ejemplo se muestran las coordenadas de Webots para la esquina inferior izquierda.
+~~~
+pos = [-0.94 0 0.94];
+~~~
+
 
 ***
 Readme.md

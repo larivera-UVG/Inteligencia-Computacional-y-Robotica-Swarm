@@ -1,7 +1,11 @@
 % Diseño e Innovación 2
 % Gabriela Iriarte
-% 3/10/2020 -  
+% 3/10/2020 -  18/10/2020
 % Este archivo analiza el parámetro rho del ACO
+% La primera vez se hizo con 70 iteraciones máximas, sin embargo esto
+% ocasionaba que muchas veces el algoritmo no encontrara la solución. Por
+% lo tanto, se aumentó el número de iteraciones máximas hasta 150. De este
+% modo el número de fallos se minimizó.
 %% Importar las matrices
 iteraciones = 150;
 if iteraciones == 70
@@ -40,7 +44,7 @@ figure(1)
 
 x = [tabla_1{:, 1}, tabla_2{:, 1}, tabla_3{:, 1}, tabla_4{:, 1}, tabla_5{:, 1}, tabla_6{:, 1}, tabla_7{:, 1}];
 boxplot(x, 'Labels', {'0.3','0.4','0.5','0.6','0.7','0.8','0.9'}, 'Symbol', 'kx')
-title('Tiempo por $\rho$', 'Interpreter', 'Latex')
+% title('Tiempo por $\rho$', 'Interpreter', 'Latex')
 xlabel('$\rho$', 'Interpreter', 'Latex')
 ylabel('tiempo (s)')
 
@@ -105,7 +109,9 @@ title('Costo - $\rho = 0.9$', 'Interpreter', 'Latex')
 xlabel('costo', 'Interpreter', 'Latex')
 ylabel('frecuencia')
 
-
+% Creamos el archivo de latex con la tabla generada por Matlab
+% para darle copy-paste en Overleaf
+table2latex(agrupada, 'tabla_rho')
 
 
 

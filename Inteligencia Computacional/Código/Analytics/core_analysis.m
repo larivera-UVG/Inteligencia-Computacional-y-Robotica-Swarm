@@ -1,11 +1,13 @@
 % Diseño e Innovación 2
 % Gabriela Iriarte
-% 3/10/2020 -  
-% Este archivo analiza el parámetro rho del ACO
+% 3/10/2020 -  11/10/2020
+% Este archivo analiza el barrido de cores que se le hizo al ACO.
+% En el caso de los cores, solo se realizaron 50 ejecuciones debido al
+% tiempo que tardaba.
 %% Importar las matrices
 iteraciones = 1;
 if iteraciones == 1
-    load('sweep_data.mat') % No tiene sentido estos datos, hice dos barridos al mismo tiempo
+    load('sweep_data12.mat') % No tiene sentido estos datos, hice dos barridos al mismo tiempo
     core_data = cell2table(core_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','iteraciones','path','ant'});
     for sw = 1:1:44
        valores{1, sw} = num2str(sw); 
@@ -20,20 +22,19 @@ if iteraciones == 1
     all_cores = agrupada(:, 1);
     t = agrupada(:, 2);
     desv_est = agrupada(:, 3);
-    
     e = errorbar(all_cores{:, 1}, t{:, 1}, desv_est{:, 1});
     e.Color = [255 142 122]./255;
-    e.LineWidth = 0.9;
+    e.LineWidth = 1.5;
     xlabel('núcleos')
     ylabel('t(s)')
     hold on
-    plot(all_cores{:, 1}, t{:, 1}, 'r')
+    plot(all_cores{:, 1}, t{:, 1}, 'r', 'LineWidth', 2)
     legend('$\sigma $', '$\mu $', 'Interpreter', 'Latex')
     
-    
-%     figure(2)
-%     shadedErrorBar(all_cores{:, 1}, t{:, 1}, desv_est{:, 1})
-    
+    % Creamos el archivo de latex con la tabla generada por Matlab
+    % para darle copy-paste en Overleaf
+    table2latex(agrupada, 'tabla_cores')
+       
 end
 
 
