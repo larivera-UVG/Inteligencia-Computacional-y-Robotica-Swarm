@@ -13,15 +13,13 @@
 ## Índice
 
 1. [Estructura de Carpetas](#estructura-de-carpetas)
-   - [Repositorio](#repositorio)
-   - [Tesis Eduardo Santizo](#tesis-eduardo-santizo)
 2. [Antecedentes](#antecedentes)
-   - [Aldo Aguilar (2019)](#aldo-aguilar-(2019))
-   - [Juan Pablo Cahueque (2019)](#juan-pablo-cahueque-(2019))
-   - [Eduardo Santizo (2020)](#eduardo-santizo-(2020))
-3. [Guía de Uso](#guia-de-uso)
+   - [Aldo Aguilar (2019)](#aldo-aguilar-2019)
+   - [Juan Pablo Cahueque (2019)](#juan-pablo-cahueque-2019)
+   - [Eduardo Santizo (2020)](#eduardo-santizo-2020)
+3. [Guía de Uso](#guía-de-uso)
 4. [Hardware y Software](#hardware-y-software)
-5. [Swarm Robotics Toolbox](#swarm-robotics-toolbox-(sr-toolbox))
+5. [Swarm Robotics Toolbox](#swarm-robotics-toolbox)
    - [Estructura de Programa](#estructura-de-programa)
    - [Funciones](#funciones)
      - [Evolución del Global Best](#evolución-del-global-best)
@@ -35,12 +33,10 @@
 
 ## Estructura de Carpetas
 
-### Repositorio
-
+<details> 
+<summary>Repositorio (Click para más info.) </summary>
 Estructura general de las carpetas existentes en el repositorio.
-
-```json
-Reinforcement y Deep Learning
+<pre><code> Reinforcement y Deep Learning
 │
 └─── Código
 │   │
@@ -101,14 +97,13 @@ Reinforcement y Deep Learning
 |
 └─── Media:
      Imágenes y GIFs utilizados en el Readme.
-```
+</code></pre>
+</details><br/>
 
-### Tesis Eduardo Santizo
-
-Estructura para la carpeta que contiene el código de Matlab de la tesis "*Reinforcement y Deep Learning en Aplicaciones de Robótica de Enjambre*" realizada por Eduardo Santizo.
-
-```json
-Eduardo Santizo
+<details> 
+<summary>Tesis Eduardo Santizo (Click para más info.) </summary>
+Estructura para la carpeta que contiene el código de Matlab de la tesis "Reinforcement y Deep Learning en Aplicaciones de Robótica de Enjambre" realizada por Eduardo Santizo.
+<pre><code>Eduardo Santizo
 │
 └─── Deep PSO Tuner
 │   │
@@ -188,7 +183,8 @@ Eduardo Santizo
 |
 └─── SR_Toolbox:
      Script principal del SR Toolbox.
-```
+</code></pre>
+</details>
 
 ## Antecedentes
 
@@ -271,7 +267,7 @@ Los diferentes scripts del *SR Toolbox* se probaron en dos sistemas diferentes, 
 
 En ambos sistemas los scripts corrían sin problemas, aunque en la laptop se observaba una ligera pérdida en desempeño (las animaciones corrían más lento y los tiempos de inicialización eran mayores).
 
-## Swarm Robotics Toolbox (SR Toolbox)
+## Swarm Robotics Toolbox
 
 El *Swarm Robotics Toolbox* consiste de un script "maestro" que agrupa múltiples funcionalidades en un solo programa. Esto significa que el usuario no debe abrir 20 scripts diferentes para cada prueba a realizar. Todo está contenido en el mismo livescript, acelerando significativamente el tiempo de realización de pruebas.
 
@@ -297,6 +293,10 @@ Esta sección se encarga de limpiar todas las variables del *Workspace* en caso 
 </sub> </details> <br/>
 
 #### Parámetros y Settings
+
+<p align="center">
+   <img src="./Media/ParametrosSettings.PNG" width="95%" />
+</p>
 
 Esta sección permite controlar una gran variedad de elementos propios de la simulación, desde parámetros dimensionales y visuales, hasta la *seed* a utilizar. A continuación se presenta una breve explicación de cada uno de los parámetros que pueden llegar a ser cambiados. **Hacer click en el nombre de cada parámetro para desplegar más información**.
 
@@ -630,22 +630,196 @@ Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
 <details>
 <summary> <tt>Meta</tt> </summary>
 <sub> Coordenadas (X,Y) para el punto meta que buscarán alcanzar los robots diferenciales. </sub>
+<p align="center">
+   <img src="./Media/MetaRegionPartida.png" width="40%" />
+</p>
 </details>
 
 <details>
 <summary> <tt>RegionPartida_Centro</tt> </summary>
 <sub> Coordenadas (X,Y) para el centro del rectángulo que define la región de partida o la región dentro de la cual saldrán los robots y/o partículas PSO. </sub>
+<p align="center">
+   <img src="./Media/CentroRegionPartida.png" width="40%" />
+</p>
 </details>
 
 <details>
 <summary> <tt>RegionPartida_Ancho</tt> </summary>
 <sub> Ancho del rectángulo que define la región de partida o la región de la cual saldrán los robots y/o partículas PSO. </sub>
+<p align="center">
+   <img src="./Media/AnchoAltoRegionPartida.png" width="40%" />
+</p>
 </details>
 
 <details>
 <summary> <tt>RegionPartida_Alto</tt> </summary>
 <sub> Alto del rectángulo que define la región de partida o la región de la cual saldrán los robots y/o partículas PSO. </sub>
+<p align="center">
+   <img src="./Media/AnchoAltoRegionPartida.png" width="40%" />
+</p>
+</details><br/>
+
+<ins>*Guardado de Animación*</ins>
+
+<details>
+<summary> <tt>SaveFrames</tt> </summary>
+<sub> Permite guardar la animación de la simulación actual como una secuencia de imágenes PNG. Todas las imágenes son colocadas dentro del folder <tt>.../Media/Frames/NombreSimulacion/</tt>. Esta opción existe porque uno puede crear un GIF en Overleaf subiendo a una carpeta todas las imágenes y luego incluyendo el paquete "animate". El folder donde se guardan las imágenes es nombrado automáticamente según algunas propiedades de la simulación (Método, modo de visualización, etc.).</sub>
 </details>
+
+<details>
+<summary> <tt>SaveVideo</tt> </summary>
+<sub> Permite guardar la animación de la simulación actual como un video. El video se guarda en el folder <tt>.../Media/Video/</tt>. El archivo es nombrado automáticamente según algunas propiedades de la simulación (Método, modo de visualización, etc.). </sub>
+</details>
+
+<details>
+<summary> <tt>SaveGIF</tt> </summary>
+<sub> Permite guardar la animación de la simulación actual como un GIF. El GIF se guarda en el folder <tt>.../Media/GIF/</tt>. El archivo es nombrado automáticamente según algunas propiedades de la simulación (Método, modo de visualización, etc.).</sub>
+</details>
+
+<details>
+<summary> <tt>SaveFigures</tt> </summary>
+<sub> Permite guardar todas las figuras generadas durante la ejecución del script como imágenes PNG. Todas las figuras se guardan en el folder <tt>.../Media/Figuras/NombreSimulacion/</tt>. Para que el sistema de guardado funcione la figura creada debe ser asignada a una variable (Por ejemplo: <tt>Figura = figure('Name',"Plot Figura")</tt>). Si no se hace esto, la función encargada (<tt>saveWorkspaceFigures.m</tt>) no detectará la figura. El folder donde se guardan las figuras es nombrado automáticamente según algunas propiedades de la simulación (Método, modo de visualización, etc.).</sub>
+</details>
+
+<details>
+<summary> <tt>EnableAnotacion</tt> </summary>
+<sub> Agrega un string adicional al final del nombre del archivo/folder a guardar. Por ejemplo: La simulación tiene un error que se quiere documentar. Se puede hacer que <tt>EnableAnotacion = 1</tt> y <tt>AnotacionOutputMedia = "_Error"</tt>. Esto hará que el nombre del medio a guardar pase de <tt>Medio</tt> a <tt>Medio_Error</tt>. Útil para explicar un poco más de que se tratan los medios guardados. </sub>
+</details>
+
+<details>
+<summary> <tt>EnableSubfolder</tt> </summary>
+<sub> Opción que coloca el archivo o folder actual dentro de una subcarpeta madre dada por el parámetro <tt>SubfolderMedia</tt>. Por ejemplo: Se habilita este parámetro y se especifica que <tt>SubfolderMedia = "Experimento 1"</tt>. Cada vez que se guarde un archivo, este se colocará dentro de la carpeta "Experimento 1". Útil para agrupar experimentos de la misma naturaleza dentro de una misma carpeta. </sub>
+</details>
+
+<details>
+<summary> <tt>AnotacionOutputMedia</tt> </summary>
+<sub> String agregado al final del nombre del medio a guardar en caso <tt>EnableAnotacion = 1</tt>. </sub>
+</details>
+
+<details>
+<summary> <tt>SubfolderMedia</tt> </summary>
+<sub> Nombre del subfolder en el que se guardarán todos los medios generados en caso <tt>EnableSubfolder = 1</tt>. </sub>
+</details>
+
+<details>
+<summary> <tt>PathGIF</tt> </summary>
+<sub> Ruta base en la que se guardarán todos los GIFs generados por el Toolbox. </sub>
+</details>
+
+<details>
+<summary> <tt>PathVideo</tt> </summary>
+<sub> Ruta base en la que se guardarán todos los videos generados por el Toolbox. </sub>
+</details>
+
+<details>
+<summary> <tt>PathFrames</tt> </summary>
+<sub> Ruta base en la que se guardará la carpeta conteniendo todas las frames generadas por el Toolbox. </sub>
+</details>
+
+<details>
+<summary> <tt>PathFrames</tt> </summary>
+<sub> Ruta base en la que se guardará la carpeta conteniendo todas las figuras generadas y guardadas por la Toolbox. </sub>
+</details><br/>
+
+<ins>*Seed Settings*</ins>
+
+<details>
+<summary> <tt>SeedManual</tt> </summary>
+<sub> La seed consiste del número que se utiliza para generar valores aleatorios en Matlab (al llamar funciones como <tt>randn()</tt> o <tt>randi()</tt>). Si <tt>SeedManual = 1</tt> el usuario puede elegir y fijar la seed que utilizará Matlab por medio del parámetro <tt>Seed</tt>. Si <tt>SeedManual = 0</tt>, entonces el parámetro <tt>Seed</tt> consistirá de la seed elegida arbitrariamente por Matlab. </sub>
+</details>
+
+<details>
+<summary> <tt>Seed</tt> </summary>
+<sub> Número utilizado para generar valores aleatorios en Matlab. Según el valor de <tt>SeedManual</tt> esta puede consistir de un valor especificado por el usuario o de un valor elegido arbitrariamente por Matlab. </sub>
+</details><br/>
+
+#### Reglas de Método a Usar
+
+<p align="center">
+   <img src="./Media/ReglasMetodo.PNG" width="95%" />
+</p>
+
+Los métodos disponibles se pueden agrupar en 3 tipos:
+
+- **Seguimiento de Trayectoria**: Utiliza información del mapa para generar una trayectoria desde la región de partida hasta la meta. Un controlador punto a punto mueve al robot. Métodos incluidos: *Dynamic Programming y Demo Trayectorias*.
+- **Exploración con PSO**: Los robots exploran el mapa usando una función de costo optimizada por partículas PSO. La función de costo necesita de conocimiento previo sobre el ambiente. Métodos incluidos: *APF, Banana, Dropwave, Levy, Himmelblau, Rastrigin, Schaffer F6, Sphere, Booth, Ackley, Jabandzic, etc*.
+- **Exploración Dinámica**: Exploración basada solamente en las lecturas actuales de sensores. No se requiere de conocimiento previo sobre el ambiente. Métodos incluidos: ...
+
+Según el método elegido (parámetro <tt>Metodo</tt>) el Toolbox toma decisiones sobre el valor de diferentes propiedades e incluso puede llegar a sobre-escribir valores previamente especificados por el usuario en la sección de [parámetros y settings](#parámetros-y-settings).
+
+**NOTA**: Si agrega un nuevo método de navegación, es muy importante añadir el nombre del mismo a alguna de las listas al inicio de la sección, de lo contrario el programa retornará un error.
+
+#### Región de Partida y Obstáculos de Mesa
+
+Se crea el vector que contiene los límites de la región de partida de los robots / partículas (`RegionPartida_Bordes`) y luego, según el `TipoObstaculo`, el programa extrae los vértices propios de él o los obstáculos a posicionar en la mesa de trabajo (`XObs`, `YObs` y `ZObs`).
+
+```Matlab
+% Forma estándar del array XObs
+XObs = [VertX1_Polygono1   VertX1_Polygono1
+        VertX2_Polygono1   VertX2_Polygono1
+        VertX3_Polygono1   VertX3_Polygono1
+        NaN                NaN
+        VertX1_Polygono2   VertX1_Polygono2
+        VertX2_Polygono2   VertX2_Polygono2
+        VertX3_Polygono2   VertX3_Polygono2
+        NaN                NaN             ];
+
+% Forma estándar del array YObs
+YObs = [VertY1_Polygono1   VertY1_Polygono1
+        VertY2_Polygono1   VertY2_Polygono1
+        VertY3_Polygono1   VertY3_Polygono1
+        NaN                NaN
+        VertY1_Polygono2   VertY1_Polygono2
+        VertY2_Polygono2   VertY2_Polygono2
+        VertY3_Polygono2   VertY3_Polygono2
+        NaN                NaN             ];
+```
+
+Aunque el obstáculo seleccionado consista de múltiples polígonos, todos sus vértices se incluirán dentro de las variables `XObs`, `YObs` y `ZObs`. Para diferenciar entre los vértices de diferentes polígonos se separa a cada grupo de vértices por medio de una fila de `NaN`.
+
+```Matlab
+% Forma estándar del array ZObs
+ZObs = [VertZ1_Bottom_Polygono1   VertZ1_Top_Polygono1
+        VertZ2_Bottom_Polygono1   VertZ2_Top_Polygono1
+        VertZ3_Bottom_Polygono1   VertZ3_Top_Polygono1
+        NaN                       NaN
+        VertZ1_Bottom_Polygono2   VertZ1_Top_Polygono2
+        VertZ2_Bottom_Polygono2   VertZ2_Top_Polygono2
+        VertZ3_Bottom_Polygono2   VertZ3_Top_Polygono2
+        NaN                       NaN                 ];
+```
+
+Cabe mencionar que las variables `XObs` y `YObs` son matrices de dos columnas, donde ambas columnas son iguales. Esto se debe a que en la visualización 3D, el polígono 2D base se "extruye" en la dirección del eje Z+, creando una cara *superior* con las mismas coordenadas X y Y que el polígono original. De aquí que `XObs`, `YObs` y `ZObs` tengan dos columnas: La primera consiste de los vértices del polígono base o *cara inferior* y la segunda de los vértices de la *cara superior*. A su vez, es por esto que `ZObs` tiene valores diferentes para cada columna: La columna 1 es la altura de la *cara inferior* y la columna 2 es la altura de la *cara superior*. Una visualización de todas estas cantidades se pueden observar a continuación:
+
+<p align="center">
+   <img src="./Media/EstructuraPoligonos.png" width="90%" />
+</p>
+
+#### Inicialización de Robots
+
+Se inicializan las posiciones, velocidades y orientaciones de todos los robots diferenciales a simular.
+
+`PuckPosicion_Actual` es una matriz de `NoPucks X 2`, con la columna 1 conteniendo las coordenadas X y la columna 2 las coordenadas Y de cada E-Puck. Cada fila corresponde a un E-Puck diferente. Las coordenadas consisten de valores aleatorios uniformemente distribuidos (`unifrnd()`) dentro de los límites de la región de partida. Si alguna de las coordenadas se encuentra dentro de un obstáculo, se genera una nueva posición inicial aleatoria hasta que la posición se encuentre fuera del mismo. Este método de corrección a *fuerza bruta* funciona bien pero puede causar problemas ya que si los obstáculos son muy complejos (o su overlap con la región de partida es muy grande), a Matlab le puede tomar un **muuuuy largo tiempo** corregir las posiciones, potencialmente trabando al programa en el proceso.
+
+``` Matlab
+% "PuckPosicion_Actual"
+
+% Forma:
+%
+%            X     Y
+% EPuck 1    X1    Y1
+% EPuck 2    X2    Y2
+% EPuck 3    X3    Y3
+% ...
+% EPuck n    Xn    Yn
+
+% Ejemplo:
+PuckPosicion_Actual = [X1 Y1;
+                       X2 Y2;
+                       X3 Y3];
+```
+
+`PuckVel_Lineal` y `PuckVel_Angular` describen la velocidad lineal y angular de cada E-Puck respectivamente. Ambas son matrices de `NoPucks X 1`, .
 
 ### Colisiones
 
@@ -653,7 +827,7 @@ Un entorno de simulación realista es necesario para obtener resultados útiles 
 
 ![Colision](./Media/Colision.png)
 
-Desgraciadamente, debido a que al alejar un robot del otro se pueden llegar a crear más colisiones, en algunas ocasiones el algoritmo puede no converger en una solución. Por lo tanto, **el algoritmo implementado es inestable y si no se restringe puede llegar a trabar Matlab.** Para controlar esto se le colocó un número máximo de iteraciones en las que puede llegar a producir una solución válida. Con esta "solución", el algoritmo funciona relativamente bien aunque puede producir errores frecuentemente. 
+Desgraciadamente, debido a que al alejar un robot del otro se pueden llegar a crear más colisiones, en algunas ocasiones el algoritmo puede no converger en una solución. Por lo tanto, **el algoritmo implementado es inestable y si no se restringe puede llegar a trabar Matlab.** Para controlar esto se le colocó un número máximo de iteraciones en las que puede llegar a producir una solución válida. Con esta "solución", el algoritmo funciona relativamente bien aunque puede producir errores frecuentemente.
 
 Si se desea, el usuario puede acceder a la función *`SolveCollisions.m`* y cambiar el parámetro IteracionesMax. Los errores disminuyen al incrementar el número de iteraciones, pero el tiempo computacional requerido incrementa. En futuras versiones del Toolbox se desea implementar un algoritmo de "Collision Detection" mucho más robusto como "Speculative Collisions" que también incluya elementos como las paredes o los obstáculos como tal.
 
