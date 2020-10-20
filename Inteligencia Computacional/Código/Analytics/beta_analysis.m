@@ -3,7 +3,7 @@
 % 3/10/2020 - 18/10/2020 
 % Este archivo analiza el parámetro rho del ACO
 %% Importar las matrices
-iteraciones = 3;
+iteraciones = 1;
 if iteraciones == 1
     % MEDIO
     load('sweep_data9.mat') 
@@ -94,9 +94,9 @@ if iteraciones == 1
     % Creamos el archivo de latex con la tabla generada por Matlab
     % para darle copy-paste en Overleaf
     table2latex(agrupada, 'tabla_beta_med')
-    saveas(h1, 'beta_box_m.eps')
-    saveas(h2, 'beta_bar1_m.eps') 
-    saveas(h3, 'beta_bar2_m.eps')
+    saveas(h1, 'beta_box_m.eps','epsc')
+    saveas(h2, 'beta_bar1_m.eps','epsc') 
+    saveas(h3, 'beta_bar2_m.eps','epsc')
     
 elseif iteraciones == 2
     % LENTO
@@ -188,9 +188,9 @@ elseif iteraciones == 2
     % Creamos el archivo de latex con la tabla generada por Matlab
     % para darle copy-paste en Overleaf
     table2latex(agrupada, 'tabla_beta_len')
-    saveas(h1, 'beta_box_l.eps')
-    saveas(h2, 'beta_bar1_l.eps') 
-    saveas(h3, 'beta_bar2_l.eps')
+    saveas(h1, 'beta_box_l.eps','epsc')
+    saveas(h2, 'beta_bar1_l.eps','epsc') 
+    saveas(h3, 'beta_bar2_l.eps','epsc')
 
     
 elseif iteraciones == 3
@@ -283,9 +283,9 @@ elseif iteraciones == 3
     % Creamos el archivo de latex con la tabla generada por Matlab
     % para darle copy-paste en Overleaf
     table2latex(agrupada, 'tabla_beta_rap')
-    saveas(h1, 'beta_box_r.eps')
-    saveas(h2, 'beta_bar1_r.eps') 
-    saveas(h3, 'beta_bar2_r.eps')
+    saveas(h1, 'beta_box_r.eps','epsc')
+    saveas(h2, 'beta_bar1_r.eps','epsc') 
+    saveas(h3, 'beta_bar2_r.eps','epsc')
 end
 
 

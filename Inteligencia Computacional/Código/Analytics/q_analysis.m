@@ -3,7 +3,7 @@
 % 3/10/2020 - 18/10/2020
 % Este archivo analiza el parámetro rho del ACO
 %% Importar las matrices
-iteraciones = 3;
+iteraciones = 1;
 if iteraciones == 1
     % MEDIO
     load('sweep_data10.mat') 
@@ -149,11 +149,11 @@ if iteraciones == 1
     % Creamos el archivo de latex con la tabla generada por Matlab
     % para darle copy-paste en Overleaf
     table2latex(agrupada, 'tabla_q_med')
-    saveas(h1, 'q_box_m.eps')
-    saveas(h2, 'q_bar1_m.eps') 
-    saveas(h3, 'q_bar2_m.eps')
-    saveas(h4, 'q_bar3_m.eps') 
-    saveas(h5, 'q_bar4_m.eps')
+    saveas(h1, 'q_box_m.eps','epsc')
+    saveas(h2, 'q_bar1_m.eps','epsc') 
+    saveas(h3, 'q_bar2_m.eps','epsc')
+    saveas(h4, 'q_bar3_m.eps','epsc') 
+    saveas(h5, 'q_bar4_m.eps','epsc')
 
     
 elseif iteraciones == 2
@@ -301,11 +301,11 @@ elseif iteraciones == 2
     % Creamos el archivo de latex con la tabla generada por Matlab
     % para darle copy-paste en Overleaf
     table2latex(agrupada, 'tabla_q_len')
-    saveas(h1, 'q_box_l.eps')
-    saveas(h2, 'q_bar1_l.eps') 
-    saveas(h3, 'q_bar2_l.eps')
-    saveas(h4, 'q_bar3_l.eps') 
-    saveas(h5, 'q_bar4_l.eps')
+    saveas(h1, 'q_box_l.eps','epsc')
+    saveas(h2, 'q_bar1_l.eps','epsc') 
+    saveas(h3, 'q_bar2_l.eps','epsc')
+    saveas(h4, 'q_bar3_l.eps','epsc') 
+    saveas(h5, 'q_bar4_l.eps','epsc')
     
 elseif iteraciones == 3
     % RÁPIDO
@@ -453,11 +453,11 @@ elseif iteraciones == 3
     % Creamos el archivo de latex con la tabla generada por Matlab
     % para darle copy-paste en Overleaf
     table2latex(agrupada, 'tabla_q_rap')
-    saveas(h1, 'q_box_r.eps')
-    saveas(h2, 'q_bar1_r.eps') 
-    saveas(h3, 'q_bar2_r.eps')
-    saveas(h4, 'q_bar3_r.eps') 
-    saveas(h5, 'q_bar4_r.eps')
+    saveas(h1, 'q_box_r.eps','epsc')
+    saveas(h2, 'q_bar1_r.eps','epsc') 
+    saveas(h3, 'q_bar2_r.eps','epsc')
+    saveas(h4, 'q_bar3_r.eps','epsc') 
+    saveas(h5, 'q_bar4_r.eps','epsc')
     
 end
 
