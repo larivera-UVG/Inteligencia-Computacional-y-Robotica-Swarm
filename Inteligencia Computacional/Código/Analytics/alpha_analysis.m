@@ -376,7 +376,7 @@ elseif iteraciones == 5
     tabla_6 = alpha_data(grupo==6, :);
     tabla_7 = alpha_data(grupo==7, :);
 
-    figure(1)
+    h1 = figure(1)
 
     x = [tabla_1{:, 1}, tabla_2{:, 1}, tabla_3{:, 1}, tabla_4{:, 1}, tabla_5{:, 1}, tabla_6{:, 1}, tabla_7{:, 1}];
     boxplot(x, 'Labels', valores, 'Symbol', 'kx')
@@ -399,11 +399,11 @@ elseif iteraciones == 5
     val7 = unique(tabla_7{:, 2});
     freq7 = hist(tabla_7{:, 2}, val7)';
     
-    figure(2)
+    h2 = figure(2)
     color = [187, 153, 255]/255;
     bw = 0.3;
     subplot(2, 2, 1)
-    bar(val1, freq1(1), 'FaceColor', color, 'BarWidth', bw)
+    bar(val1, freq1, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $\alpha = 0.9$', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
@@ -426,7 +426,7 @@ elseif iteraciones == 5
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
 
-    figure(3)
+    h3 = figure(3)
     subplot(2, 2, 1)
     bar(val5, freq5, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $\alpha = 1.3$', 'Interpreter', 'Latex')
@@ -444,6 +444,11 @@ elseif iteraciones == 5
     title('Costo - $\alpha = 1.5$', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
+    
+    saveas(h1, 'alpha_box_r.eps','epsc')
+    saveas(h2, 'alpha_bar1_r.eps','epsc') 
+    saveas(h3, 'alpha_bar2_r.eps','epsc')
+    
 end
 
 % Creamos el archivo de latex con la tabla generada por Matlab
