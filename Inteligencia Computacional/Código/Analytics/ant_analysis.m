@@ -20,12 +20,12 @@ if iteraciones == 1
     tabla_5 = ant_data(grupo==5, :);
     tabla_6 = ant_data(grupo==6, :);
 
-    figure(1)
+    h1 = figure(1)
 
     x = [tabla_1{:, 1}, tabla_2{:, 1}, tabla_3{:, 1}, tabla_4{:, 1}, tabla_5{:, 1}, tabla_6{:, 1}];
     boxplot(x, 'Labels', valores, 'Symbol', 'kx')
-    title('Tiempo por $ant$', 'Interpreter', 'Latex')
-    xlabel('$ant$', 'Interpreter', 'Latex')
+    title('Tiempo por hormigas', 'Interpreter', 'Latex')
+    xlabel('hormigas', 'Interpreter', 'Latex')
     ylabel('tiempo (s)')
 
     val1 = unique(tabla_1{:, 2});
@@ -41,47 +41,51 @@ if iteraciones == 1
     val6 = unique(tabla_6{:, 2});
     freant6 = hist(tabla_6{:, 2}, val6)';
     
-    figure(2)
+    h2 = figure(2)
     color = [187, 153, 255]/255;
     bw = 0.3;
     subplot(2, 2, 1)
     bar(val1, freant1, 'FaceColor', color, 'BarWidth', bw)
-    title('Costo - $\rho = 1.2$', 'Interpreter', 'Latex')
+    title('Costo - 50 hormigas', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
 
     subplot(2, 2, 2)
     bar(val2, freant2, 'FaceColor', color, 'BarWidth', bw)
-    title('Costo - $\rho = 1.3$', 'Interpreter', 'Latex')
+    title('Costo - 60 hormigas', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
 
     subplot(2, 2, 3)
     bar(val3, freant3, 'FaceColor', color, 'BarWidth', bw)
-    title('Costo - $\rho = 1.4$', 'Interpreter', 'Latex')
+    title('Costo - 70 hormigas', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
 
     subplot(2, 2, 4)
     bar(val4, freant4, 'FaceColor', color, 'BarWidth', bw)
-    title('Costo - $\rho = 1.5$', 'Interpreter', 'Latex')
+    title('Costo - 80 hormigas', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
 
-    figure(3)
+    h3 = figure(3)
     subplot(2, 2, 1)
     bar(val5, freant5, 'FaceColor', color, 'BarWidth', bw)
-    title('Costo - $\rho = 1.6$', 'Interpreter', 'Latex')
+    title('Costo - 90 hormigas', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
     
     subplot(2, 2, 2)
     bar(val6, freant6, 'FaceColor', color, 'BarWidth', bw)
-    title('Costo - $ant = 1.7$', 'Interpreter', 'Latex')
+    title('Costo - 100 hormigas', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
-   
     
+    saveas(h1, 'ant_box_m.eps','epsc')
+    saveas(h2, 'ant_bar1_m.eps','epsc') 
+    saveas(h3, 'ant_bar2_m.eps','epsc')
+    table2latex(agrupada, 'tabla_ant')
+ 
 end
 
 
