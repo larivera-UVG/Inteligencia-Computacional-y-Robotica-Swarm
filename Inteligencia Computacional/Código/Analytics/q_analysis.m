@@ -1,18 +1,22 @@
 % Diseño e Innovación 2
 % Gabriela Iriarte
-% 3/10/2020 - 18/10/2020
+% 3/10/2020 - 27/10/2020
 % Este archivo analiza el parámetro rho del ACO
+% rapidez:
+% 1 - medio - rho = 0.6
+% 2 - lento - rho = 0.4
+% 3 - rápido - rho = 0.8
 %% Importar las matrices
-iteraciones = 1;
-if iteraciones == 1
+rapidez = 1;
+if rapidez == 1
     % MEDIO
     load('sweep_data10.mat') 
-    Q_data = cell2table(Q_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','iteraciones','path','Q'});
+    Q_data = cell2table(Q_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','rapidez','path','Q'});
     valores = {'1.2','1.3','1.4','1.5','1.6','1.7','1.8','1.9','2','2.1','2.2','2.3','2.4'};
     [grupo, id] = findgroups(Q_data.Q);
     func = @(p, q, r) [mean(p), mean(q), sum(r==2.5), sum(r==0)];
-    result = splitapply(func, Q_data.tiempo, Q_data.iteraciones, Q_data.costo, grupo);
-    agrupada = array2table([id, result], 'VariableNames', {'Q','tiempo','iteraciones', 'costo', 'fallos'});
+    result = splitapply(func, Q_data.tiempo, Q_data.rapidez, Q_data.costo, grupo);
+    agrupada = array2table([id, result], 'VariableNames', {'Q','tiempo','rapidez', 'costo', 'fallos'});
 
     tabla_1 = Q_data(grupo==1, :);
     tabla_2 = Q_data(grupo==2, :);
@@ -28,7 +32,7 @@ if iteraciones == 1
     tabla_12 = Q_data(grupo==12, :);
     tabla_13 = Q_data(grupo==13, :);
 
-    h1 = figure(1)
+    h1 = figure(1);
 
     x = [tabla_1{:, 1}, tabla_2{:, 1}, tabla_3{:, 1}, tabla_4{:, 1}, tabla_5{:, 1}, tabla_6{:, 1}, tabla_7{:, 1}, tabla_8{:, 1}, tabla_9{:, 1}, tabla_10{:, 1},tabla_11{:, 1}, tabla_12{:, 1}, tabla_13{:, 1}];
     boxplot(x, 'Labels', valores, 'Symbol', 'kx')
@@ -63,7 +67,7 @@ if iteraciones == 1
     val13 = unique(tabla_13{:, 2});
     freq13 = hist(tabla_13{:, 2}, val13)';
     
-    h2 = figure(2)
+    h2 = figure(2);
     color = [187, 153, 255]/255;
     bw = 0.3;
     subplot(2, 2, 1)
@@ -90,7 +94,7 @@ if iteraciones == 1
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
 
-    h3 = figure(3)
+    h3 = figure(3);
     subplot(2, 2, 1)
     bar(val5, freq5, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $Q = 1.6$', 'Interpreter', 'Latex')
@@ -115,7 +119,7 @@ if iteraciones == 1
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
     
-    h4 = figure(4)
+    h4 = figure(4);
     subplot(2, 2, 1)
     bar(val9, freq9, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $Q = 2$', 'Interpreter', 'Latex')
@@ -140,7 +144,7 @@ if iteraciones == 1
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
     
-    h5 = figure(5)
+    h5 = figure(5);
     bar(val13, freq13, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $Q = 2.4$', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
@@ -149,22 +153,25 @@ if iteraciones == 1
     % Creamos el archivo de latex con la tabla generada por Matlab
     % para darle copy-paste en Overleaf
     table2latex(agrupada, 'tabla_q_med')
-    saveas(h1, 'q_box_m.eps','epsc')
-    saveas(h2, 'q_bar1_m.eps','epsc') 
-    saveas(h3, 'q_bar2_m.eps','epsc')
-    saveas(h4, 'q_bar3_m.eps','epsc') 
-    saveas(h5, 'q_bar4_m.eps','epsc')
+    
+    % Guardamos las imágenes en formato eps. El epsc indica que queremos la
+    % imagen a colores.
+%     saveas(h1, 'q_box_m.eps','epsc')
+%     saveas(h2, 'q_bar1_m.eps','epsc') 
+%     saveas(h3, 'q_bar2_m.eps','epsc')
+%     saveas(h4, 'q_bar3_m.eps','epsc') 
+%     saveas(h5, 'q_bar4_m.eps','epsc')
 
     
-elseif iteraciones == 2
+elseif rapidez == 2
     % LENTO
     load('sweep_data15.mat') 
-    Q_data = cell2table(Q_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','iteraciones','path','Q'});
+    Q_data = cell2table(Q_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','rapidez','path','Q'});
     valores = {'1.2','1.3','1.4','1.5','1.6','1.7','1.8','1.9','2','2.1','2.2','2.3','2.4'};
     [grupo, id] = findgroups(Q_data.Q);
     func = @(p, q, r) [mean(p), mean(q), sum(r==2.5), sum(r==0)];
-    result = splitapply(func, Q_data.tiempo, Q_data.iteraciones, Q_data.costo, grupo);
-    agrupada = array2table([id, result], 'VariableNames', {'Q','tiempo','iteraciones', 'costo', 'fallos'});
+    result = splitapply(func, Q_data.tiempo, Q_data.rapidez, Q_data.costo, grupo);
+    agrupada = array2table([id, result], 'VariableNames', {'Q','tiempo','rapidez', 'costo', 'fallos'});
 
     tabla_1 = Q_data(grupo==1, :);
     tabla_2 = Q_data(grupo==2, :);
@@ -180,7 +187,7 @@ elseif iteraciones == 2
     tabla_12 = Q_data(grupo==12, :);
     tabla_13 = Q_data(grupo==13, :);
 
-    h1 = figure(1)
+    h1 = figure(1);
 
     x = [tabla_1{:, 1}, tabla_2{:, 1}, tabla_3{:, 1}, tabla_4{:, 1}, tabla_5{:, 1}, tabla_6{:, 1}, tabla_7{:, 1}, tabla_8{:, 1}, tabla_9{:, 1}, tabla_10{:, 1},tabla_11{:, 1}, tabla_12{:, 1}, tabla_13{:, 1}];
     boxplot(x, 'Labels', valores, 'Symbol', 'kx')
@@ -215,7 +222,7 @@ elseif iteraciones == 2
     val13 = unique(tabla_13{:, 2});
     freq13 = hist(tabla_13{:, 2}, val13)';
     
-    h2 = figure(2)
+    h2 = figure(2);
     color = [187, 153, 255]/255;
     bw = 0.3;
     subplot(2, 2, 1)
@@ -242,7 +249,7 @@ elseif iteraciones == 2
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
 
-    h3 = figure(3)
+    h3 = figure(3);
     subplot(2, 2, 1)
     bar(val5, freq5, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $Q = 1.6$', 'Interpreter', 'Latex')
@@ -267,7 +274,7 @@ elseif iteraciones == 2
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
     
-    h4 = figure(4)
+    h4 = figure(4);
     subplot(2, 2, 1)
     bar(val9, freq9, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $Q = 2$', 'Interpreter', 'Latex')
@@ -292,7 +299,7 @@ elseif iteraciones == 2
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
     
-    h5 = figure(5)
+    h5 = figure(5);
     bar(val13, freq13, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $Q = 2.4$', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
@@ -301,22 +308,22 @@ elseif iteraciones == 2
     % Creamos el archivo de latex con la tabla generada por Matlab
     % para darle copy-paste en Overleaf
     table2latex(agrupada, 'tabla_q_len')
-    saveas(h1, 'q_box_l.eps','epsc')
-    saveas(h2, 'q_bar1_l.eps','epsc') 
-    saveas(h3, 'q_bar2_l.eps','epsc')
-    saveas(h4, 'q_bar3_l.eps','epsc') 
-    saveas(h5, 'q_bar4_l.eps','epsc')
+%     saveas(h1, 'q_box_l.eps','epsc')
+%     saveas(h2, 'q_bar1_l.eps','epsc') 
+%     saveas(h3, 'q_bar2_l.eps','epsc')
+%     saveas(h4, 'q_bar3_l.eps','epsc') 
+%     saveas(h5, 'q_bar4_l.eps','epsc')
     
-elseif iteraciones == 3
+elseif rapidez == 3
     % RÁPIDO
-    % Solo se pudo correr 120 iteraciones
+    % Solo se pudo correr 120 rapidez
     load('sweep_data.mat') 
-    Q_data = cell2table(Q_sweep_data(2:1574, :), 'VariableNames', {'tiempo','costo','iteraciones','path','Q'});
+    Q_data = cell2table(Q_sweep_data(2:1574, :), 'VariableNames', {'tiempo','costo','rapidez','path','Q'});
     valores = {'1.2','1.3','1.4','1.5','1.6','1.7','1.8','1.9','2','2.1','2.2','2.3','2.4'};
     [grupo, id] = findgroups(Q_data.Q);
     func = @(p, q, r) [mean(p), mean(q), sum(r==2.5), sum(r==0)];
-    result = splitapply(func, Q_data.tiempo, Q_data.iteraciones, Q_data.costo, grupo);
-    agrupada = array2table([id, result], 'VariableNames', {'Q','tiempo','iteraciones', 'costo', 'fallos'});
+    result = splitapply(func, Q_data.tiempo, Q_data.rapidez, Q_data.costo, grupo);
+    agrupada = array2table([id, result], 'VariableNames', {'Q','tiempo','rapidez', 'costo', 'fallos'});
 
     tabla_1 = Q_data(grupo==1, :);
     tabla_2 = Q_data(grupo==2, :);
@@ -332,7 +339,7 @@ elseif iteraciones == 3
     tabla_12 = Q_data(grupo==12, :);
     tabla_13 = Q_data(grupo==13, :);
 
-    h1 = figure(1)
+    h1 = figure(1);
 
     x = [tabla_1{:, 1}, tabla_2{:, 1}, tabla_3{:, 1}, tabla_4{:, 1}, tabla_5{:, 1}, tabla_6{:, 1}, tabla_7{:, 1}, tabla_8{:, 1}, tabla_9{:, 1}, tabla_10{:, 1},tabla_11{:, 1}, tabla_12{:, 1}, tabla_13{:, 1}];
     boxplot(x, 'Labels', valores, 'Symbol', 'kx')
@@ -367,7 +374,7 @@ elseif iteraciones == 3
     val13 = unique(tabla_13{:, 2});
     freq13 = hist(tabla_13{:, 2}, val13)';
     
-    h2 = figure(2)
+    h2 = figure(2);
     color = [187, 153, 255]/255;
     bw = 0.3;
     subplot(2, 2, 1)
@@ -394,7 +401,7 @@ elseif iteraciones == 3
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
 
-    h3 = figure(3)
+    h3 = figure(3);
     subplot(2, 2, 1)
     bar(val5, freq5, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $Q = 1.6$', 'Interpreter', 'Latex')
@@ -419,7 +426,7 @@ elseif iteraciones == 3
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
     
-    h4 = figure(4)
+    h4 = figure(4);
     subplot(2, 2, 1)
     bar(val9, freq9, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $Q = 2$', 'Interpreter', 'Latex')
@@ -444,7 +451,7 @@ elseif iteraciones == 3
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
     
-    h5 = figure(5)
+    h5 = figure(5);
     bar(val13, freq13, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $Q = 2.4$', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
@@ -453,11 +460,11 @@ elseif iteraciones == 3
     % Creamos el archivo de latex con la tabla generada por Matlab
     % para darle copy-paste en Overleaf
     table2latex(agrupada, 'tabla_q_rap')
-    saveas(h1, 'q_box_r.eps','epsc')
-    saveas(h2, 'q_bar1_r.eps','epsc') 
-    saveas(h3, 'q_bar2_r.eps','epsc')
-    saveas(h4, 'q_bar3_r.eps','epsc') 
-    saveas(h5, 'q_bar4_r.eps','epsc')
+%     saveas(h1, 'q_box_r.eps','epsc')
+%     saveas(h2, 'q_bar1_r.eps','epsc') 
+%     saveas(h3, 'q_bar2_r.eps','epsc')
+%     saveas(h4, 'q_bar3_r.eps','epsc') 
+%     saveas(h5, 'q_bar4_r.eps','epsc')
     
 end
 

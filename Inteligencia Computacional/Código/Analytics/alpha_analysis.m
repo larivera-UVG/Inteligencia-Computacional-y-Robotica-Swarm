@@ -1,18 +1,29 @@
 % Diseño e Innovación 2
 % Gabriela Iriarte
-% 3/10/2020 - 18/10/2020
+% 3/10/2020 - 27/10/2020
 % Este archivo analiza el parámetro alpha del ACO
 %% Importar las matrices
-iteraciones = 5;
-if iteraciones == 1
+rapidez = 3;
+
+% rapidez:
+% ** 1 y 2 tienen 70 iteraciones como iteraciones max **
+% ** El resto tiene 150 iteraciones como iteraciones max (que son las que 
+% **                 se usaron en la tesis final)
+% 1 - medio - rho = 0.6 - valores = {'1','1.5','2','2.5','3'}
+% 2 - medio - rho = 0.6 - valores = {'0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1','1.1','1.2','1.3','1.4','1.5'};
+% 3 - medio - rho = 0.6 - valores = {'0.9','1','1.1','1.2','1.3','1.4','1.5'}
+% 4 - lento - rho = 0.4 - valores = {'0.9','1','1.1','1.2','1.3','1.4','1.5'}
+% 5 - rápido - rho = 0.8 - valores = {'0.9','1','1.1','1.2','1.3','1.4','1.5'}
+
+if rapidez == 1
     % MEDIO
     load('sweep_data6.mat') % sweep de 1-3 cada 0.5
-    alpha_data = cell2table(alpha_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','iteraciones','path','alpha'});
+    alpha_data = cell2table(alpha_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','rapidez','path','alpha'});
     valores = {'1','1.5','2','2.5','3'};
     [grupo, id] = findgroups(alpha_data.alpha);
     func = @(p, q, r) [mean(p), mean(q), sum(r==2.5), sum(r==0)];
-    result = splitapply(func, alpha_data.tiempo, alpha_data.iteraciones, alpha_data.costo, grupo);
-    agrupada = array2table([id, result], 'VariableNames', {'alpha','tiempo','iteraciones', 'costo', 'fallos'});
+    result = splitapply(func, alpha_data.tiempo, alpha_data.rapidez, alpha_data.costo, grupo);
+    agrupada = array2table([id, result], 'VariableNames', {'alpha','tiempo','rapidez', 'costo', 'fallos'});
 
     tabla_1 = alpha_data(grupo==1, :);
     tabla_2 = alpha_data(grupo==2, :);
@@ -76,15 +87,15 @@ if iteraciones == 1
     title('Costo - $\alpha = 3$', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
-elseif iteraciones == 2
+elseif rapidez == 2
     % MEDIO
     load('sweep_data7.mat')
     valores = {'0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1','1.1','1.2','1.3','1.4','1.5'};
-    alpha_data = cell2table(alpha_sweep_data(2:946, :), 'VariableNames', {'tiempo','costo','iteraciones','path','alpha'});
+    alpha_data = cell2table(alpha_sweep_data(2:946, :), 'VariableNames', {'tiempo','costo','rapidez','path','alpha'});
     [grupo, id] = findgroups(alpha_data.alpha);
     func = @(p, q, r) [mean(p), mean(q), sum(r==2.5), sum(r==0)];
-    result = splitapply(func, alpha_data.tiempo, alpha_data.iteraciones, alpha_data.costo, grupo);
-    agrupada = array2table([id, result], 'VariableNames', {'alpha','tiempo','iteraciones', 'costo', 'fallos'});
+    result = splitapply(func, alpha_data.tiempo, alpha_data.rapidez, alpha_data.costo, grupo);
+    agrupada = array2table([id, result], 'VariableNames', {'alpha','tiempo','rapidez', 'costo', 'fallos'});
     
     tabla_1 = alpha_data(grupo==1, :);
     tabla_2 = alpha_data(grupo==2, :);
@@ -186,15 +197,15 @@ elseif iteraciones == 2
     title('Costo - $\alpha = 1.5$', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
-elseif iteraciones == 3    
+elseif rapidez == 3    
     % MEDIO
-    load('sweep_data8.mat') % sweep de 1-3 cada 0.5
-    alpha_data = cell2table(alpha_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','iteraciones','path','alpha'});
+    load('sweep_data8.mat')
+    alpha_data = cell2table(alpha_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','rapidez','path','alpha'});
     valores = {'0.9','1','1.1','1.2','1.3','1.4','1.5'};
     [grupo, id] = findgroups(alpha_data.alpha);
     func = @(p, q, r) [mean(p), mean(q), sum(r==2.5), sum(r==0)];
-    result = splitapply(func, alpha_data.tiempo, alpha_data.iteraciones, alpha_data.costo, grupo);
-    agrupada = array2table([id, result], 'VariableNames', {'alpha','tiempo','iteraciones', 'costo', 'fallos'});
+    result = splitapply(func, alpha_data.tiempo, alpha_data.rapidez, alpha_data.costo, grupo);
+    agrupada = array2table([id, result], 'VariableNames', {'alpha','tiempo','rapidez', 'costo', 'fallos'});
 
     tabla_1 = alpha_data(grupo==1, :);
     tabla_2 = alpha_data(grupo==2, :);
@@ -272,15 +283,20 @@ elseif iteraciones == 3
     title('Costo - $\alpha = 1.5$', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
-elseif iteraciones == 4
+    
+    % Creamos el archivo de latex con la tabla generada por Matlab
+    % para darle copy-paste en Overleaf
+    table2latex(agrupada, 'tabla_alpha_med')
+    
+elseif rapidez == 4
     % LENTO
     load('sweep_data13.mat') % sweep de 1-3 cada 0.5
-    alpha_data = cell2table(alpha_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','iteraciones','path','alpha'});
+    alpha_data = cell2table(alpha_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','rapidez','path','alpha'});
     valores = {'0.9','1','1.1','1.2','1.3','1.4','1.5'};
     [grupo, id] = findgroups(alpha_data.alpha);
     func = @(p, q, r) [mean(p), mean(q), sum(r==2.5), sum(r==0)];
-    result = splitapply(func, alpha_data.tiempo, alpha_data.iteraciones, alpha_data.costo, grupo);
-    agrupada = array2table([id, result], 'VariableNames', {'alpha','tiempo','iteraciones', 'costo', 'fallos'});
+    result = splitapply(func, alpha_data.tiempo, alpha_data.rapidez, alpha_data.costo, grupo);
+    agrupada = array2table([id, result], 'VariableNames', {'alpha','tiempo','rapidez', 'costo', 'fallos'});
 
     tabla_1 = alpha_data(grupo==1, :);
     tabla_2 = alpha_data(grupo==2, :);
@@ -358,15 +374,19 @@ elseif iteraciones == 4
     title('Costo - $\alpha = 1.5$', 'Interpreter', 'Latex')
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
-elseif iteraciones == 5    
+    % Creamos el archivo de latex con la tabla generada por Matlab
+    % para darle copy-paste en Overleaf
+    table2latex(agrupada, 'tabla_alpha_len')
+    
+elseif rapidez == 5    
     % RÁPIDO
     load('sweep_data16.mat') % sweep de 1-3 cada 0.5
-    alpha_data = cell2table(alpha_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','iteraciones','path','alpha'});
+    alpha_data = cell2table(alpha_sweep_data(2:end, :), 'VariableNames', {'tiempo','costo','rapidez','path','alpha'});
     valores = {'0.9','1','1.1','1.2','1.3','1.4','1.5'};
     [grupo, id] = findgroups(alpha_data.alpha);
     func = @(p, q, r) [mean(p), mean(q), sum(r==2.5), sum(r==0)];
-    result = splitapply(func, alpha_data.tiempo, alpha_data.iteraciones, alpha_data.costo, grupo);
-    agrupada = array2table([id, result], 'VariableNames', {'alpha','tiempo','iteraciones', 'costo', 'fallos'});
+    result = splitapply(func, alpha_data.tiempo, alpha_data.rapidez, alpha_data.costo, grupo);
+    agrupada = array2table([id, result], 'VariableNames', {'alpha','tiempo','rapidez', 'costo', 'fallos'});
 
     tabla_1 = alpha_data(grupo==1, :);
     tabla_2 = alpha_data(grupo==2, :);
@@ -376,7 +396,7 @@ elseif iteraciones == 5
     tabla_6 = alpha_data(grupo==6, :);
     tabla_7 = alpha_data(grupo==7, :);
 
-    h1 = figure(1)
+    h1 = figure(1);
 
     x = [tabla_1{:, 1}, tabla_2{:, 1}, tabla_3{:, 1}, tabla_4{:, 1}, tabla_5{:, 1}, tabla_6{:, 1}, tabla_7{:, 1}];
     boxplot(x, 'Labels', valores, 'Symbol', 'kx')
@@ -399,7 +419,7 @@ elseif iteraciones == 5
     val7 = unique(tabla_7{:, 2});
     freq7 = hist(tabla_7{:, 2}, val7)';
     
-    h2 = figure(2)
+    h2 = figure(2);
     color = [187, 153, 255]/255;
     bw = 0.3;
     subplot(2, 2, 1)
@@ -426,7 +446,7 @@ elseif iteraciones == 5
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
 
-    h3 = figure(3)
+    h3 = figure(3);
     subplot(2, 2, 1)
     bar(val5, freq5, 'FaceColor', color, 'BarWidth', bw)
     title('Costo - $\alpha = 1.3$', 'Interpreter', 'Latex')
@@ -445,15 +465,16 @@ elseif iteraciones == 5
     xlabel('costo', 'Interpreter', 'Latex')
     ylabel('frecuencia')
     
-    saveas(h1, 'alpha_box_r.eps','epsc')
-    saveas(h2, 'alpha_bar1_r.eps','epsc') 
-    saveas(h3, 'alpha_bar2_r.eps','epsc')
-    
-end
-
+%     saveas(h1, 'alpha_box_r.eps','epsc')
+%     saveas(h2, 'alpha_bar1_r.eps','epsc') 
+%     saveas(h3, 'alpha_bar2_r.eps','epsc')
 % Creamos el archivo de latex con la tabla generada por Matlab
 % para darle copy-paste en Overleaf
 table2latex(agrupada, 'tabla_alpha_rap')
+    
+end
+
+
 
 
 

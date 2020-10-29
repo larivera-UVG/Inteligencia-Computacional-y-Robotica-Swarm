@@ -1,11 +1,12 @@
 % Diseño e Innovación 2
 % Gabriela Iriarte
-% 3/10/2020 -  18/10/2020
+% 3/10/2020 - 27/10/2020
 % Este archivo analiza el parámetro rho del ACO
 % La primera vez se hizo con 70 iteraciones máximas, sin embargo esto
 % ocasionaba que muchas veces el algoritmo no encontrara la solución. Por
 % lo tanto, se aumentó el número de iteraciones máximas hasta 150. De este
 % modo el número de fallos se minimizó.
+
 %% Importar las matrices
 iteraciones = 150;
 if iteraciones == 70

@@ -27,7 +27,10 @@
 %   E-mail:  vicmarcag (at) gmail (dot) com                               %
 % ----------------------------------------------------------------------- %
 % Le modifiqué el código para que saque un objeto table (antes solo era
-% tabular), lo centré (la tabla y las columnas).
+% tabular), lo centré (la tabla y las columnas) y 2 decimales parejo.
+% Para la tesis necesito que salgan números sin decimales, entonces si el
+% número es entero no le pongo los decimales. En algunos casos se tendrá
+% que poner ".00" manualmente.
 function table2latex(T, filename)
     
     % Error detection and default parameters
@@ -70,7 +73,11 @@ function table2latex(T, filename)
                 if isstruct(value), error('Table must not contain structs.'); end
                 while iscell(value), value = value{1,1}; end
                 if isinf(value), value = '$\infty$'; end
-                temp{1,col} = num2str(value);
+                if floor(value)==value
+                    temp{1,col} = num2str(value); % sin decimales
+                else
+                    temp{1,col} = num2str(value,'%.2f'); % Y para 2 decimales
+                end
             end
             if ~isempty(row_names)
                 temp = [row_names{row}, temp];

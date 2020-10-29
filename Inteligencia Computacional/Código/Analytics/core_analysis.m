@@ -1,6 +1,6 @@
 % Diseño e Innovación 2
 % Gabriela Iriarte
-% 3/10/2020 -  11/10/2020
+% 3/10/2020 -  27/10/2020
 % Este archivo analiza el barrido de cores que se le hizo al ACO.
 % En el caso de los cores, solo se realizaron 50 ejecuciones debido al
 % tiempo que tardaba.
@@ -33,7 +33,7 @@ if iteraciones == 1
     
     % Creamos el archivo de latex con la tabla generada por Matlab
     % para darle copy-paste en Overleaf
-    table2latex(agrupada, 'tabla_cores')
+    table2latex(agrupada(:, 1:4), 'tabla_cores')
        
 end
 
