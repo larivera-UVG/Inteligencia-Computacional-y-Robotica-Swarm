@@ -1,3 +1,6 @@
+% Código basado en el de Aldo, pues se quería comparar sus gráficas del PSO
+% con las gráficas del ACO.
+
 load('analysis.mat')
 t = 32*linspace(0, length(v_hist)-1, length(v_hist));
 
@@ -57,12 +60,6 @@ set(h5,'units','points','position',[60,95,520,420],'name',str);
 plot(trajectory(:, 1), trajectory(:, 2), 'LineWidth', 2, 'Color', [.2 .5 .7]);
 view(0, -90);
 hold on;
-% for i = 1:size(NEW_X,2)
-%     if (mod(i, PSO_VECT_DIV) == 0)
-%         plot([POS_X(i) NEW_X(i)],[POS_Y(i) NEW_Y(i)],'LineStyle','--','Color','k');
-%     end
-%     hold on;
-% end
 scatter(goal(1), goal(2), 50, 'k', 'filled');
 xlim([-1 1]); ylim([-1 1]);
 grid on; 

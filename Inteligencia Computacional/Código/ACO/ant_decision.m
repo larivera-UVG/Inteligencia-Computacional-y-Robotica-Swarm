@@ -1,15 +1,17 @@
 % Algoritmo 17.1 Artificial Ant Decision Process
 % Computational Intelligence an Introduction
 % Parámetros:
-% tau del nodo en forma de vector columna:
-% [x y]
-% [x y]
-% vecinos del nodo en forma de vector columna:
-% [x y]
-% [x y]
+% alpha y beta son constantes definidas en el main
+% G es el grafo
+% id es el id del current node, tipo string. ejemplo:
+% "1"
+% vecinos del nodo tipo string array. ejemplo:
+% ["2"]
+% ["11"]
+% ["12"]
 % Output:
-% [x y] que denota el siguiente nodo del trayecto
-% Hacer coincidir los id de tau con los feasable nodesb
+% String con el id del siguiente nodo del trayecto. ejemplo:
+% "3"
 function next_node = ant_decision(vecinos, alpha, beta, G, id)
 index_edges = findedge(G, repmat(convertCharsToStrings(id), size(vecinos)), vecinos);
 tau = G.Edges.Weight(index_edges);

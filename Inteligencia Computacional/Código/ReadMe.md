@@ -15,7 +15,10 @@ En este proyecto se implementa el algoritmo **Ant System** (AS) :ant: :ant: en M
    2.  [ Archivos para barrido de parámetros ](#sweep)
    3.  [ Archivos .mat ](#mat)
    4.  [ Archivos privados ](#p)
-2. [ Analytics ](#analytics)
+2. [ Analytics ](#analysis)
+   1. [ Analysis ](#cod)
+   2. [ Sweep data ](#sweepdata)
+   3. [ Tablas de LaTeX ](#tab)
 3. [ GA-bin ](#bin)
 4. [ GA-int ](#int)
 5. [ Webots ](#webots)
@@ -31,13 +34,69 @@ En esta carpeta se encuentran distintos tipos de código:
 
 <a name="cod"></a>
 ### 1.1 Código principal y funciones
+* ACO.m
 
+Es el archivo principal y el que debe ejecutarse.
+
+* ant_decision.m
+
+Función utilizada para implementar el algoritmo 17.1 Artificial Ant Decision Process del libro Computational Intelligence an Introduction.
+
+* graph_grid.m
+
+Esta función crea un grafo cuadrado con nodos de 1 al número que el usuario desee. Por ejemplo graph_grid(10) crea 10x10 nodos de 1 a 10 vertical y horizontalmente. Esta función también guarda en el grafo el peso de cada enlace entre nodos (tau y eta).
+
+* loop_remover.m
+
+Por ejemplo si tenemos los nodos: 1 2 3 8 5 6 3 4, loop_remover quita los números 8563 porque al inicio estaba en el nodo 3, luego se fue a nodos nada que ver y regresó al 3. De este modo tenemos la ruta corta 1 2 3 4.
+
+* rouletteWheel.m
+
+Esta función implementa la elección mediante rouletteWheel.
+
+* mandar_mail.m
+
+Con esta función creé los archivos p con el comando pcode(filename).
+
+* poly_graph.mlapp
+
+Para correrlo dar doble click en el archivo. Robot radius no funciona, pero world size sí. World size limita el tamaño del canvas. Primero se tiene que hacer click en Add Obstacle. Se dibuja el primer obstáculo. Luego si se desea agregar más obstáculos, hacer otro click en add obstacle y así hasta agregar todos los que desee. Finalmente haga click en add start point y agregue solo un punto. Después haga click en Add End Point y agregue solo un punto. Finalmente haga click en Visibility Graph para generar el grafo que se guardará en el archivo vis_graph.mat.
+
+Para editar este archivo escribir en la consola de Matlab el siguiente comando:
+
+~~~
+>> appdesigner
+~~~
+
+Cuando abra la ventana, darle a open y buscar el archivo poly_graph.mlapp. En el design view se pueden editar los botones y gráficos en general, mientras que en code view se edita la funcionalidad de la aplicación.
+
+* prm_generator.m
+
+Funciona igual que graph_grid.m, pero con prm en vez de un grid.
+
+* rrt_generator.m
+
+Funciona igual que graph_grid.m, pero con rrt en vez de un grid.
 
 <a name="sweep"></a>
 ### 1.2 Archivos para barrido de parámetros
+* ACO_rho_sweep.m
+* ACO_alpha_sweep.m
+* ACO_beta_sweep.m
+* ACO_Q_sweep.m
+* ACO_ant_sweep.m
+* ACO_core_sweep.m
+
+Para correr estos archivos no es necesario nada más que las funciones utilizadas con el archivo ACO.m.
 
 <a name="mat"></a>
 ### 1.3 Archivos .mat
+* rrt_test_graph.mat
+* prm_test_graph.mat
+* vis_graph.mat
+* sweep_data.mat
+
+Los primeros 3 archivos tienen un grafo que se utilizará en el main. sweep_data.mat por el contraio, contiene datos de prueba generados con los archivos sweep. Es necesario que exista este archivo para que Matlab no de error al correrlo.
 
 <a name="p"></a>
 ### 1.4 Archivos privados
@@ -48,13 +107,21 @@ Debido a que los barridos de parámetros duraban mucho tiempo (entre 3 y 24 hora
 
 Si se utilizan esos archivos, se enviara un mensaje a mi correo. Por tanto, si desea cambiar la dirección de correo se pueden generar los archivos .p con el código mandar_mail.m. Para que su correo (asumiendo gmail) permita que se envíen correos desde Matlab es necesario configurar el *acceso a aplicaciones poco seguras*. Para acceder a dicha configuración en Gmail hacer click en:
 
-**la imagen de su foto de perfil>configuraciones>seguridad>Acceso a aplicaciones poco seguras>Permitir**
-
-
+![setup](https://github.com/larivera-UVG/Inteligencia-Computacional-y-Robotica-Swarm/blob/Gaby-dev/Inteligencia%20Computacional/git-images/mail-priv.gif)
 
 <a name="analytics"></a>
 ## 2. Analytics
+<a name="analysis"></a>
+### 2.1 Analysis
+Estos archivos se encargan de generar tablas, gráficas de barras, gráficas de cajas y bigotes, guardar las imágenes y exportar las tablas de LaTeX de los datos de las corridas.
 
+<a name="sweepdata"></a>
+### 2.2 Sweep data
+Todos estos archivos .mat son los que guardan la información de los barridos de parámetros. Estos se utilizan en los archivos de análisis.
+
+<a name="tab"></a>
+### 2.3 Tablas de LaTeX
+Para ahorrar energía (mía) y tiempo, dentro de los archivos de análisis generé las tablas en LaTeX para solo copiarlas y pegarlas en el Overleaf de la tesis. Estos archivos se generan con la función table2latex que saqué del foro de Mathworks y modifiqué un poco para que la tabla quedara como yo quería.
 
 <a name="bin"></a>
 ## 3. GA-bin
@@ -94,7 +161,9 @@ graph_type = "grid";
 pos = [-0.94 0 0.94];
 ~~~
 
+Para analizar los resultados se utiliza el código controller_analysis. Este desplegará y guardará las imágenes de la trayectoria y velocidades del robot.
 
+Nota: En la carpeta hay un archivo gitignore para que git no agarre los archivos asv que Matlab crea cuando se tiene abierto un archivo. De esa manera evitamos llenar el repositorio de archivos inútiles.
 ***
 Readme.md
 

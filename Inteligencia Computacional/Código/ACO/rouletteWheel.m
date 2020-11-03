@@ -1,3 +1,8 @@
+% Parámetros:
+% probabilidad es un vector con la probabilidad de cada nodo a seleccionar.
+% No importa si es fila o columna.
+% Output:
+% Index del vector donde está el seleccionado.
 function nextIndx = rouletteWheel(probabilidad)
     
     total = sum(probabilidad); % Sumo todas las probabilidades

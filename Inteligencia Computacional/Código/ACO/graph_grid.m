@@ -1,5 +1,8 @@
 % Mundo positivo a partir de 1
 % Solo funciona con cuadrados
+% parámetros:
+% grid es un número entero mayor a 1. Se genera un grafo de grid x grid
+% La salida es el grafo para implementar el ACO.
 function [grafo] = graph_grid(grid)
 
 diag_cost = 0.5;

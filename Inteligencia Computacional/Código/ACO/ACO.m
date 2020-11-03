@@ -56,17 +56,17 @@ elseif strcmp(graph_type, "rrt")
 end
 
 %% ACO init
-t_max = 200; 
-hormigas = 50;
+t_max = 150; 
+hormigas = 60;
 
 % Rate de evaporación (puede tomar valores entre 0 y 1)
-rho = 0.5; 
+rho = 0.6; 
 % Le da más peso a la feromona en la probabilidad
 alpha = 1;
 % Le da más peso al costo del link en la probabilidad
 beta = 1;
 % cte. positiva que regula el depósito de feromona
-Q = 2; 
+Q = 2.1; 
 % Porcentaje de hormigas que queremos siguiendo la misma solución
 epsilon = 0.9; 
 
@@ -118,11 +118,11 @@ colormap(map);
 while (t <= t_max && stop)
     
     parfor k = 1:hormigas
-        while (not(strcmp(ants(k).current_node,nodo_dest))) % Mientras no se haya llegado al destino
+        while (not(strcmp(ants(k).current_node, nodo_dest))) % Mientras no se haya llegado al destino
             
             ants(k).blocked_nodes = [ants(k).blocked_nodes; convertCharsToStrings(ants(k).current_node)];
             
-            vecinos = setdiff(convertCharsToStrings(neighbors(G,ants(k).current_node)),...
+            vecinos = setdiff(convertCharsToStrings(neighbors(G, ants(k).current_node)),...
                 ants(k).blocked_nodes, 'rows','stable');
             
             while (isempty(vecinos))
@@ -144,7 +144,7 @@ while (t <= t_max && stop)
         % no strings.
         
         ants(k).path = loop_remover(str2double(ants(k).path));
-        L(k,t) = sum(G.Edges.Eta(findedge(G, ants(k).path(1:end-1), ants(k).path(2:end))).^-1);
+        L(k, t) = sum(G.Edges.Eta(findedge(G, ants(k).path(1:end-1), ants(k).path(2:end))).^-1);
         all_path{k, t} = ants(k).path;  % Equivale a x_k(t)
         
         % Regresamos la hormiga k al inicio
@@ -155,7 +155,7 @@ while (t <= t_max && stop)
     end
     
     %% Evaporación de Feromona
-    G.Edges.Weight = G.Edges.Weight * (1-rho);
+    G.Edges.Weight = G.Edges.Weight * (1 - rho);
     
     %% Update de Feromona
     for k = 1:hormigas

@@ -1,9 +1,11 @@
 % Extraído de: https://la.mathworks.com/matlabcentral/answers/409343-sending-emails-through-matlab
 % Este código con diferentes mensajes se convirtió en archivos tipo p para
 % proteger el email y contraseña.
+% Para convertir a pcode se hace:
+% pcode(filename)
 function error_mail()
-mail = ' @gmail.com'; %  Poner aquí su correo
-password = ' ';  % Poner aquí su contraseña
+mail = 'xxx@gmail.com'; %  Poner aquí su correo
+password = 'xxxx';  % Poner aquí su contraseña
 setpref('Internet','SMTP_Server','smtp.gmail.com');
 setpref('Internet','E_mail',mail);
 setpref('Internet','SMTP_Username',mail);
