@@ -125,9 +125,11 @@ Para ahorrar energía (mía) y tiempo, dentro de los archivos de análisis gener
 
 <a name="bin"></a>
 ## 3. GA-bin
+En esta carpeta se encuentran todos los archivos para correr el algoritmo genético con codificación binaria. El archivo principal es basic GA. La explicación y base de este código se explica en el curso Algoritmos Evolutivos de la UNAM en Coursera. Se recomienda fuertemente hacer este curso antes de realizar el seguimiento de esta parte de la tesis. Con estos archivos se minimiza 4 funciones de costo con el algoritmo genético con codificación binaria (en el curso maximizan si no estoy mal). El problema aquí es que no se generan buenas trayectorias (lo cual tiene sentido). Por tanto, se recomendaría intentar de limitar el cambio de los bits cuando se combinan y mutan para que vaya "de forma más suave".
 
 <a name="int"></a>
 ## 4. GA-int
+En este caso, el código no está explicado del todo en el curso de la UNAM, sino que es parte de una tarea. Este código encuentra la solución de forma entera al problema del vendedor viajero (TSP - Traveling Salesman Problem). Lo que yo pensaba era adaptarlo para que buscara una solución al grafo sin la restricción que tiene el TSP de que pase por todos los nodos. Estos dos códigos (de algoritmos genéticos binario y entero) ya no me dio tiempo de probarlos porque se salían del alcance de mi tesis :cry:.
 
 <a name="webots"></a>
 ## 5. Webots
