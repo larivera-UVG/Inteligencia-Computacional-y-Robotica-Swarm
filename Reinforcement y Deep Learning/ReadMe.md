@@ -182,4 +182,4 @@ En ambos sistemas los scripts corrían sin problemas, aunque en la laptop se obs
 
 ## Swarm Robotics Toolbox
 
-[Ver documentación](PSO_Toolbox.md)
+[Ver documentación](SR_Toolbox.md)

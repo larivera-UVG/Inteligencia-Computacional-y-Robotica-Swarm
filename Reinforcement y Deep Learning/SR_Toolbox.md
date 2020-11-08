@@ -31,13 +31,13 @@ Cabe mencionar que el script "maestro" (`SR_Toolbox.mlx`) puede ser fácilmente 
         - [Escaneo de Mesa de Trabajo](#escaneo-de-mesa-de-trabajo)
         - [Policy Iteration](#policy-iteration)
         - [Generación de Trayectorias](#generación-de-trayectorias)
-        - [Gráfica de Policy + Trayectorias](#gráfica-de-policy-+-trayectorias)
+        - [Gráfica de Policy + Trayectorias](#gráfica-de-policy-y-trayectorias)
     - [Setup: Gráficas](#setup-gráficas)
         - [Sistema de Leyendas](#sistema-de-leyendas)
         - [Visualización 2D](#visualización-2d)
         - [Visualización 3D](#visualización-3d)
         - [Radio de Pucks](#radio-de-pucks)
-        - [Anotaciones](#anotaciones)
+        - [Descripción](#descripción)
     - [Setup: Output Media](#setup-output-media)
     - [Main Loop](#main-loop)
     - [Reporte de Resultados](#reporte-de-resultados)
@@ -354,7 +354,7 @@ Demo Trayectorias: Seguimiento de trayectorias. Método que busca demostrar las 
 
 <details>
 <summary> <tt>PartPosDims</tt> </summary>
-<sub>Cantidad de dimensiones que tendrán las posiciones de las partículas PSO. El objeto <tt>PSO.m</tt> tiene la capacidad de manejar tantas dimensiones como se le soliciten, no obstante, se recomienda mantener su valor en 2 dimensiones para no interferir con el funcionamiento de la mayor parte de métodos.</sub>
+<sub>Cantidad de dimensiones que tendrán las posiciones de las partículas PSO. La clase <tt>PSO.m</tt> tiene la capacidad de manejar tantas dimensiones como se le soliciten, no obstante, se recomienda mantener su valor en 2 dimensiones para no interferir con el funcionamiento de la mayor parte de métodos.</sub>
 </details>
 
 <details>
@@ -385,7 +385,7 @@ Inercia: Se multiplica a la velocidad previa por una constante denominada inerci
 </sub></li></ul></p>
 
 <p><ul><li><sub>
-Constricción: Criterio de convergencia propuesto por Clerc (1999). Este criterio asegura la convergencia del algoritmo siempre y cuando <img src="https://latex.codecogs.com/gif.latex?\inline&space;\kappa = 1$ y $\phi_1 + \phi_2 > 4"/>. La constante <img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/> se iguala a 1 para impedir la intervención de la restricción por inercia.
+Constricción: Criterio de convergencia propuesto por Clerc (1999). Este criterio asegura la convergencia del algoritmo siempre y cuando <img src="https://latex.codecogs.com/gif.latex?\inline&space;\kappa=1"/> y <img src="https://latex.codecogs.com/gif.latex?\inline&space;\phi_{1}+\phi_{2}>4"/>. La constante <img src="https://latex.codecogs.com/gif.latex?\inline&space;\omega"/> se iguala a 1 para impedir la intervención de la restricción por inercia.
 </sub></li></ul></p>
 
 <p align="center">
@@ -393,7 +393,7 @@ Constricción: Criterio de convergencia propuesto por Clerc (1999). Este criteri
 </p>
 
 <p><ul><li><sub>
-Mixto: Uso de inercia "Exponencial Natural" junto con los parámetros de constricción propuestos por Clerc (1999). Propuesto por Aldo en su tesis.
+Mixto: Uso de inercia "Exponencial Natural" junto con los parámetros de constricción propuestos por Clerc (1999). Propuesto por <a href="./Literatura/Tesis Previas/Aldo Aguilar - Tesis.pdf">Aldo Nadalini</a> en su tesis.
 </sub></li></ul></p>
 
 </details><br/>
@@ -571,7 +571,7 @@ Imagen: El usuario puede tomar una imagen en blanco y negro de un mapa (con los 
 </p>
 
 <p><ul><li><sub>
-Caso A: Réplica del escenario A utilizado en la tesis de Juan Pablo.
+Caso A: Réplica del escenario A utilizado en la tesis de <a href="./Literatura/Tesis Previas/Juan Pablo Cahueque - Tesis.pdf">Juan Pablo Cahueque</a>.
 </sub></li></ul></p>
 
 <p align="center">
@@ -579,7 +579,7 @@ Caso A: Réplica del escenario A utilizado en la tesis de Juan Pablo.
 </p>
 
 <p><ul><li><sub>
-Caso B: Réplica del escenario B utilizado en la tesis de Juan Pablo.
+Caso B: Réplica del escenario B utilizado en la tesis de <a href="./Literatura/Tesis Previas/Juan Pablo Cahueque - Tesis.pdf">Juan Pablo Cahueque</a>.
 </sub></li></ul></p>
 
 <p align="center">
@@ -587,7 +587,7 @@ Caso B: Réplica del escenario B utilizado en la tesis de Juan Pablo.
 </p>
 
 <p><ul><li><sub>
-Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
+Caso C: Réplica del escenario C utilizado en la tesis de <a href="./Literatura/Tesis Previas/Juan Pablo Cahueque - Tesis.pdf">Juan Pablo Cahueque</a>.
 </sub></li></ul></p>
 
 <p align="center">
@@ -606,7 +606,7 @@ Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
 
 <details>
 <summary> <tt>AlturaObstaculo</tt> </summary>
-<sub> Altura de los obstáculos en el modo de visualización 3D. </sub>
+<sub> Altura de los obstáculos en el modo de visualización 3D. Cabe mencionar que, debido al re-escalamiento del eje Z en la visualización 3D, esta altura es relativa. Esto implica que una altura de 5, no necesariamente hará que los obstáculos tengan 5 metros de altura.</sub>
 <p align="center">
    <img src="./Media/AlturaObstaculo.png" width="95%" />
 </p>
@@ -678,12 +678,12 @@ Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
 
 <details>
 <summary> <tt>SaveFigures</tt> </summary>
-<sub> Permite guardar todas las figuras generadas durante la ejecución del script como imágenes PNG. Todas las figuras se guardan en el folder <tt>.../Media/Figuras/NombreSimulacion/</tt>. Para que el sistema de guardado funcione la figura creada debe ser asignada a una variable (Por ejemplo: <tt>Figura = figure('Name',"Plot Figura")</tt>). Si no se hace esto, la función encargada (<tt>saveWorkspaceFigures.m</tt>) no detectará la figura. El folder donde se guardan las figuras es nombrado automáticamente según algunas propiedades de la simulación (Método, modo de visualización, etc.).</sub>
+<sub> Permite guardar todas las figuras generadas durante la ejecución del script como imágenes PNG. Todas las figuras se guardan en el folder <tt>.../Media/Figuras/NombreSimulacion/</tt>. Para que el sistema de guardado funcione, la figura creada debe ser asignada a una variable (Por ejemplo: <tt>Figura = figure('Name',"Plot Figura")</tt>). Si no se hace esto, la función encargada (<tt>saveWorkspaceFigures.m</tt>) no detectará la figura. El folder donde se guardan las figuras es nombrado automáticamente según algunas propiedades de la simulación (Método, modo de visualización, etc.).</sub>
 </details>
 
 <details>
 <summary> <tt>EnableAnotacion</tt> </summary>
-<sub> Agrega un string adicional al final del nombre del archivo/folder a guardar. Por ejemplo: La simulación tiene un error que se quiere documentar. Se puede hacer que <tt>EnableAnotacion = 1</tt> y <tt>AnotacionOutputMedia = "_Error"</tt>. Esto hará que el nombre del medio a guardar pase de <tt>Medio</tt> a <tt>Medio_Error</tt>. Útil para explicar un poco más de que se tratan los medios guardados. </sub>
+<sub> Agrega un string adicional al final del nombre del archivo/folder a guardar. Por ejemplo: La simulación tiene un error que se quiere documentar. Se puede hacer que <tt>EnableAnotacion = 1</tt> y <tt>AnotacionOutputMedia = "_Error"</tt>. Esto hará que el nombre del medio a guardar pase de <tt>Medio</tt> a <tt>Medio_Error</tt>. Útil para explicar un poco más de que se tratan los medios guardados a través de su nombre. </sub>
 </details>
 
 <details>
@@ -703,21 +703,21 @@ Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
 
 <details>
 <summary> <tt>PathGIF</tt> </summary>
-<sub> Ruta base en la que se guardarán todos los GIFs generados por el Toolbox. </sub>
+<sub> Ruta base en la que se guardarán todos los GIFs generados por el Toolbox. Valor por defecto: <tt>.../Media/GIF/</tt>.</sub>
 </details>
 
 <details>
 <summary> <tt>PathVideo</tt> </summary>
-<sub> Ruta base en la que se guardarán todos los videos generados por el Toolbox. </sub>
+<sub> Ruta base en la que se guardarán todos los videos generados por el Toolbox. Valor por defecto: <tt>.../Media/Video/</tt> </sub>
 </details>
 
 <details>
 <summary> <tt>PathFrames</tt> </summary>
-<sub> Ruta base en la que se guardará la carpeta conteniendo todas las frames generadas por el Toolbox. </sub>
+<sub> Ruta base en la que se guardará la carpeta conteniendo todas las frames generadas por el Toolbox. Valor por defecto: <tt>.../Media/Frames/</tt> </sub>
 </details>
 
 <details>
-<summary> <tt>PathFrames</tt> </summary>
+<summary> <tt>PathFiguras</tt> </summary>
 <sub> Ruta base en la que se guardará la carpeta conteniendo todas las figuras generadas y guardadas por la Toolbox. </sub>
 </details><br/>
 
@@ -739,15 +739,13 @@ Caso C: Réplica del escenario C utilizado en la tesis de Juan Pablo.
    <img src="./Media/ReglasMetodo.PNG" width="95%" />
 </p>
 
-Los métodos disponibles se pueden agrupar en 3 tipos:
+Como se mencionó en el parámetro <tt>Metodo</tt>, existen 3 tipos de método disponibles en la SR Toolbox:
 
 - **Seguimiento de Trayectoria**: Utiliza información del mapa para generar una trayectoria desde la región de partida hasta la meta. Un controlador punto a punto mueve al robot.
 - **Exploración con PSO**: Los robots exploran el mapa usando una función de costo optimizada por partículas PSO. La función de costo necesita de conocimiento previo sobre el ambiente.
 - **Exploración Dinámica**: Exploración basada solamente en las lecturas actuales de sensores. No se requiere de conocimiento previo sobre el ambiente.
 
-Según el método elegido (parámetro <tt>Metodo</tt>) el Toolbox toma decisiones sobre el valor de diferentes propiedades e incluso puede llegar a sobre-escribir valores previamente especificados por el usuario en la sección de [parámetros y settings](#parámetros-y-settings).
-
-**NOTA**: Si agrega un nuevo método de navegación, es muy importante añadir el nombre del mismo a alguna de las listas al inicio de la sección, de lo contrario el programa retornará un error.
+Según el tipo de `Metodo` elegido, el Toolbox toma decisiones sobre el valor de diferentes propiedades e incluso puede llegar a sobre-escribir valores previamente especificados por el usuario en la sección de [parámetros y settings](#parámetros-y-settings). Si se agrega un nuevo método de navegación en el futuro, es muy importante añadir el nombre del mismo a alguna de las listas al inicio de esta sección, de lo contrario el programa retornará un error (ya que no reconocerá a que tipo corresponde el nuevo método). Cualquier condición especial que deba cumplirse durante la ejecución del método puede colocarse en los `ifs` posteriores.
 
 ### Región de Partida y Obstáculos de Mesa
 
@@ -795,7 +793,7 @@ ZObs = [VertZ1_Bottom_Polygono1   VertZ1_Top_Polygono1
         NaN                       NaN                 ];
 ```
 
-Cabe mencionar que las variables `XObs` y `YObs` son matrices de dos columnas, donde ambas columnas son iguales. Esto se debe a que en la visualización 3D, el polígono 2D base se "extruye" en la dirección del eje Z+, creando una cara *superior* con las mismas coordenadas X y Y que el polígono original. De aquí que `XObs`, `YObs` y `ZObs` tengan dos columnas: La primera consiste de los vértices del polígono base o *cara inferior* y la segunda de los vértices de la *cara superior*. A su vez, es por esto que `ZObs` tiene valores diferentes para cada columna: La columna 1 es la altura de la *cara inferior* y la columna 2 es la altura de la *cara superior*. Una visualización de todas estas cantidades se pueden observar a continuación:
+Como se puede observar, las variables `XObs` y `YObs` son matrices de dos columnas, donde ambas columnas son iguales. Esto se debe a que en la visualización 3D, el polígono 2D base se "extruye" en la dirección del eje Z+, creando una cara *superior* con las mismas coordenadas X y Y que el polígono original. De aquí que `XObs`, `YObs` y `ZObs` tengan dos columnas: La primera consiste de los vértices del polígono base o *cara inferior* y la segunda de los vértices de la *cara superior*. A su vez, es por esto que `ZObs` tiene valores diferentes para cada columna: La columna 1 es la altura de la *cara inferior* y la columna 2 es la altura de la *cara superior*. En el modo de visualización 2D no se utiliza a `ZObs` y las columnas 1 y 2 de los arrays `XObs` y `YObs` se pueden utilizar de forma intercambiable. Un ejemplo de todas estas cantidades se pueden observar a continuación:
 
 <p align="center">
    <img src="./Media/EstructuraPoligonos.png" width="80%" />
@@ -833,7 +831,7 @@ PuckOrientacion_Actual = [Ángulo1        % EPuck 1
    <img src="./Media/OrientacionPucks.png" width="70%" />
 </p>
 
-`PuckVel_Lineal` y `PuckVel_Angular` describen la velocidad lineal y angular de cada E-Puck respectivamente. Ambos son vectores columna de `NoPucks X 1`. La velocidad lineal consiste de la velocidad a la que se mueven los E-Pucks en la dirección de `PuckOrientacion_Actual`. La velocidad angular, por otro lado, consiste de la tasa de cambio para `PuckOrientacion_Actual`.
+`PuckVel_Lineal` y `PuckVel_Angular` describen la velocidad lineal y angular de cada E-Puck respectivamente. Ambos son vectores columna de `NoPucks X 1`. La velocidad lineal consiste de la velocidad a la que se mueven los E-Pucks en la dirección de `PuckOrientacion_Actual` (velocidad en la dirección de la línea roja). La velocidad angular, por otro lado, consiste de la tasa de cambio para `PuckOrientacion_Actual` (velocidad a la que rota la línea roja).
 
 ``` Matlab
 % Forma estándar de "PuckVel_Lineal"
@@ -879,7 +877,7 @@ No se debe cambiar el orden de estos parámetros o el algoritmo retornará cosas
 Para graficar la función de costo elegida se debe obtener el costo o *altura* de la superficie en cada punto del plano (X,Y). Para aproximar "todos los puntos del plano" se genera una malla o `meshgrid()` de puntos que se extiende desde el límite inferior al límite superior de cada eje. La separación entre puntos está dado por `Resolucion`. Si se toman las coordenadas de todos los puntos de esta malla y se evalúan en `CostFunction`, se obtienen las alturas de la superficie de costo.
 
 <p align="center">
-   <img src="./Media/Funciones Costo/FuncionCosto-Sphere.PNG" width="50%" />
+   <img src="./Media/Funciones Costo/FuncionCosto-Sphere.png" width="50%" />
 </p>
 
 Esta evaluación inicial solo tiene un propósito estético para la mayor parte de funciones de costo (graficar la superficie azul/morada). La única excepción a esta regla es la función *APF*, la cual utiliza la evaluación inicial como una pre-computación de los valores de costo. La evaluación inicial guarda en memoria (**variable persistente**) los valores de costo y durante el main loop solo extrae los valores requeridos (ya que calcular los mismos durante el main loop podría tomar mucho tiempo).
@@ -931,10 +929,10 @@ Al finalizar, se crea `EstadosLibres` una variante de `Estados` que elimina aque
 Se implementa el algoritmo de iteración de política propio de "programación dinámica", el cual está compuesto por tres partes: Inicialización, Policy Evaluation y Policy Improvement.
 
 <p align="center">
-   <img src="./Media/Policy Iteration.PNG" width="80%" />
+   <img src="./Media/Policy Iteration.PNG" width="60%" />
 </p>
 
-<u>Inicialización</u>
+<ins>Inicialización</ins>
 
 Cada estado tiene un valor asociado, el cual indica "que tan bueno es moverse a ese estado". El array `V` que almacena estos valores se inicializa como un vector de 0's con la misma forma que `Estados` (`NoEstados x 1`). Luego se inicializa la `Policy` o <img src="https://latex.codecogs.com/gif.latex?\inline&space;\pi"/>(<img src="https://latex.codecogs.com/gif.latex?\inline&space;s"/>), una matriz de `NoEstados x NoAcciones`, donde cada valor representa la probabilidad de tomar la acción "a" (a = No. Columna) en el estado "s" (s = No. Fila). El número de columnas de esta matriz siempre será igual a 8, ya que el `NoAcciones` que puede tomar el agente es igual a 8. Cada columna corresponde a una dirección de movimiento específica:
 
@@ -955,16 +953,16 @@ Para que inicialmente sea igualmente probable tomar cualquiera de las acciones (
 
 Además de `V` y `Policy`, también se inicializa el valor de:
 
-- `ThresholdPrecisionPolicy`: Elegido por el usuario y utilizado durante policy evaluation
-- `Gamma`: Que tan a futuro mirará el agente. Recomendado = 0.99
-- `PolicyEstable`: Bandera binaria que se activa cuando se debe detener la policy evaluation. Siempre inicializar en 0.
+- `ThresholdPrecisionPolicy`: Elegido por el usuario y utilizado durante policy evaluation. Este indica la precisión que se debe alcanzar al calcular el valor de los estados para que el algoritmo se detenga.
+- `Gamma`: Que tan a futuro mirará el agente. Recomendado = 0.99.
+- `PolicyEstable`: Bandera binaria que se activa cuando se debe detener el proceso de policy evaluation. Siempre inicializar en 0.
 
-<u>Policy Evaluation</u>
+<ins>Policy Evaluation</ins>
 
 En esta etapa se actualizan los valores del array `V`. Para esto se hace un barrido de todos los estados, donde para cada uno se calculan sus "valores de acción". Los valores de acción `q` indican "que tan bueno" es tomar una acción `a` estando en el estado `s`. Estos se calculan de la siguiente manera:
 
 <p align="center">
-   <img src="./Media/Valor Accion.PNG" width="90%" />
+   <img src="./Media/Valor Accion.PNG" width="70%" />
 </p>
 
 De la inicialización, ya se cuenta con el factor de descuento (`Gamma`) y la probabilidad <img src="https://latex.codecogs.com/gif.latex?\inline&space;\pi"/> (`Policy(s,a)`). Para obtener la información restante se utiliza la función `getDinamicaGrid()`, la cual toma el estado actual (`s`), la acción a tomar (`a`) y la información relacionada al espacio de estados (`MatrizEstados`, `EstadosObs` y `EstadosMeta`), y determina el `EstadoFuturo` al que se moverá el agente (<img src="https://latex.codecogs.com/gif.latex?\inline&space;s'"/>) y la `Recompensa` que recibirá por dicho movimiento (<img src="https://latex.codecogs.com/gif.latex?\inline&space;r"/>).
@@ -992,9 +990,9 @@ V = [1 + 1 + 1 + 1 + 1 + 1 + 1 + 1    =  [8    = sum(q,2);
      1 + 1 + 1 + 1 + 1 + 1 + 1 + 1];      8];
 ```
 
-Si la diferencia entre `V` y `V_Old` es menor a `ThresholdPrecisionPolicy` se finaliza la etapa de evaluación.
+Si la diferencia entre `V` y `V_Old` (el valor de `V` antes de la policy evaluation) es menor a `ThresholdPrecisionPolicy` se finaliza la etapa de evaluación.
 
-<u>Policy Improvement</u>
+<ins>Policy Improvement</ins>
 
 `q` nos dice el valor de cada acción para cada estado. Mientras más alto el valor "es mejor tomar dicha acción". En esta etapa se toman las acciones con los valores más altos, y se modifica su probabilidad en la `Policy`. Si una o más acciones poseen el valor más alto se les asigna una probabilidad uniforme, mientras que al resto se les asigna una probabilidad de ocurrencia de 0%.
 
@@ -1019,7 +1017,7 @@ La nueva policy se compara con la anterior (`Policy_Old`). Si esta no ha cambiad
 Policy_Old == Policy
 ```
 
-Dado que la policy dentro de los estados con obstáculos no es relevante para el planificador de trayectorias (y en pruebas el algoritmo nunca convergía porque la policy de estados obstáculo comenzaba a oscilar), se decidió únicamente tomar en cuenta los estados libres o vacíos.
+Dado que la policy dentro de los estados con obstáculos no es relevante para el planificador de trayectorias (y en pruebas el algoritmo nunca convergía porque la policy en estados obstáculo comenzaba a oscilar), se decidió únicamente tomar en cuenta los estados libres o vacíos para indicar que el algoritmo ha finalizado.
 
 ``` Matlab
 Policy_Old(EstadosLibres,:) == Policy(EstadosLibres,:)
@@ -1035,11 +1033,7 @@ Se toma nota del estado en el que se encuentran los robots y se sigue la acción
    <img src="./Media/Puntos Planificador Trayectorias.png" width="60%" />
 </p>
 
-Se continúa este proceso de seguimiento de política hasta finalmente alcanzar el estado meta. Cuando se llega al mismo, se coloca el último punto de la trayectoria en el punto de meta y se permite que los robots sigan la trayectoria generada. En caso la trayectoria generada no alcance el estado meta, se considera que la misma consiste de una “trayectoria inconclusa o cíclica” y se genera un error.
-
-#### Gráfica de Policy + Trayectorias
-
-Antes de generar las animaciones propias de la Toolbox, la sección de "Dynamic Programming" genera una gráfica simplificada del espacio de estados en conjunto con las trayectorias generadas desde los puntos de partida de los robots a la meta.
+Se continúa este proceso de seguimiento de política hasta finalmente alcanzar el estado meta. Cuando se llega al mismo, se coloca el último punto de la trayectoria en el punto de meta y se permite que los robots sigan la trayectoria generada. En caso la trayectoria generada no alcance el estado meta, se considera que la misma consiste de una “trayectoria inconclusa o cíclica” y se genera un error. Antes de generar las animaciones propias de la Toolbox, se genera una gráfica simplificada del espacio de estados en conjunto con las trayectorias generadas desde los puntos de partida de los robots a la meta.
 
 <p align="center">
    <img src="./Media/Grafica Simplificada Trayectorias.png" width="70%" />
@@ -1047,14 +1041,14 @@ Antes de generar las animaciones propias de la Toolbox, la sección de "Dynamic 
 
 ### Setup: Gráficas
 
-Se crea la ventana principal de simulación. La ventana se nombra "Simulación Mobile Robotics", se le elimina el prefijo "figura X:" (`"NumberTitle", "off"`), se centra en pantalla según la resolución de la misma y se hace visible para que aparezca como cualquier otra figura en un script `.m` tradicional (`"Visible", "on"`).
+Se crea la ventana principal de simulación. La ventana se nombra "Simulación Mobile Robotics" y se le elimina el prefijo "figura X:" (`"NumberTitle", "off"`), se centra en pantalla y se hace visible para que aparezca como cualquier otra figura en un script `.m` tradicional (`"Visible", "on"`).
 
 <details>
 <summary> <sub><strong>Visibilidad de Figuras en Livescripts</strong> (Hacer click para más información)</sub> </summary>
 <sub> Cuando se grafican cosas en un Livescript, las figuras no aparecen en una nueva ventana sino que aparecen embebidas en el código, similar a un Jupyter Notebook. Generalmente si lo que se grafica es una animación, Matlab solo desplegará la última frame de la misma (a menos que la versión empleada sea 2020a o superior). Para que las figuras aparezcan animadas debidamente en una nueva ventana como en un archivo <tt>.m</tt> tradicional, se debe llamar a la propiedad <tt>'visible','on'</tt> al crear la figura o utilizar el comando <tt>set(Figura,'visible','on')</tt>.
 
 <p align="center">
-   <img src="./Media/VisibleOnOff.PNG" width="99%" />
+   <img src="./Media/VisibleOnOff.png" width="99%" />
 </p>
 
 </sub> </details> <br/>
@@ -1087,16 +1081,14 @@ Cabe mencionar que el "handle" de una gráfica se puede obtener guardando la gr�
 
 #### Visualización 2D
 
-El modo de visualización 2D es útil para observar el movimiento de las partículas o robots, así como sus trayectorias.
-
-Algo que se debe tomar en cuenta es que el valor de las propiedades `XLim`, `YLim` y `Position` se debe declarar luego de graficar todo. Esto se debe a que al agregar una nueva gráfica, los settings de los "axes" se resetean. Si se inicializan previo a graficar, existe la posibilidad (a veces sucede, no siempre), de que se sobre-escriban estas propiedades y Matlab las cambie según considere.
+El modo de visualización 2D es útil para observar el movimiento de las partículas o robots, así como sus trayectorias. Algo que se debe tomar en cuenta es que en este modo de visualización, el valor de las propiedades `XLim`, `YLim` y `Position` se debe declarar luego de graficar todo. Esto se debe a que al agregar una nueva gráfica, los settings de los "axes" se resetean. Si se inicializan previo a graficar, existe la posibilidad (a veces sucede, no siempre), de que se sobre-escriban estas propiedades y Matlab las cambie según considere.
 
 #### Visualización 3D
 
 El modo de visualización 3D se recomienda para observar más claramente las funciones de costo en métodos PSO. Contrario al modo 2D, el modo 3D no necesita setear las propiedades `XLim` y `YLim` luego de graficar. La única propiedad que si debe setearse al final es la escala o "Aspect Ratio" del eje Z.
 
 ```Matlab
-% Evita que gráfica se estire sobre el eje Z al limitar la
+% Evita que la gráfica se estire sobre el eje Z al limitar la
 % relación de aspecto del eje Z. MaxAlturaPlot = Valor del
 % tick más alto del eje Z
 LimitesEjeZ = zlim;
@@ -1154,7 +1146,7 @@ AreaPuckScatter = pi*(RadioCuerpoPuck * FactorConversion)^2;            % Area d
 PlotPucks.SizeData = AreaPuckScatter;  
 ```
 
-#### Anotaciones
+#### Descripción
 
 Existen muchos parámetros de las simulaciones realizadas que no son evidentes con solo ver la animación. Entonces, para facilitar la caracterización de una simulación, el usuario puede modificar las "anotaciones" o el texto que detalla las diferentes propiedades y condiciones bajo las que se está ejecutando la simulación. La variable `DetallesPlot` que contiene el texto de la anotación consiste de un cell array columna con tantas filas como líneas de texto.
 
@@ -1173,9 +1165,7 @@ El Toolbox coloca las anotaciones a la derecha de la región de simulación y de
    <img src="./Media/PartesFigura.png" width="60%" />
 </p>
 
-Algunas condiciones de ejecución consisten de propiedades binarias. En estos casos, resulta más fácil comprender si la propiedad está "On" o "Off" en lugar de solo ver un número 1 o 0. Entonces se creó la función `bin2OnOff` para convertir unos y ceros a un string que diga "On" o "Off".
-
-Otra función útil es `strArray2singleStr`, la cual toma un array de strings y lo convierte en un solo string para que propiedades con múltiples valores, se puedan expresar en una sola línea sin necesidad de llamar manualmente a cada elemento del array.
+Algunas condiciones de ejecución consisten de propiedades binarias. En estos casos, resulta más fácil comprender si la propiedad está "On" o "Off" en lugar de solo ver un número 1 o 0. Entonces se creó la función `bin2OnOff` para convertir unos y ceros a un string que diga "On" o "Off". Otra función útil es `strArray2singleStr`, la cual toma un array de strings y lo convierte en un solo string para que propiedades con múltiples valores, se puedan expresar en una sola línea sin necesidad de llamar manualmente a cada elemento del array.
 
 ### Setup: Output Media
 
@@ -1200,11 +1190,11 @@ Sección en la que se ejecuta la simulación de forma iterativa. Esta está comp
 
 #### Métodos PSO
 
-Si el método elegido consiste de un método dependiente de PSO, esta parte del código modifica la meta a seguir por el o los robots diferenciales. Si el método elegido es "Jabandzic" entonces se corre una simulación completa del algoritmo PSO para minimizar la función de costo y el mínimo encontrado se coloca como la nueva meta del robot. Si se emplea cualquier otro método de tipo PSO, entonces simplemente se corre una única iteración del PSO y la meta del robot se coloca como el *Global Best* de las partículas.
+Si el método elegido consiste de un método dependiente de PSO, esta parte del código modifica la meta a seguir por el o los robots diferenciales. Si el método elegido es "Jabandzic" entonces se corre una simulación completa del algoritmo PSO para minimizar la función de costo y el mínimo encontrado se coloca como la nueva meta del robot. Si se emplea cualquier otro método de tipo PSO, entonces simplemente se corre un único step del PSO por llamada a `PSO.RunStandardPSO()` y la meta del robot se coloca como el *Global Best* de las partículas.
 
 #### Métodos Seguimiento de Trayectorias
 
-Si al robot se le provee de una trayectoria a seguir, se evalúa su cercanía a su meta actual y si está lo suficientemente cerca (dado por un threshold dentro de la función `UpdateGoal`) entonces se transiciona al siguiente punto en la trayectoria. La nueva meta se guarda en `PuckMeta_Actual`. Para que los cambios de meta puedan visualizarse, el método "Demo Trayectorias" iguala `Meta` (la variable que se grafica en la simulación como una "X" roja) a `PuckMeta_Actual`. De esta manera se observa continuamente el punto que los robots están siguiendo.
+Si al robot se le provee de una trayectoria a seguir, se evalúa su cercanía a su meta actual y si está lo suficientemente cerca (dado por un threshold dentro de la función `updateGoal.m`) entonces se transiciona al siguiente punto en la trayectoria. La nueva meta se guarda en `PuckMeta_Actual`. Para que los cambios de meta puedan visualizarse, el método "Demo Trayectorias" iguala `Meta` (la variable que se grafica en la simulación como una "X" roja) a `PuckMeta_Actual`. De esta manera se observa continuamente el punto que los robots están siguiendo.
 
 #### Dinámica de E-Pucks
 
@@ -1240,9 +1230,7 @@ for i = 1:IteracionesMax
 end
 ```
 
-Cuando se tienen muchos elementos interactuando en la simulación la primera opción resulta muy ineficiente, por lo que la simulación se ralentiza innecesariamente. En el Toolbox se decidió emplear exclusivamente handlers para la actualización de los gráficos. Por esto, en la sección de actualización de plots, se observa como se actualizan las propiedades de todos los gráficos de manera acorde (`XData`, `YData`, `UData` y `VData`).
-
-En esta sección también se actualiza el ángulo de rotación de la gráfica en caso el usuario habilite el parámetro `EnableRotacionCamara`.
+Cuando se tienen muchos elementos interactuando en la simulación la primera opción resulta muy ineficiente, por lo que la simulación se ralentiza innecesariamente. En el Toolbox se decidió emplear exclusivamente handlers para la actualización de los gráficos. Por esto, en la sección de actualización de plots, se observa como se actualizan las propiedades de todos los gráficos de manera acorde (`XData`, `YData`, `UData` y `VData`). En esta sección también se actualiza el ángulo de rotación de la gráfica en caso el usuario habilite el parámetro `EnableRotacionCamara`.
 
 #### Título
 
@@ -1258,7 +1246,7 @@ Se guarda la frame generada en la iteración actual de la simulación en el tipo
 
 ### Reporte de Resultados
 
-Al finalizar la simulación, el usuario puede analizar los resultados obtenidos haciendo uso de diferentes gráficos que resumen el desempeño de distintos elementos propios de la simulación.
+Al finalizar la simulación, el usuario puede analizar los resultados obtenidos haciendo uso de diferentes gráficos que resumen el desempeño del método simulado.
 
 #### Evolución del Global Best
 
@@ -1274,9 +1262,7 @@ Exclusivo para métodos dependientes de PSO. Utilizada para determinar si las pa
    <img src="./Media/Dispersion.png" width="90%" />
 </p>
 
-Exclusivo para métodos dependientes de PSO.
-
-Dos cualidades importantes de las partículas del PSO es su capacidad de exploración y la precisión de su minimización. Con estas gráficas, la precisión se puede evaluar viendo la línea gruesa coloreada y la exploración utilizando las líneas "traslúcidas" correspondientes a la desviación estándar.  Si las líneas gruesas se estabilizan en las coordenadas de la meta, las partículas son precisas. Si la desviación estándar es muy pronunciada, las partículas exploran minuciosamente el área de trabajo antes de converger. En la gráfica de arriba, por ejemplo, las partículas son precisas y convergen con rapidez, aunque exploran poco.
+Exclusivo para métodos dependientes de PSO. Dos cualidades importantes de las partículas del PSO es su capacidad de exploración y la precisión de su minimización. Con estas gráficas, la precisión se puede evaluar viendo la línea gruesa coloreada y la exploración utilizando las líneas "traslúcidas" correspondientes a la desviación estándar.  Si las líneas gruesas se estabilizan en las coordenadas de la meta, las partículas son precisas. Si la desviación estándar es muy pronunciada, las partículas exploran minuciosamente el área de trabajo antes de converger. En la gráfica de arriba, por ejemplo, las partículas son precisas y convergen con rapidez, aunque exploran poco.
 
 #### Velocidad de Motores
 
@@ -1298,7 +1284,7 @@ La Toolbox obtiene las velocidades angulares medias de todas las ruedas y determ
    <img src="./Media/EnergiaFlexion.png" width="60%" />
 </p>
 
-Basado en el criterio de "suavidad" empleado por Aldo en su tesis. Se realiza una interpolación de los puntos que conforman la curva de velocidades angulares de las ruedas, y luego se calcula la energía de flexión de la curva. Si la energía de flexión es baja, la suavidad de operación es mucho mayor. Prueba ideal para diagnosticar cuantitativamente que tanto esfuerzo hacen los robots para poder moverse y llegar a la meta. Esta gráfica se despliega únicamente si `EnablePucks` está habilitado.
+Basado en el criterio de "suavidad" empleado por <a href="./Literatura/Tesis Previas/Aldo Aguilar - Tesis.pdf">Aldo en su tesis</a>. Se realiza una interpolación de los puntos que conforman la curva de velocidades angulares de las ruedas, y luego se calcula la energía de flexión de la curva. Si la energía de flexión es baja, la suavidad de operación es mucho mayor. Prueba ideal para diagnosticar cuantitativamente que tanto esfuerzo hacen los robots para poder moverse y llegar a la meta. Esta gráfica se despliega únicamente si `EnablePucks` está habilitado.
 
 ## Funciones Internas
 
@@ -1344,7 +1330,7 @@ Custom: Se le pasan directamente los vértices X y Y del obstáculo a graficar y
 </sub></li></ul></p>
 
 <p align="center">
-   <img src="./Media/CasoC.PNG" width="50%" />
+   <img src="./Media/CasoC.png" width="50%" />
 </p>
 
 <p><ul><li><sub>
@@ -1423,7 +1409,7 @@ Controlador de Direccionamiento de Lazo Cerrado: Controlador con la menor veloci
 <ul>
    <li><sub> Meta Alcanzada: Cierto porcentaje de partículas llega lo suficientemente cerca a alguna de las metas establecidas. Si se está empleando un <tt>Metodo</tt> de seguimiento de trayectorias multi-meta (cada robot sigue una meta distinta), este método evalúa la cercanía de cada robot a su meta correspondiente.
    </sub></li>
-   <li><sub> Entidades Detenidas: Todas las partículas se han quedado "quietas" o se han movido poco. Útil para casos donde se quiere detener la simulación aunque las partículas no alcancen el mínimo deseado.
+   <li><sub> Entidades Detenidas: Todas las partículas se han quedado "quietas" o se han movido poco. Útil para casos donde se quiere detener la simulación aunque las partículas no alcancen el mínimo global deseado.
    </sub></li>
    <li><sub> Iteraciones Max: Se ha alcanzado el número de iteraciones máximas para el algoritmo que se está corriendo. Cabe mencionar que, si se selecciona un criterio diferente a "Iteraciones Max" pero se alcanza el número de iteraciones máximas, la función hace que <tt>Stop=1</tt> de igual forma.
    </sub></li>
@@ -1437,10 +1423,10 @@ Controlador de Direccionamiento de Lazo Cerrado: Controlador con la menor veloci
 
 <details>
 <summary> <tt>getDinamicaGrid</tt> </summary>
-<sub>Empleado en la sección de programación dinámica de la Toolbox. Esta función toma el estado en el que se encuentra el agente (su posición en la grid) y la acción que va a tomar y determina el estado futuro en el que deberá posicionarse, así como su recompensa correspondiente.</sub>
+<sub>Empleado en la sección de programación dinámica de la Toolbox. Esta función toma el estado en el que se encuentra el agente (su posición en la grid) y la acción que va a tomar y determina el estado futuro en el que deberá posicionarse, así como su recompensa correspondiente. El usuario puede fácilmente modificar las recompensas que recibirá el agente y las condiciones de transición a nuevos estados según la acción tomada. La función está ordenada para que sea fácilmente legible y modificable.</sub>
 
 <p align="center">
-   <img src="./Media/RL - Obstáculos En Direcciones Cardinales.png" width="50%" />
+   <img src="./Media/RL - Obstáculos En Direcciones Cardinales.png" width="30%" />
 </p>
 
 </details>
@@ -1453,7 +1439,7 @@ Controlador de Direccionamiento de Lazo Cerrado: Controlador con la menor veloci
 
 <details>
 <summary> <tt>getSuavidadTrayectoria</tt> </summary>
-<sub>Función para determinar la suavidad de una trayectoria por medio del cálculo de energia de de flexion de vigas delgadas de Bernoulli. Se realiza interpolacion de datos discretos con trazadores cúbicos para formar y(x) y se calcula la primera y segunda derivada y'(x), y''(x) para calcular W (bending energy). Esta cantidad es un indice de que tan suave es la curva o trayectoria. Por ejemplo, si se posee una línea recta, la energia es W = 0. Creado y utilizado por Aldo Nadalini (2020) en su tesis para medir la suavidad de los controladores programados. </sub>
+<sub>Función para determinar la suavidad de una trayectoria por medio del cálculo de energia de de flexion de vigas delgadas de Bernoulli. Se realiza interpolacion de datos discretos con trazadores cúbicos para formar y(x) y se calcula la primera y segunda derivada y'(x), y''(x) para calcular W (bending energy). Esta cantidad es un indice de que tan suave es la curva o trayectoria. Por ejemplo, si se posee una línea recta, la energia es W = 0. Creado y utilizado por <a href="./Literatura/Tesis Previas/Aldo Aguilar - Tesis.pdf">Aldo Nadalini en su tesis</a> para medir la suavidad de los controladores programados. </sub>
 
 </details>
 
@@ -1490,7 +1476,7 @@ Cabe mencionar que el proceso de solucionar el "travelling salesman problem" pue
 </sub></p>
 
 <p align="center">
-   <img src="./Media/Mapa-Popup.PNG" width="40%" />
+   <img src="./Media/Mapa-Popup.PNG" width="30%" />
 </p>
 
 <p><sub>
@@ -1508,7 +1494,7 @@ NOTA: Durante la escritura de esta documentación, me percaté que el problema d
 <sub>Función que permite visualizar la policy perteneciente al problema de "Gridworld". Este no solo grafica la cuadrícula asociada al problema (Incluyendo los ID's numéricos que identifican a cada estado), sino también la flechas que simbolizan la acción óptima a tomar en cada estado (la policy). </sub>
 
 <p align="center">
-   <img src="./Media/GridPolicy.png" width="70%" />
+   <img src="./Media/GridPolicy.png" width="50%" />
 </p>
 
 <sub>El largo de las flechas y los ID's se cambia automáticamente. Los ID's desaparecen si su tamaño se torna ilegible dado el número de estados. El usuario también tiene la opción de desactivar manualmente los ID's haciendo que el parámetro <tt>DisableIDS = 1</tt> (agregando luego de todos los inputs de la función las dos entradas <tt>'DisableIDS',1</tt>)</sub>
@@ -1520,7 +1506,7 @@ NOTA: Durante la escritura de esta documentación, me percaté que el problema d
 <sub>Función que cambia el formato de los vértices de un polígono destinado para ser utilizado en funciones como polyshape (Vértices en una sola columna separando con NaN cada objeto) a vértices que pueden ser utilizados en funciones como fill3 (Vértices donde los vértices correspondientes a diferentes objetos están en diferentes columnas). Soporta la conversión de múltiples polígonos con números diferentes de vértices. </sub>
 
 <p align="center">
-   <img src="./Media/FormasVertices.PNG" width="80%" />
+   <img src="./Media/FormasVertices.PNG" width="60%" />
 </p>
 
 </details>
@@ -1530,7 +1516,7 @@ NOTA: Durante la escritura de esta documentación, me percaté que el problema d
 <sub>Función que toma el path de un archivo o folder, revisa si el archivo / folder existe y si este es el caso, modifica el path agregándole un número al final. Si ya existía un elemento con el número a agregar entonces la función pasa al siguiente número disponible (siguiendo una secuencia de 1, 2, 3, ...). Útil cuando existe la posibilidad de que ya se haya guardado un elemento con el mismo path previamente y se quiere evitar sobre-escribir al mismo.</sub>
 
 <p align="center">
-   <img src="./Media/Ejemplo preventFileOverwrite.png" width="70%" />
+   <img src="./Media/Ejemplo preventFileOverwrite.png" width="50%" />
 </p>
 
 </details>
@@ -1561,7 +1547,7 @@ NOTA: Durante la escritura de esta documentación, me percaté que el problema d
 <sub>Todas las figuras guardadas por el usuario en la workspace base de Matlab son guardadas en el <tt>Path</tt> dado como imágenes en el <tt>Formato</tt> especificado por el usuario. Esto implica que, para que funcione correctamente la función, las figuras que desean guardarse como imágenes deben ser guardadas como variables en la workspace. Por ejemplo: </sub>
 
 <p align="center">
-   <img src="./Media/Ejemplo saveWorkspaceFigures.PNG" width="90%" />
+   <img src="./Media/Ejemplo saveWorkspaceFigures.PNG" width="70%" />
 </p>
 
 </details>
@@ -1587,7 +1573,7 @@ NOTA: Durante la escritura de esta documentación, me percaté que el problema d
 <sub>Convierte un array de strings en un único string que incluye cada elemento en el array, cada uno separado por el caracter "/".</sub>
 
 <p align="center">
-   <img src="./Media/Ejemplo strArray2singleStr.PNG" width="80%" />
+   <img src="./Media/Ejemplo strArray2singleStr.PNG" width="60%" />
 </p>
 
 </details>
