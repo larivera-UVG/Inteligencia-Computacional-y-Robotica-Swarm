@@ -1,4 +1,4 @@
-function [] = saveWorkspaceFigures(Path,Extension)
+function [] = saveWorkspaceFigures(Path,Formato)
 % SAVEWORKSPACEFIGURES Todas las figuras guardadas por el usuario en la
 % workspace base de Matlab son guardadas en el Path especificado como 
 % imágenes en el formato especificado por el usuario. 
@@ -6,7 +6,7 @@ function [] = saveWorkspaceFigures(Path,Extension)
 % Input:
 %   - Path: Carpeta en la que se guardarán todas las figuras desplegadas y
 %     almacenadas actualmente en la workspace.
-%   - Extension: Formato de las imágenes en el que se guardarán las figuras
+%   - Formato: Formato de las imágenes en el que se guardarán las figuras
 %     generadas y guardadas. Ejemplos: "png" o "jpg".
 %
 % -------------------------------------------------------------------------
@@ -55,7 +55,7 @@ for i = 1:numel(NombreFiguras)
     % Si el handle actual existe, entonces se guarda la figura como una
     % imagen PNG.
     if isvalid(HandleFigura)
-        saveas(HandleFigura, Path + "\" + HandleFigura.Name + "." + Extension);
+        saveas(HandleFigura, Path + "\" + HandleFigura.Name + "." + Formato);
     end
 end
 

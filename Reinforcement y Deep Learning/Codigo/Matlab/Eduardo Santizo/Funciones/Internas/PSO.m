@@ -37,10 +37,10 @@ classdef PSO < handle
 %
 %   Inercia
 %   - TipoInercia: Tipo de inercia a emplear. Escribir "help
-%     ComputeInertia" para más información.
+%     computeInertia" para más información.
 %   - W: Coeficiente de inercia. Coeficiente que multiplica a la velocidad
 %     de las partículas en la ecuación de actualización de velocidad.
-%     Puede obtenerse usando diferentes métodos dentro de ComputeInertia.m
+%     Puede obtenerse usando diferentes métodos dentro de computeInertia.m
 %     o elegirse como una constante manual.
 %   - Wmin: Valor mínimo de W.
 %   - Wmax: Valor máximo de W.
@@ -254,8 +254,9 @@ classdef PSO < handle
         
         function SetRestricciones(obj, Restriccion, LimsX, LimsY, varargin)
             % -------------------------------------------------------------
-            % SETRESTRICCIONES Restricciones aplicadas a la regla de
-            % actualización de la velocidad de las partículas.  
+            % SETRESTRICCIONES Permite establecer las restricciones 
+            % aplicadas a la regla de actualización de la velocidad de las 
+            % partículas del algoritmo PSO.  
             % -------------------------------------------------------------
             % Inputs:
             %   - Restriccion: Tipo de restricción a utilizar. Están
@@ -291,7 +292,7 @@ classdef PSO < handle
             %   - "Inercia": Utilizar un coeficiente de inercia para
             %     limitar la influencia de la velocidad previa en la regla
             %     de actualización de velocidad de partículas. Escribir
-            %     "help ComputeInertia" para más información.
+            %     "help computeInertia" para más información.
             %   - "Mixto": Mezclar ambos métodos. Método utilizado por Aldo
             %     Nadalini en su tésis.
             %
@@ -330,12 +331,12 @@ classdef PSO < handle
 
                 % Coeficiente de Inercia ====
                 % Para el coeficiente de inercia, se debe seleccionar el método que se desea utilizar. 
-                % En total se implementaron 5 métodos distintos. Escribir "help ComputeInertia" para 
+                % En total se implementaron 5 métodos distintos. Escribir "help computeInertia" para 
                 % más información.
 
                 case "Inercia"
                     % Cálculo de la primera constante de inercia.
-                    obj.W = ComputeInertia(obj.TipoInercia, 1, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);  
+                    obj.W = computeInertia(obj.TipoInercia, 1, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);  
                     
                     Lims = [LimsX LimsY];
                     obj.VelMax = 0.2*diff(Lims);                                    % Velocidad máx: Dims = (1,2). Valor máx = 20% del ancho/alto del plano 
@@ -375,7 +376,7 @@ classdef PSO < handle
 
                     obj.TipoInercia = "Exponent1";                                 	% Tipo de inercia recomendada = "Exponent1"
                     obj.Wmax = 1.4; obj.Wmin = 0.5;
-                    obj.W = ComputeInertia(obj.TipoInercia, 1, obj.NoIteracionesMax); 	% Cálculo de la primera constante de inercia utilizando valores default (1.4 y 0.5).
+                    obj.W = computeInertia(obj.TipoInercia, 1, obj.NoIteracionesMax); 	% Cálculo de la primera constante de inercia utilizando valores default (1.4 y 0.5).
 
                     obj.VelMax = [inf inf];                                      	% Velocidad máx: Sin restricción en X y Y
                     obj.VelMin = [-inf -inf];                                      	% Velocidad mín: Sin restricción en X y Y
@@ -480,7 +481,7 @@ classdef PSO < handle
                 % Actualización del coeficiente inercial
                 % Solo válido para las restricciones que emplean inercia
                 if strcmp(obj.TipoRestriccion, "Inercia") || strcmp(obj.TipoRestriccion, "Mixto")
-                    obj.W = ComputeInertia(obj.TipoInercia, obj.IteracionActual, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);
+                    obj.W = computeInertia(obj.TipoInercia, obj.IteracionActual, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);
                 end
   
                 % Evaluación de criterios de convergencia

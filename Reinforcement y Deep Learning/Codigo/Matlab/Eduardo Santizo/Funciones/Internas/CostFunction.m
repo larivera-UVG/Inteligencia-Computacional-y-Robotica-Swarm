@@ -9,7 +9,7 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
 %   - FunctionName: Función de costo en la que se evaluarán las
 %     coordenadas presentes en la matriz X. 9 opciones en total. 
 %
-% Inputs Opcionales: 
+% Inputs Adicionales: 
 %   FunctionName = "APF"
 %   1. LimsX: Límites de la mesa de trabajo en X.
 %   2. LimsY: Límites de la mesa de trabajo en Y.

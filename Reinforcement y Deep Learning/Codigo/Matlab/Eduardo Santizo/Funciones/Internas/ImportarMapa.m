@@ -2,7 +2,7 @@ function [Vertices] = ImportarMapa(PathImagen)
 % IMPORTARMAPA Función que permite importar un mapa en blanco y negro
 % presente en una imagen (Con los obstáculos en negro), al extraer los
 % vértices que conforman los obstáculos en cuestión. Estos pueden ser luego
-% graficados utilizando "polyshape()" y luego "plot()".
+% procesados utilizando "polyshape()" y luego graficados usando "plot()".
 % -------------------------------------------------------------------------
 % Inputs: 
 %   - PathImagen: Ruta de la imagen que se desea importar. Si la imagen se
@@ -190,7 +190,7 @@ if ProcesarImagen
     % dinámica conforme se limpia la detección.
     while i <= numel(Bordes)
 
-        % Se grafican los bordes con más de "ThresholdPuntos"
+        % Se guardan los bordes con más de "ThresholdPuntos"
         if size(Bordes{i},1) > ThresholdPuntos
             Puntos = [Puntos; Bordes{i}];
             i = i + 1;
@@ -446,6 +446,11 @@ if ProcesarImagen
     imwrite(ImagenMapa, ".\Mapas\Imágenes\" + PathImagen);
     save(".\Mapas\Vertices\" + NombreImagen + ".mat","VerticesClean");
     Vertices = VerticesClean;
+    
+    % Los bordes se extraen "flipeados" sobre el eje Y, entonces se le 
+    % aplica un signo negativo a la segunda columna (Coordenada Y) para 
+    % darle vuelta.
+    Vertices(:,2) = -Vertices(:,2);
     disp("Importador Mapas: Procesado Finalizado!");
     
 end

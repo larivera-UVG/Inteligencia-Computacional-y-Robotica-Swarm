@@ -1,4 +1,4 @@
-function [MetaActual] = UpdateGoal(MetaActual, PosRobots, Trayectorias, isCiclica, varargin)
+function [MetaActual] = updateGoal(MetaActual, PosRobots, Trayectorias, isCiclica, varargin)
 % UPDATEGOAL Función que mide la distancia del robot a su meta actual y si
 % esta es lo suficientemente pequeña, entonces actualiza la meta actual al 
 % siguiente punto en la trayectoria que está siguiendo el robot. 
@@ -32,7 +32,7 @@ function [MetaActual] = UpdateGoal(MetaActual, PosRobots, Trayectorias, isCiclic
 % - Multi-meta: Una meta para cada robot. En este caso el array de 
 %   trayectorias es tridimensional, con cada fila representando la meta de 
 %   un robot diferente y cada "capa" o "profundidad" representando una 
-%   nueva meta para los pucks. 
+%   nueva meta para los robots. 
 %
 % -------------------------------------------------------------------------
 %

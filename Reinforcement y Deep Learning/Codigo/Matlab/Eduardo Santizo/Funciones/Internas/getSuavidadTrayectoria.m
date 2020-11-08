@@ -1,10 +1,11 @@
 function [W] = getSuavidadTrayectoria(y_d, N_ignore, graficar)
-% GETSUAVIDADTRAYECTORIA Función para determinar suavidad de curvas por 
-% medio del cálculo de energia de de flexion de vigas delgadas de Bernoulli.
-% Se realiza interpolacion de datos discretos con trazadores cúbicos para 
-% formar y(x) y se calcula la primera y segunda derivada y'(x), y''(x) para 
-% calcular W (bending energy). Este es un indice de que tan suave es la 
-% curva. Si se posee un línea recta, la energia es W = 0.
+% GETSUAVIDADTRAYECTORIA Función para determinar la suavidad de una
+% trayectoria por medio del cálculo de energia de de flexion de vigas 
+% delgadas de Bernoulli. Se realiza interpolacion de datos discretos con 
+% trazadores cúbicos para formar y(x) y se calcula la primera y segunda 
+% derivada y'(x), y''(x) para calcular W (bending energy). Esta cantidad es
+% un índice de que tan suave es la curva. Por ejemplo, si se posee una
+% línea recta, la energia es W = 0.
 % -------------------------------------------------------------------------
 %
 % Autor: Aldo Aguilar Nadalini (15170)

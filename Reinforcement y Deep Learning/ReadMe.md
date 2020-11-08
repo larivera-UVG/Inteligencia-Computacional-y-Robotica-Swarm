@@ -6,7 +6,7 @@
 # Reinforcement y Deep Learning en Aplicaciones de Robótica de Enjambre
 
 <p align="center">
-   <img src="./Media/Animación_PlanificatorTrayectorias.gif" width="49%" />
+   <img src="./Media/Animación_PlanificadorTrayectorias.gif" width="49%" />
    <img src="./Media/Animación_PSOTuner.gif" width="49%" /> 
 </p>
 
@@ -33,10 +33,10 @@
 
 ## Estructura de Carpetas
 
-<details> 
-<summary>Repositorio (Click para más info.) </summary>
 Estructura general de las carpetas existentes en el repositorio.
-<pre><code> Reinforcement y Deep Learning
+
+```json
+Reinforcement y Deep Learning
 │
 └─── Código
 │   │
@@ -97,94 +97,7 @@ Estructura general de las carpetas existentes en el repositorio.
 |
 └─── Media:
      Imágenes y GIFs utilizados en el Readme.
-</code></pre>
-</details><br/>
-
-<details> 
-<summary>Tesis Eduardo Santizo (Click para más info.) </summary>
-Estructura para la carpeta que contiene el código de Matlab de la tesis "Reinforcement y Deep Learning en Aplicaciones de Robótica de Enjambre" realizada por Eduardo Santizo.
-<pre><code>Eduardo Santizo
-│
-└─── Deep PSO Tuner
-│   │
-│   └─── Datasets:
-|   |    Datos de entrenamiento y validación para las RNNs
-│   │
-│   └─── Modelos:
-|   |    Modelos finales para las redes entrenadas
-│   │
-│   └─── Settings y Training Progress:
-|        Modelos, estructuras de red e imágenes de progreso de entrenamiento.
-|        Excel con registro del proceso de hyperparameter tuning para cada RNN.
-|
-|
-└─── Ejemplos y Scripts Auxiliares
-│   │
-│   └─── Reinforcement Learning Coursera - Ejercicios:
-|   |    Ejercicios (Matlab) para el curso de Reinforcement Learning impartido por la Universidad de Alberta.
-|   |
-│   └─── Sequence to Sequence Regression Using Deep Learning:
-|   |    Ejemplo de Matlab para entrenar una RNN para predecir una secuencia.
-|   |
-│   └─── Importador_Mapas.mlx:
-|   |    Versión mejor explicada de la función interna "ImportarMapa()".
-|   |
-│   └─── Train_Shallow&DeepNN_DatosSecuenciales:
-|        Predicción de un sistema de ecuaciones diferenciales usando una Shallow NN.
-|        Predicción de casos de gripe aviaria en los Estados Unidos usando RNN.
-|
-|
-└─── Funciones
-│   │
-│   └─── Externas:
-|   |    Funciones y métodos obtenidos en internet.
-|   |
-│   └─── Internas:
-|        Funciones escritas específicamente para el SR Toolbox.
-|
-|
-└─── Mapas
-│   │
-│   └─── Imágenes:
-|   |    Imágenes en blanco y negro de los mapas a usar en la mesa de trabajo.
-|   |
-│   └─── Vertices:
-|        Vértices para los polígonos que conforman los obstáculos de la mesa de trabajo.
-|
-|
-└─── Media
-│   │
-│   └─── Figuras:
-|   |    Figuras generadas durante la ejecución de los scripts de la SR Toolbox.
-|   |    Una carpeta por simulación.
-|   |
-│   └─── Frames:
-|   |    Cada una de las frames generadas durante la animación de la SR Toolbox.
-|   |    Una carpeta por simulación.
-|   |
-│   └─── GIFs:
-|   |    GIFs de la animación generada por la SR Toolbox.
-|   |
-│   └─── Frames:
-|        Videos de la animación generada por la SR Toolbox.
-|
-|
-└─── functionsSignatures.json:
-|    Empleado para las sugerencias de autocompletado en funciones internas.
-|
-|
-└─── Generar_Dataset.m:
-|    Genera las entradas y salidas requeridas para el entrenamientos de las RNNs.
-|
-|
-└─── Pruebas_PSOTuner.mlx:
-|    Script para probar y generar estadísticas sobre el PSO Tuner.
-|
-|
-└─── SR_Toolbox:
-     Script principal del SR Toolbox.
-</code></pre>
-</details>
+```
 
 ## Antecedentes
 
@@ -207,7 +120,7 @@ Tomó los avances de Aldo y los utilizó en conjunto con "*Artificial Potential 
 ### Eduardo Santizo (2020)
 
 <p align="center">
-   <img src="./Media/Animación_PlanificatorTrayectorias.gif" width="49%" />
+   <img src="./Media/Animación_PlanificadorTrayectorias.gif" width="49%" />
    <img src="./Media/Animación_PSOTuner.gif" width="49%" /> 
 </p>
 

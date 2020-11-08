@@ -1,8 +1,10 @@
 function [DistsEntrePart] = getDistsBetweenParticles(Posicion_Actual, FormaMatriz)
 % GETDISTSBETWEENPARTICLES Función que retorna todas las distancias
 % existentes entre todas las combinaciones posibles de partículas en la
-% forma de una matriz cuadrada triangular superior con dimensiones de 
-% "NoParticulas" x "NoParticulas".
+% forma de una matriz cuadrada con dimensiones de "NoParticulas" x 
+% "NoParticulas". El usuario puede especificar la forma que desea que tenga
+% la matriz: Triangular superior (solo los elementos de la sección
+% triangular superior) o full (con todos los elementos intactos).
 % -------------------------------------------------------------------------
 % Input: 
 %   - Posicion_Actual: Posición actual de las partículas. Cada columna de 

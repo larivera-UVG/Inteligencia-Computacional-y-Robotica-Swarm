@@ -1,18 +1,18 @@
-function [X,Y,Z] = DrawObstacles(Figura,Altura,ZOffset,varargin)
+function [X,Y,Z] = drawObstacles(Figura,Altura,ZOffset,varargin)
 % DRAWOBSTACLES Función que permite decidir la forma de los obstáculos que
 % se desplegarán sobre el escenario y en base a esto genera las coordenadas
 % necesarias para graficar los mismos en 2D o 3D.
 % -------------------------------------------------------------------------
 % Inputs: 
 %   - Figura: Tipo de figura a graficar. Existen tres opciones: "Cilindro",
-%     "Poligono" y "Custom".
+%     "Poligono", "Custom" e "Imagen".
 %   - Altura: Altura de la geometría a graficar. Aunque la geometría sea 2D
 %     la función necesita de una altura para generar las coordenadas Z del
 %     polígono.
 %   - ZOffset: Altura de la cara inferior del polígono a crear. En otras
 %     palabras, el nivel de Z sobre el que el polígono estará "sentado".
 %
-% Inputs Opcionales: 
+% Inputs Adicionales: 
 %   Figura = "Cilindro" 
 %   1. Radio: Radio del cilindro.
 %
@@ -32,21 +32,28 @@ function [X,Y,Z] = DrawObstacles(Figura,Altura,ZOffset,varargin)
 %      Se aceptan tanto imágenes .jpg como .png. Ejemplo: "Pentágono.jpg". 
 %
 % Outputs:
-%   - X: Vector columna con las coordenadas X de todos los vértices que
-%     conforman la geometría del obstáculo. La primera y última coordenada
-%     coinciden para que la figura "cierre" al momento de graficarla con
-%     fill() u otras funciones.
-%   - Y: Vector columna con las coordenadas Y de los vértices que conforman
+%   - X: Matriz de (NoVertices x 2). Cada fila consiste de las coords. X de
+%     los vértices de los obstáculos. La columna 1 contiene los vértices de
+%     la cara inferior de los obstáculos y la columna 2 los vértices de la 
+%     cara superior del obstáculo en 3D. Ambas columnas serán iguales 
+%     porque la cara superior e inferior tienen las mismas coords X. Cabe 
+%     mencionar que la primera y última fila de cada columna son iguales 
+%     para que la figura "cierre" al momento de graficarla. 
+%   - Y: Matriz de (NoVertices x 2). Cada fila consiste de las coords. Y de
+%     los vértices de los obstáculos. La columna 1 contiene los vértices de
+%     la cara inferior de los obstáculos y la columna 2 los vértices de la 
+%     cara superior del obstáculo en 3D. Ambas columnas son iguales porque 
+%     las dos caras tienen las mismas coords. Y. La primera y última fila 
+%     son replicas para asegurar el cierre del polígono.
+%   - Z: Matriz de (NoVertices x 2). Coords Z de los vértices que conforman
 %     la geometría del obstáculo. La primera y última coordenada son
-%     replicas.
-%   - Z: Vector columna con las coordenadas Z de los vértices que conforman
-%     la geometría del obstáculo. La primera y última coordenada son
-%     replicas.
+%     replicas. La columna 1 consiste de la altura de la cara inferior y la
+%     columna 2 de la altura de la cara superior del obstáculo en 3D.
 % -------------------------------------------------------------------------
 % 
 % Opciones "Figura"
 %
-%   - Cilindro: Cilindro centrado en el origen con un radio que es
+%   - Cilindro: Cilindro centrado en el origen con un radio que debe ser
 %     especificado por el usuario.
 %   - Poligono: El usuario puede dibujar un polígono que desee colocar en
 %     el escenario como un obstáculo. En la ventana abierta, se muestra el
@@ -55,12 +62,16 @@ function [X,Y,Z] = DrawObstacles(Figura,Altura,ZOffset,varargin)
 %   - Custom: El usuario puede alimentarle directamente los vértices de un
 %     polígono previamente creado y la función los adapta para que sean
 %     compatibles con la forma requerida (Misma coordenada al inicio y al
-%     final. Con offset y altura en Z).
+%     final. Con offset y altura en Z) para polyshape().
 %   - Imagen: El usuario puede alimentar al programa una imagen en blanco y
 %     negro del mapa que desea, y este lo convierte automáticamente en un 
 %     grupo de polígonos que pueden ser utilizados por el simulador para
-%     recrear el ambiente en la mesa de trabajo.
+%     recrear el ambiente en la mesa de trabajo. La imagen puede tener
+%     cualquier dimensión. 
 % 
+% Nota: Si se desean graficar múltiples obstáculos a la vez, los vértices
+% de cada obstáculo distinto deben estar separados por una fila de "NaNs".
+%
 % -------------------------------------------------------------------------
 
 switch Figura

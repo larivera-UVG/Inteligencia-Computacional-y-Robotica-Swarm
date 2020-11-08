@@ -1,4 +1,4 @@
-function [Posicion_Actual] = SolveCollisions(Posicion_Actual, RadioPuck)
+function [Posicion_Actual] = solveCollisions(Posicion_Actual, RadioPuck)
 % SOLVECOLLISIONS Función que toma las posiciones actuales de las
 % partículas, chequea si alguna pareja de partículas está a menos de 1
 % diámetro de distancia entre si, y corrige su posición de manera acorde.
