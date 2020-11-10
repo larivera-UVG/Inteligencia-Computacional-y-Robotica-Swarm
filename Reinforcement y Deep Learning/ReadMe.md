@@ -20,16 +20,7 @@
 3. [Guía de Uso](#guía-de-uso)
 4. [Hardware y Software](#hardware-y-software)
 5. [Swarm Robotics Toolbox](#swarm-robotics-toolbox)
-   - [Estructura de Programa](#estructura-de-programa)
-   - [Funciones](#funciones)
-     - [Evolución del Global Best](#evolución-del-global-best)
-     - [Análisis de Dispersión de Partículas](#análisis-de-dispersión-de-partículas)
-     - [Velocidad de Motores](#velocidad-de-motores)
-     - [Suavidad de Velocidades](#suavidad-de-velocidades)
-   - [Grabación de Videos / Frames](#grabación-de-videos--frames)
-6. [Demostración](#demostración)
-   - [Partículas Esquivando Obstáculo](#partículas-esquivando-obstáculo)
-   - [Polígono Personalizado](#polígono-personalizado)
+6. [Pruebas PSO Tuner](#pruebas-pso-tuner)
 
 ## Estructura de Carpetas
 

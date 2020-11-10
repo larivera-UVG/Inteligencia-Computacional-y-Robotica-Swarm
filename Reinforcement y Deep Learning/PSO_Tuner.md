@@ -9,11 +9,9 @@ El script de `Pruebas_PSOTuner.mlx` consiste de una copia modificada del script 
 
 ## Índice
 
-- [Limpieza de Workspace](#limpieza-de-workspace)
 - [Parámetros y Settings](#parámetros-y-settings)
 - [Reglas de Método a Usar](#reglas-de-método-a-usar)
-- [Inicialización de Robots](#inicialización-de-robots)
-- [Setup: Métodos PSO](#setup-métodos-pso)
+- [Setup PSO](#setup-pso)
 - [Setup: Gráficas](#setup-gráficas)
 - [Setup: Output Media](#setup-output-media)
 - [Main Loop](#main-loop)
