@@ -31,7 +31,6 @@ Cabe mencionar que el script "maestro" (`SR_Toolbox.mlx`) puede ser fácilmente 
         - [Escaneo de Mesa de Trabajo](#escaneo-de-mesa-de-trabajo)
         - [Policy Iteration](#policy-iteration)
         - [Generación de Trayectorias](#generación-de-trayectorias)
-        - [Gráfica de Policy + Trayectorias](#gráfica-de-policy-y-trayectorias)
     - [Setup: Gráficas](#setup-gráficas)
         - [Sistema de Leyendas](#sistema-de-leyendas)
         - [Visualización 2D](#visualización-2d)
@@ -948,7 +947,7 @@ Cada estado tiene un valor asociado, el cual indica "que tan bueno es moverse a 
 Para que inicialmente sea igualmente probable tomar cualquiera de las acciones (probabilidad uniforme) la probabilidad de cada acción en cada estado será igual a 1/`NoAcciones`. Esto se puede observar en la figura a continuación, donde se puede apreciar la forma de `Policy` con una probabilidad uniforme. También se puede observar como el valor inicial de `V` es igual a 0 (la gráfica de la izquierda es una gráfica de barras).
 
 <p align="center">
-   <img src="./Media/Valor Estado y Policy.PNG" width="90%" />
+   <img src="./Media/Valor Estado y Policy.PNG" width="70%" />
 </p>
 
 Además de `V` y `Policy`, también se inicializa el valor de:
@@ -1557,13 +1556,13 @@ NOTA: Durante la escritura de esta documentación, me percaté que el problema d
 <sub>Función llamada durante cada iteración del main loop. Esta toma las posiciones actuales de los robots, chequea todas las parejas posibles de robots y si alguna tiene menos de 1 diámetro de distancia entre si, se corrige su posición hasta que no existan sus colisiones. Dicha corrección se realiza calculando la intersección entre ambos robots y luego alejando a las parejas en una cantidad <tt>Interseccion/2</tt> siguiendo la dirección del vector de distancia existente entre ambos robots.</sub>
 
 <p align="center">
-   <img src="./Media/CorreccionColisiones.png" width="90%" />
+   <img src="./Media/CorreccionColisiones.png" width="70%" />
 </p>
 
 <sub>Una desventaja de este método es que, en casos donde existen muchos E-Pucks (más de 8 por ejemplo), la solución de colisiones puede llegar a causar más colisiones, creando un círculo vicioso donde las colisiones nunca se solucionarán. Para evitar diverger y trabar Matlab, esta función cuenta con un parámetro interno denominado <tt>IteracionesMax</tt>, que le da fin al algoritmo luego de cierto número de iteraciones. Por defecto, este parámetro es igual a 40, pero puede cambiarse según se desee. Una potencial mejora sería modificar este algoritmo de detección de colisiones e implementar un "Physics Engine" mucho más robusto, con velocidades, masas, inercias, entre otros.</sub>
 
 <p align="center">
-   <img src="./Media/Colision.png" width="80%" />
+   <img src="./Media/Colision.png" width="60%" />
 </p>
 
 </details>
