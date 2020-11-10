@@ -1,0 +1,192 @@
+#VRML_SIM R2019a utf8
+WorldInfo {
+  basicTimeStep 16
+}
+Viewpoint {
+  orientation -0.4854306541830964 -0.7261666570917861 -0.48686657937006894 1.8882550792185822
+  position -1.093419346254958 2.4935048959425243 -0.008257616514880217
+}
+E-puck {
+  translation 0.5452405070683326 0.0002508450521463402 -0.34839843112283997
+  rotation -0.0007942418661751897 0.9999994221355439 0.0007245056495078818 3.48239661165909
+  controller "e-puck_MPSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+Floor {
+  size 2 2
+}
+E-puck {
+  translation -0.28446875780226194 -0.0025748618899517797 0.7179278350179151
+  rotation -0.004210430021123544 -0.9999804836119529 -0.004615698673217989 5.942374642171133
+  name "e-puck(9)"
+  controller "e-puck_MPSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation 0.21533289116551046 -0.0009449563776463747 0.13218415805919917
+  rotation -0.004210430021123544 -0.9999804836119529 -0.004615698673217989 5.942374642171133
+  name "e-puck(7)"
+  controller "e-puck_MPSO"
+  battery [
+    0, 0
+  ]
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation 0.152775499985715 -0.002102509564613164 0.775523285486871
+  rotation -0.0003419747911933127 0.9999993624759344 0.0010761509962786393 2.435199670620807
+  name "e-puck(8)"
+  controller "e-puck_MPSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation 0.21905998601875812 0.0003300035340335057 -0.627081594652708
+  rotation -0.0011628741706457598 -0.999996801164095 -0.002246193500285488 5.418779958165761
+  name "e-puck(6)"
+  controller "e-puck_MPSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation -0.6777044684729432 -0.0010693590095587709 -0.48780057236564567
+  rotation -0.00035487357169620916 -0.9999986281315729 -0.001617961594141363 4.895182306897352
+  name "e-puck(4)"
+  controller "e-puck_MPSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation 0.6102061924014152 -0.00104587299553044 0.49953230727994574
+  rotation -0.0007942418661751897 0.9999994221355439 0.0007245056495078818 3.48239661165909
+  name "e-puck(5)"
+  controller "e-puck_MPSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation -0.023130778950749473 -0.0005628920711260677 -0.28162126972244494
+  rotation -0.0022409613625316046 0.9999974089041349 -0.0004003463348736189 5.3149903790957485
+  name "e-puck(3)"
+  controller "e-puck_MPSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+E-puck {
+  translation 0.15013128108317153 -0.0017503310778794405 0.5629371051347389
+  rotation -0.004350655408616917 0.9999884536411022 -0.002040681747004905 5.838586321763213
+  name "e-puck(2)"
+  controller "e-puck_MPSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+TexturedBackgroundLight {
+}
+Solid {
+  translation 1 0.05 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry DEF WALL Box {
+        size 0.049999999999999996 0.1 2
+      }
+    }
+  ]
+  name "solid(1)"
+  boundingObject USE WALL
+}
+Solid {
+  translation -1 0.05 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry USE WALL
+    }
+  ]
+  name "solid(2)"
+  boundingObject USE WALL
+}
+Solid {
+  translation 0 0.05 0.95
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry DEF WALL2 Box {
+        size 2 0.1 0.05
+      }
+    }
+  ]
+  name "solid(3)"
+  boundingObject USE WALL2
+}
+Solid {
+  translation 0 0.049999999999999996 -0.9800000000000004
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry USE WALL2
+    }
+  ]
+  name "solid(4)"
+  boundingObject USE WALL2
+}
+E-puck {
+  translation -0.5070491825551539 -5.178942753991458e-05 0.1536576405014114
+  rotation 0.0030796835357340163 -0.9999939091490911 -0.001642319712871731 0.5463204396921048
+  name "e-puck(1)"
+  controller "e-puck_MPSO"
+  turretSlot [
+    Compass {
+    }
+    GPS {
+    }
+  ]
+}
+Background {
+  skyColor [
+    0.1 0.1 0.1
+  ]
+}
