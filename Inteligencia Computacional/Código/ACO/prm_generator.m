@@ -14,10 +14,13 @@ Y = prm.graph.vertexlist(2, :)';
 Name = string(1:size(X, 1))';
 G = graph(table(EndNodes, Weight, Eta), table(Name, X, Y));
 grafo = simplify(G);
+G = grafo;
+save('prm_test_graph.mat', 'G')
 % figure()
 % plot(grafo, 'XData', grafo.Nodes.X, 'YData', grafo.Nodes.Y, 'NodeColor', 'k');
 % goal = [50,30];
 % start = [20, 10];
 % prm.query(start, goal)
+end
 
 

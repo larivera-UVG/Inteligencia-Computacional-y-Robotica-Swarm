@@ -15,6 +15,8 @@ Y = rrt.graph.vertexlist(2, :)';
 Name = string(1:size(X, 1))';
 G = graph(table(EndNodes, Weight, Eta), table(Name, X, Y));
 grafo = simplify(G);
+G = grafo;
+save('rrt_test_graph.mat', 'G')
 % figure()
 % plot(grafo, 'XData', grafo.Nodes.X, 'YData', grafo.Nodes.Y, 'NodeColor', 'k');
 % rrt.query(start, goal)

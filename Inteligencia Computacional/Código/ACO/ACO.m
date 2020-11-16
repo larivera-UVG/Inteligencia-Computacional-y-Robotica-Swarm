@@ -14,7 +14,7 @@ tic  % Para medir el tiempo que se tarda el algoritmo en correr.
 
 %% Graph generation
 % Se elige el tipo de grafo que se va a utilizar
-graph_type = "grid";
+graph_type = "rrt";
 
 if strcmp(graph_type, "grid")
     % Creamos grid cuadrado con la cantidad de nodos indicada:
@@ -217,5 +217,5 @@ if graph_type == "grid"
 else
     webots_path = bpath.*[1/grid_size -1/grid_size];
 end
-wb_pc_path = 'C:\Users\Gaby\Documents\UVG\5A2S\tesis\git-tesis\Inteligencia Computacional\Código\Webots\controllers\ACO_controller\';
-save(strcat(wb_pc_path, 'webots_test.mat'), 'bpath', 'webots_path', 'graph_type')
+wb_pc_path = 'C:\Users\Gaby\Documents\UVG\Tesis\Inteligencia-Computacional-y-Robotica-Swarm\Inteligencia Computacional\Código\Webots\controllers\ACO_controller\';
+% save(strcat(wb_pc_path, 'webots_test.mat'), 'bpath', 'webots_path', 'graph_type')

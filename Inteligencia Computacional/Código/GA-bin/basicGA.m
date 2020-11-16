@@ -1,7 +1,5 @@
 % Basado en el curso de cómputo evolutivo Coursera
 % Universidad Nacional Autónoma de México
-% Se quiere maximizar la función f(x,y) = 21.5 + xsin(4pix)+ysin(20piy)
-% para los rangos: x(-3, 12.1) y y(4.1, 5.8)
 %% Definición de parámetros
 tic
 Nind = 100;  % Número de individuos en la población
