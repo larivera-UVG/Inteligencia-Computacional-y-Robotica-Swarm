@@ -8,14 +8,6 @@ En este proyecto se implementa el algoritmo **Ant System** (AS) :ant: :ant: en M
 
 :warning: :warning: **Por favor leer y hacer los prerrequisitos del ReadMe de la carpeta de inteligencia computacional antes de continuar con este readMe.** :warning: :warning:
 
-Ok... si les da... :egg: ...pereza leer pueden ver los videos:
-[![prerrequisitos vid](https://img.youtube.com/vi/34Gk2Xek0RY/0.jpg)](https://youtu.be/34Gk2Xek0RY)
-
-[![codigo vid](https://img.youtube.com/vi/tO1s2DIvKbU/0.jpg)](https://youtu.be/tO1s2DIvKbU)
-
-...pero sí les recomendaría leer esto antes y luego seguir el tutorial para que tengan idea de qué está pasando.
-
-
 ## Tabla de contenido
 
 1. [ ACO ](#aco)

@@ -7,6 +7,14 @@
 # Aprendizaje Automático, Computación Evolutiva e Inteligencia de Enjambre para Aplicaciones de Robótica
 En este proyecto se implementa el algoritmo **Ant System** (AS) :ant: :ant: en Matlab para su posterior uso como planificador de trayectorias en robots similares a el robot E-Puck en aplicaciones de búsqueda y rescate. Además, también se tiene el código que implementa el **algoritmo genético** (GA) 🧬 con codificación binaria y entera.
 
+Ok... si les da :egg: ...pereza leer pueden ver los videos:
+
+[![prerrequisitos vid](https://img.youtube.com/vi/34Gk2Xek0RY/0.jpg)](https://youtu.be/34Gk2Xek0RY)
+
+[![codigo vid](https://img.youtube.com/vi/tO1s2DIvKbU/0.jpg)](https://youtu.be/tO1s2DIvKbU)
+
+...pero sí les recomendaría leer esto antes y luego seguir el tutorial para que tengan idea de qué está pasando.
+
 ## Tabla de contenido
 
 1. [ Prerrequisitos ](#desc)
