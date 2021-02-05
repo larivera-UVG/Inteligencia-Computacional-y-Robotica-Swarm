@@ -215,7 +215,7 @@ Recompensa = 0;
 
 % R1: Llega a la meta
 if ismember(EstadoFuturo,EstadosMeta)
-    Recompensa = Recompensa + 100000;
+    Recompensa = Recompensa + 10000000;
 
 % R2: Agente no ha llegado a la meta
 else

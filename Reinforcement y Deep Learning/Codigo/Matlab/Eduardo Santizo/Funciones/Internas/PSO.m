@@ -105,6 +105,7 @@ classdef PSO < handle
         Posicion_GlobalBest
         Posicion_History
         Velocidad
+        Velocidad_History
         
         % Propiedades Generales
         NoIteracionesMax
@@ -140,11 +141,12 @@ classdef PSO < handle
         Costo_LocalBest
         Costo_GlobalBest  
         Costo_GlobalBestHistory
+        DisableLocalMemory
     end
     
     methods
-      
-        function obj = PSO(NoParticulas, NoDimensiones, Func_Costo, CriterioConv, Iter_Max, Bordes_RegionPartida)
+        
+        function obj = PSO(NoParticulas, NoDimensiones, FuncionCosto, CriterioConv, Iter_Max, Bordes_RegionPartida, varargin)
             % PSO Rutina que permite crear un objeto de la clase PSO.
             % Se configura la función de costo a utilizar, el criterio de
             % convergencia, el número de iteraciones máximas que puede
@@ -177,26 +179,38 @@ classdef PSO < handle
             %
             % -------------------------------------------------------------
             
-            % Cantidad de partículas a simular
+            IP = inputParser;
+            
+            % Inputs Obligatorios / Requeridos
+            IP.addRequired('NoParticulas', @isnumeric);
+            IP.addRequired('NoDimensiones', @isnumeric);
+            IP.addRequired('FuncionCosto', @isstring);
+            IP.addRequired('CriterioConv', @isstring);
+            IP.addRequired('Iter_Max', @isnumeric);
+            IP.addRequired('Bordes_RegionPartida', @isnumeric);
+            
+            % Parámetros Opcionales (Usuario debe escribir su nombre
+            % seguido del valor que desea).
+            IP.addParameter('DisableLocalMemory', 0, @isnumeric);
+            
+            % Se ordenan las variables de entrada contenidas en IP.Results
+            % según los inputs previos
+            IP.parse(NoParticulas, NoDimensiones, FuncionCosto, CriterioConv, Iter_Max, Bordes_RegionPartida, varargin{:});
+            
+            % Asignación de los parámetros opcionales a variables de la
+            % función.
             obj.NoParticulas = NoParticulas;
-            
-            % Cantidad de dimensiones para las posiciones y velocidades de
-            % las partículas.
             obj.NoDimensiones = NoDimensiones;
-            
-            % Historial de Posición 
-            obj.NoIteracionesMax = Iter_Max;
-            
-            % Costo y Global Best
-            obj.FuncionCosto = Func_Costo;                                  
-            
-            % Bordes de la región de partida de la que saldrán las
-            % partículas
-            obj.Bordes_RegionPartida = Bordes_RegionPartida;
-
-            % Se configura el criterio de convergencia a utilizar después
+            obj.FuncionCosto = FuncionCosto;
             obj.CriterioConv = CriterioConv;
+            obj.NoIteracionesMax = Iter_Max;
+            obj.Bordes_RegionPartida = Bordes_RegionPartida;
             
+            % Se desactiva la memoria local de las partículas, lo que
+            % implica que su posición asociada al "personal best" siempre
+            % será la posición actual.
+            obj.DisableLocalMemory = IP.Results.DisableLocalMemory;         
+
         end
         
         function InitPSO(obj, EnvironmentParams)
@@ -215,7 +229,7 @@ classdef PSO < handle
             obj.Posicion_Actual = zeros(obj.NoParticulas, obj.NoDimensiones);
             
             for i = 1:obj.NoDimensiones
-                obj.Posicion_Actual(:,i) = unifrnd(obj.Bordes_RegionPartida(i,1), obj.Bordes_RegionPartida(i,2), [obj.NoParticulas 1]);               
+                obj.Posicion_Actual(:,i) = unifrnd(obj.Bordes_RegionPartida(1,i), obj.Bordes_RegionPartida(2,i), [obj.NoParticulas 1]);               
             end
             
             % Posición Previa, Posición Local Best y Velocidad
@@ -223,15 +237,18 @@ classdef PSO < handle
             obj.Posicion_LocalBest = obj.Posicion_Actual;                  	% Las posiciones que generaron los mejores costos en las partículas     Dims: NoParticulas X VarDims
             obj.Velocidad = zeros(size(obj.Posicion_Actual));               % Velocidad de todas las partículas. Inicialmente 0.                    Dims: NoParticulas X VarDims
             
-            % Creación del Historial de Posiciones.
+            % Creación de los historiales de posición y velocidad
             obj.Posicion_History = cell(obj.NoDimensiones,1);              	% Celda con arrays guardando todas las posiciones.                      Dims: VarDims X 1
+            obj.Velocidad_History = cell(obj.NoDimensiones,1);
             
             for i = 1:obj.NoDimensiones
-                % Fila "i" de "Posicion_History" = Matriz de ceros para la dimensión "i"
+                % Fila "i" de historiales = Matriz de ceros para la dimensión "i"
                 obj.Posicion_History{i} = zeros(obj.NoParticulas,obj.NoIteracionesMax);  
+                obj.Velocidad_History{i} = zeros(obj.NoParticulas,obj.NoIteracionesMax);
                 
-                % Array dentro de la fila "i" de "Posicion_History" = Todos los valores de posición para la dimensión "i".
+                % Array dentro de la fila "i" de historiales = Todos los valores de posición para la dimensión "i".
                 obj.Posicion_History{i}(:,1) = obj.Posicion_Actual(:,i);    
+                obj.Velocidad_History{i}(:,1) = obj.Velocidad(:,i);
             end
             
             % Evaluación del costo en la posición actual de la partícula.           
@@ -307,7 +324,7 @@ classdef PSO < handle
             
             % Parámetros Opcionales (Usuario debe escribir su nombre
             % seguido del valor que desea).
-            IP.addParameter('TipoInercia', "Linear", @isstring);
+            IP.addParameter('TipoInercia', "LDIW", @isstring);
             IP.addParameter('Wmax', 0.9, @isnumeric);
             IP.addParameter('Wmin', 0.4, @isnumeric);
             IP.addParameter('Chi', 1, @isnumeric);
@@ -328,27 +345,53 @@ classdef PSO < handle
             obj.Wmin = IP.Results.Wmin;
 
             switch Restriccion
-
-                % Coeficiente de Inercia ====
-                % Para el coeficiente de inercia, se debe seleccionar el método que se desea utilizar. 
-                % En total se implementaron 5 métodos distintos. Escribir "help computeInertia" para 
-                % más información.
-
+                
+                % SIN RESTRICCIÓN
+                % Concepción inicial del algoritmo PSO sin ningún tipo de
+                % restricción o coeficiente. Tanto la inercia, como los
+                % coeficientes de constricción se igualan a 1 para evitar
+                % que interfieran con los demás elementos del algoritmo.
+                case "None"
+                    obj.W = 1;
+                    obj.Phi1 = 1;
+                    obj.Phi2 = 1;
+                    obj.Chi = 1;
+                    
+                    obj.VelMax = [inf inf];         	% Velocidad máx: Sin restricción en X y Y
+                    obj.VelMin = [-inf -inf];        	% Velocidad mín: Sin restricción en X y Y
+                
+                    
+                % INERCIA
+                % Se debe seleccionar el tipo de inercia que se desea y
+                % pasarle los parámetros requeridos según el tipo elegido
+                % (3 clases: Primitiva, Adaptiva y Variante en el tiempo).
+                % Escribir "help computeInertia" para más información.
+                
                 case "Inercia"
+
                     % Cálculo de la primera constante de inercia.
-                    obj.W = computeInertia(obj.TipoInercia, 1, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);  
+                    obj.W = computeInertia(obj.TipoInercia, 'Iter', 1, ...
+                                                            'MaxIter', obj.NoIteracionesMax, ...
+                                                            'Wmin', obj.Wmin, ...
+                                                            'Wmax', obj.Wmax, ...
+                                                            'CostoGB', obj.Costo_GlobalBest, ...
+                                                            'CostoPB', obj.Costo_LocalBest, ...
+                                                            'CostoLocal', obj.Costo_Local);  
                     
                     Lims = [LimsX LimsY];
-                    obj.VelMax = 0.2*diff(Lims);                                    % Velocidad máx: Dims = (1,2). Valor máx = 20% del ancho/alto del plano 
-                    obj.VelMin = -obj.VelMax;                                    	% Velocidad mín: Dims = (1,2). Negativo de la velocidad máxima
-                    obj.Chi = IP.Results.Chi;                                      	% Igualado a 1 para que el efecto del coeficiente de constricción sea nulo
+                    obj.VelMax = 0.2*diff(Lims);                          	% Velocidad máx: Dims = (1,2). Valor máx = 20% del ancho/alto del plano 
+                    obj.VelMin = -obj.VelMax;                              	% Velocidad mín: Dims = (1,2). Negativo de la velocidad máxima
+                    obj.Chi = 1;                                            % Igualado a 1 para que el efecto del coeficiente de constricción sea nulo
                     obj.Phi1 = 1; 
                     obj.Phi2 = 1;
 
-                % Coeficiente de Constricción ====
-                % Basado en la constricción tipo 1'' propuesta en el paper por Clerc y Kennedy (2001) 
-                % titulado "The Particle Swarm - Explosion, Stability and Convergence". Esta constricción 
-                % asegura la convergencia siempre y cuando Kappa = 1 y Phi = Phi1 + Phi2 > 4.
+                    
+                % CONSTRICCIÓN
+                % Basado en la constricción tipo 1'' propuesta en el paper
+                % por Clerc y Kennedy (2001) titulado "The Particle Swarm - 
+                % Explosion, Stability and Convergence". Esta constricción 
+                % asegura la convergencia siempre y cuando Kappa = 1 y Phi 
+                % = Phi1 + Phi2 > 4.
 
                 case "Constriccion"
                     Kappa = IP.Results.Kappa;                                       % Modificable. Valor recomendado = 1
@@ -358,33 +401,43 @@ classdef PSO < handle
                     obj.Chi = 2*Kappa / abs(2 - Phi - sqrt(Phi^2 - 4*Phi));
                     
                     Lims = [LimsX LimsY];
-                    obj.W = IP.Results.W;
+                    obj.W = 1;
                     obj.VelMax = Lims(2,:);                                      	% Velocidad máx: Valor máximo de posición en X y Y
                     obj.VelMin = Lims(1,:);                                         % Velocidad mín: Valor mínimo de posición en X y Y
 
-                % Ambos Coeficientes (Mixto) ====
-                % Utilizado por Aldo Nadalini en su tésis "Algoritmo Modificado de Optimización de 
-                % Enjambre de Partículas (MPSO) (2019). Chi se calcula de la misma manera, pero se
-                % utiliza un Phi1 = 2, Phi2 = 10 y el coeficiente de inercia exponencial decreciente.
+                    
+                % MIXTO (INERCIA Y CONSTRICCIÓN)
+                % Utilizado por Aldo Nadalini en su tésis "Algoritmo 
+                % Modificado de Optimización de Enjambre de Partículas 
+                % (MPSO) (2019). Chi se calcula de la misma manera, pero se
+                % utiliza un Phi1 = 2, Phi2 = 10 y el coeficiente de 
+                % inercia exponencial decreciente.
 
                 case "Mixto"
-                    Kappa = IP.Results.Kappa;                                       % Valor recomendado = 1
-                    obj.Phi1 = 2;                                                   % Valor recomendado = 2
-                    obj.Phi2 = 10;                                                  % Valor recomendado = 10
+                    Kappa = IP.Results.Kappa;                           	% Valor recomendado = 1
+                    obj.Phi1 = 2;                                       	% Valor recomendado = 2
+                    obj.Phi2 = 10;                                          % Valor recomendado = 10
                     Phi = obj.Phi1 + obj.Phi2;
                     obj.Chi = 2*Kappa / abs(2 - Phi - sqrt(Phi^2 - 4*Phi));
 
-                    obj.TipoInercia = "Exponent1";                                 	% Tipo de inercia recomendada = "Exponent1"
-                    obj.Wmax = 1.4; obj.Wmin = 0.5;
-                    obj.W = computeInertia(obj.TipoInercia, 1, obj.NoIteracionesMax); 	% Cálculo de la primera constante de inercia utilizando valores default (1.4 y 0.5).
-
-                    obj.VelMax = [inf inf];                                      	% Velocidad máx: Sin restricción en X y Y
-                    obj.VelMin = [-inf -inf];                                      	% Velocidad mín: Sin restricción en X y Y
+                    obj.TipoInercia = "EDIW";                               % Tipo de inercia recomendada = "EDIW" o Exponencialmente Decreciente
+                    obj.Wmax = 1.4; 
+                    obj.Wmin = 0.5;
+                    obj.W = computeInertia(obj.TipoInercia, 'Iter', 1, ...
+                                                            'MaxIter', obj.NoIteracionesMax, ...
+                                                            'Wmin', obj.Wmin, ...
+                                                            'Wmax', obj.Wmax, ...
+                                                            'CostoGB', obj.Costo_GlobalBest, ...
+                                                            'CostoPB', obj.Costo_LocalBest, ...
+                                                            'CostoLocal', obj.Costo_Local);  
+                    
+                    obj.VelMax = [inf inf];                             	% Velocidad máx: Sin restricción en X y Y
+                    obj.VelMin = [-inf -inf];                             	% Velocidad mín: Sin restricción en X y Y
 
             end
         end
         
-        function [varargout] = RunStandardPSO(obj, TipoEjecucion, Meta, EnvironmentParams)
+        function [varargout] = RunPSO(obj, TipoEjecucion, Meta, Costo_Meta, EnvironmentParams)
             % -------------------------------------------------------------
             % RUNSTANDARDPSO Ejecutar el algoritmo de PSO con los
             % con los parámetros dados.
@@ -417,7 +470,7 @@ classdef PSO < handle
                 obj.Posicion_Previa = obj.Posicion_Actual;                                                  % Se guarda la posición actual como la previa antes de sobre-escribir la actual.             
 
                 % Actualización de Velocidad de Partículas
-                obj.Velocidad = obj.Chi * (obj.W * obj.Velocidad ...                                      	% Término inercial
+                obj.Velocidad = obj.Chi * (obj.W .* obj.Velocidad ...                                      	% Término inercial
                               + obj.Phi1 * R1 .* (obj.Posicion_LocalBest - obj.Posicion_Actual) ...        	% Componente cognitivo
                               + obj.Phi2 * R2 .* (obj.Posicion_GlobalBest - obj.Posicion_Actual));        	% Componente social
 
@@ -428,7 +481,7 @@ classdef PSO < handle
                 
                 % Cota de Velocidad en Y
                 obj.Velocidad(:,2) = max(obj.Velocidad(:,2), obj.VelMin(2));                               	% Si VelocidadY < VelMinY, entonces VelocidadY = VelMinY
-                obj.Velocidad(:,2) = min(obj.Velocidad(:,2), obj.VelMax(2));
+                obj.Velocidad(:,2) = min(obj.Velocidad(:,2), obj.VelMax(2));                                % Si VelocidadY > VelMaxY, entonces VelocidadY = VelMaxY
                 
                 % Actualización de Posición de Partículas
                 obj.Posicion_Actual = obj.Posicion_Actual + obj.Velocidad;                                  % Actualización "discreta" de la posición. El algoritmo de PSO original asume un sampling time = 1s.
@@ -440,13 +493,25 @@ classdef PSO < handle
                 obj.Posicion_Actual(:,2) = min(obj.Posicion_Actual(:,2), obj.LimsY(2));
 
                 % Cálculo de Costo Local para cada Partícula
-                obj.Costo_Local = CostFunction(obj.Posicion_Actual,obj.FuncionCosto,EnvironmentParams{:});  % Actualización de los valores del costo.
+                obj.Costo_Local = CostFunction(obj.Posicion_Actual,obj.FuncionCosto,EnvironmentParams{:});  % Actualización de los valores del costo local por partícula
 
                 % Cálculo del Local Best
-                obj.Costo_LocalBest = min(obj.Costo_LocalBest, obj.Costo_Local);                            % Se sustituyen los costos que son menores al "Local Best" previo
-                Costo_Change = (obj.Costo_Local < obj.Costo_LocalBest);                                     % Vector binario que indica con un 0 cuales son las filas de "Costo_Local" que son menores que las filas de "PartCosto_LocalBest"
-                obj.Posicion_LocalBest = obj.Posicion_LocalBest .* Costo_Change + obj.Posicion_Actual;      % Se sustituyen las posiciones correspondientes a los costos a cambiar en la linea previa
-                                
+                
+                % El "local o personal best" siempre será igual a la
+                % al costo y posición actuales.
+                if obj.DisableLocalMemory
+                    obj.Costo_LocalBest = obj.Costo_Local;
+                    obj.Posicion_LocalBest = obj.Posicion_Actual;
+                
+                % El "local o personal best" de una partícula consiste de 
+                % la posición con el menor costo encontrado hasta ahora.
+                else
+                    Costo_Change = (obj.Costo_Local < obj.Costo_LocalBest);
+                    obj.Costo_LocalBest = min(obj.Costo_Local, obj.Costo_LocalBest);
+                    obj.Posicion_LocalBest(Costo_Change,:) = obj.Posicion_Actual(Costo_Change,:);
+                    
+                end
+                       
                 % Modificación a Actualización de Global Best basada en
                 % paper por Jabandzic y Velagic (2016)
                 % [obj.Costo_GlobalBest, Fila] = min(obj.Costo_LocalBest);      
@@ -474,6 +539,7 @@ classdef PSO < handle
                     % Todos los valores de posición para la dimensión "j".
                     for j = 1:obj.NoDimensiones
                         obj.Posicion_History{j}(:,obj.IteracionActual) = obj.Posicion_Actual(:,j); 	
+                        obj.Velocidad_History{j}(:,obj.IteracionActual) = obj.Velocidad(:,j);
                     end
                     
                 end
@@ -481,11 +547,21 @@ classdef PSO < handle
                 % Actualización del coeficiente inercial
                 % Solo válido para las restricciones que emplean inercia
                 if strcmp(obj.TipoRestriccion, "Inercia") || strcmp(obj.TipoRestriccion, "Mixto")
-                    obj.W = computeInertia(obj.TipoInercia, obj.IteracionActual, obj.Wmax, obj.Wmin, obj.NoIteracionesMax);
+                    obj.W = computeInertia(obj.TipoInercia, 'Iter', obj.IteracionActual, ...
+                                                            'MaxIter', obj.NoIteracionesMax, ...
+                                                            'Wmin', obj.Wmin, ...
+                                                            'Wmax', obj.Wmax, ...
+                                                            'CostoGB', obj.Costo_GlobalBest, ...
+                                                            'CostoPB', obj.Costo_LocalBest, ...
+                                                            'CostoLocal', obj.Costo_Local);   
                 end
   
                 % Evaluación de criterios de convergencia
-                [StopPart] = getCriteriosConvergencia(obj.CriterioConv, Meta, obj.Posicion_Actual, obj.IteracionActual/obj.NoIteracionesMax);
+                [StopPart] = getCriteriosConvergencia(obj.CriterioConv, 'Posicion_Meta', Meta, ...
+                                                                        'Posicion_Actual', obj.Posicion_Actual, ...
+                                                                        'Costo_Local', obj.Costo_Local, ...
+                                                                        'Costo_Meta', Costo_Meta, ...
+                                                                        'Porcentaje_Progreso', obj.IteracionActual/obj.NoIteracionesMax);
                 varargout{1} = StopPart;
                 
                 if StopPart

@@ -152,7 +152,7 @@ for n = 1:numel(FuncionesCosto)
                         
                         % Se corre el PSO.
                         for h = 1:IterMaxPSO
-                            [StopPart] = Swarm.RunStandardPSO("Steps", Meta, EnvironmentParams);
+                            [StopPart] = Swarm.RunPSO("Steps", Meta, Costo_Meta, EnvironmentParams);
                             
                             % En cada iteración se toma nota de la inercia
                             % y las constantes Phi1 y Phi2
@@ -259,7 +259,7 @@ for n = 1:numel(FuncionesCosto)
                     
                     % Se corre el PSO.
                     for j = 1:IterMaxPSO
-                        [StopPart] = Swarm.RunStandardPSO("Steps", Meta, EnvironmentParams);
+                        [StopPart] = Swarm.RunPSO("Steps", Meta, Costo_Meta, EnvironmentParams);
                         Historial_Params(1:3,j) = [Swarm.W ; Swarm.Phi1 ; Swarm.Phi2];
                         
                         % Medida de la distancia del global best del swarm a la meta

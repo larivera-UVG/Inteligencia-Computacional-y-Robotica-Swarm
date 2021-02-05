@@ -157,14 +157,17 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
 % ------------------------------------------------------------------
 
     switch FunctionName
+        
+        % FUNCIONES DE COSTO BENCHMARK ==========
+        
         % Paraboloide o Esfera
         % Fuente: https://www.sfu.ca/~ssurjano/spheref.html
         case {"Paraboloid", "Sphere"}                      
             Costo = sum(X.^2, 2);
             
-            % Mínimo: Vector de zeros con tantas dimensiones como X
-            Minimo = zeros(1,size(X,2));    
-            varargout{1} = Minimo;
+            % Mínimo global 
+            varargout{1} = zeros(1,size(X,2));  % Coords Mínimo: Vector de zeros con tantas dimensiones como X   
+            varargout{2} = NaN;                 % Costo de mínimo global
         
         % Griewank Function
         % Fuente: https://www.sfu.ca/~ssurjano/griewank.html
@@ -178,9 +181,9 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             
             Costo = Sum - Prod + 1;
             
-            % Mínimo: Vector de zeros con tantas dimensiones como X
-            Minimo = zeros(1,size(X,2));
-            varargout{1} = Minimo;
+            % Mínimo global
+            varargout{1} = zeros(1,size(X,2));  % Coords Mínimo: Vector de zeros con tantas dimensiones como X
+            varargout{2} = NaN;                 % Costo de mínimo global
             
         % Ackley Function
         % Fuente: https://www.sfu.ca/~ssurjano/ackley.html
@@ -190,9 +193,9 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             Sum2 = (1/d) * sum(cos(c*X), 2);
             Costo = -a*exp(Sum1) - exp(Sum2) + a + exp(1);
             
-            % Mínimo: Vector de zeros con tantas dimensiones como X
-            Minimo = zeros(1,size(X,2));
-            varargout{1} = Minimo;
+            % Mínimo global
+            varargout{1} = zeros(1,size(X,2));  % Coords Mínimo: Vector de zeros con tantas dimensiones como X
+            varargout{2} = NaN;                 % Costo de mínimo global
 
         % Rastrigin Function
         % Fuente: https://www.sfu.ca/~ssurjano/rastr.html
@@ -200,18 +203,26 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             d = size(X,2);                                          
             Costo = 10*d + sum(X.^2 - 10*cos(2*pi*X), 2);
             
-            % Mínimo: Vector de zeros con tantas dimensiones como X
-            Minimo = zeros(1,size(X,2));
-            varargout{1} = Minimo;
+            % Mínimo global
+            varargout{1} = zeros(1,size(X,2));  % Coords Mínimo: Vector de zeros con tantas dimensiones como X
+            varargout{2} = NaN;                 % Costo de mínimo global
 
         % Levy Function N.13
         case {"Levy N13", "Levy"}
+            
+            % Error en caso se alimenten coordenadas de más de 2
+            % dimensiones
+            if size(X,2) > 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+            
             Costo = sin(3*pi*X(:,1)).^2 ...                        
                     + (X(:,1)-1).^2 .* (1 + sin(3*pi*X(:,2)).^2) ...
                     + (X(:,2) - 1).^2 .* (1 + sin(2*pi*X(:,2)).^2);
                 
-            Minimo = [1 1];
-            varargout{1} = Minimo;
+            % Mínimo global
+            varargout{1} = [1 1];       % Coordenadas mínimo global
+            varargout{2} = NaN;         % Costo de mínimo global
 
         % Drop Wave Function        
         case "Dropwave"
@@ -219,17 +230,18 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             Costo = -(1 + cos(NoWaves * sqrt(sum(X.^2, 2)))) ./ ...
                      (0.5 * sqrt(sum(X.^2, 2)) + 2);
             
-            % Mínimo: Vector de zeros con tantas dimensiones como X
-            Minimo = zeros(1,size(X,2));
-            varargout{1} = Minimo;
+            % Mínimo Global
+            varargout{1} = zeros(1,size(X,2));  % Coords Mínimo: Vector de zeros con tantas dimensiones como X
+            varargout{2} = NaN;                 % Costo de mínimo global
         
         % Schaffer F6 Function
         case {"Schaffer F6", "Schaffer N2"}
             Costo = 0.5 + ((sin(sqrt(sum(X.^2, 2))).^2 - 0.5) ./ ...
                            (1 + (0.001 * sum(X.^2, 2))));
                        
-            Minimo = zeros(1,size(X,2));
-            varargout{1} = Minimo;
+            % Mínimo global
+            varargout{1} = zeros(1,size(X,2));  % Coordenadas de mínimo global
+            varargout{2} = NaN;                 % Costo de mínimo global
         
         % Rosenbrock / Banana Function
         case {"Rosenbrock", "Banana"}
@@ -237,13 +249,14 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             % Error en caso se alimenten coordenadas de más de 2
             % dimensiones
             if size(X,2) > 2
-               error("Error: La función de costo" + FunctionName + "únicamente acepta coordenadas bidimensionales"); 
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
             end
             
             Costo = sum(100*(X(:,2)-X(:,1).^2).^2 + (X(:,1)-1).^2, 2);
             
-            Minimo = [1 1];
-            varargout{1} = Minimo;
+            % Mínimo global
+            varargout{1} = [1 1];       % Coordenadas de mínimo global
+            varargout{2} = NaN;     	% Costo de mínimo global
         
         % Booth Function
         case "Booth"
@@ -251,13 +264,14 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             % Error en caso se alimenten coordenadas de más de 2
             % dimensiones
             if size(X,2) > 2
-               error("Error: La función de costo" + FunctionName + "únicamente acepta coordenadas bidimensionales"); 
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
             end
             
             Costo = (X(:,1) + 2*X(:,2) - 7).^2 + (2*X(:,1) + X(:,2) - 5).^2;
             
-            Minimo = [1 3];
-            varargout{1} = Minimo;
+            % Mínimo global
+            varargout{1} = [1 3];       % Coordenadas de mínimo global
+            varargout{2} = NaN;     	% Costo de mínimo global
         
         % Himmelblau Function
         case "Himmelblau"
@@ -265,55 +279,58 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             % Error en caso se alimenten coordenadas de más de 2
             % dimensiones
             if size(X,2) > 2
-               error("Error: La función de costo" + FunctionName + "únicamente acepta coordenadas bidimensionales"); 
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
             end
             
             Costo = (X(:,1).^2 + X(:,2) - 11).^2 + (X(:,1) + X(:,2).^2 - 7).^2;
 
-            Minimo = [      3       2; 
-                      -2.8051  3.1313; 
-                      -3.7793 -3.2831; 
-                       3.5844 -1.8481];
-            varargout{1} = Minimo;
+            % Mínimo global
+            varargout{1} = [      3       2;    % Coordenadas de mínimo global
+                            -2.8051  3.1313; 
+                            -3.7793 -3.2831; 
+                             3.5844 -1.8481];
+            varargout{2} = NaN;                 % Costo de mínimo global
         
         % Six-hump Camel Function
         case {"Six-Hump Camel", "Camel"}
             
             if size(X,2) > 2
-               error("Error: La función de costo" + FunctionName + "únicamente acepta coordenadas bidimensionales"); 
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
             end
             
             X1 = X(:,1);
             X2 = X(:,2);
             Costo = (4 - 2.1*X1.^2 + ((X1.^4) / 3)) .* X1.^2 + X1.*X2 + (-4 + 4*X2.^2).*X2.^2;
             
-            Minimo = [ 0.0898 -0.7126;
-                      -0.0898  0.7126];
-            varargout{1} = Minimo;
+            % Mínimo global
+            varargout{1} = [ 0.0898 -0.7126;    % Coordenadas de mínimo global
+                            -0.0898  0.7126];
+            varargout{2} = NaN;                 % Costo de mínimo global
             
         % Styblinski-Tang Function
         case {"Styblinski-Tang", "Styblinski"}
             
             Costo = 0.5 * sum(X.^4 - 16*X.^2 + 5*X, 2);
             
-            % Mínimo: Vector de -2.903534 con tantas dimensiones como X
-            Minimo = -2.903534 * ones(1,size(X,2));
-            varargout{1} = Minimo;
-            
+            % Coords Mínimo: Vector de -2.903534 con tantas dimensiones como X
+            varargout{1} = -2.903534 * ones(1,size(X,2));
+            varargout{2} = NaN;             % Costo de mínimo global
+        
+        % Easom Function
         case "Easom"
             
             % Error en caso se alimenten coordenadas de más de 2
             % dimensiones
             if size(X,2) > 2
-               error("Error: La función de costo" + FunctionName + "únicamente acepta coordenadas bidimensionales"); 
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
             end
             
             X1 = X(:,1);
             X2 = X(:,2); 
             Costo = -cos(X1).*cos(X2).*exp(-(X1 - pi).^2 - (X2 - pi).^2);
             
-            Minimo = [pi pi];
-            varargout{1} = Minimo;
+            varargout{1} = [pi pi];         % Coordenadas de mínimo global
+            varargout{2} = NaN;             % Costo de mínimo global
         
         % Michalewicz Function
         % Fuente: https://www.sfu.ca/~ssurjano/michal.html
@@ -334,9 +351,371 @@ function [Costo, varargout] = CostFunction(X, FunctionName, varargin)
             
             Costo = - sum(sin(X).*(sin((i.*X.^2)/pi)).^(2*m), 2);
             
-            Minimo = [2.2 1.57];
-            varargout{1} = Minimo;
+            varargout{1} = [2.2 1.57];      % Coordenadas de mínimo global
+            varargout{2} = NaN;             % Costo de mínimo global
             
+        % Damavandi Function
+        % Fuente: https://www.al-roomi.org/benchmarks/unconstrained/2-dimensions/120-damavandi-s-function
+        case "Damavandi"
+            
+            % Error en caso se alimenten coordenadas de más de 2
+            % dimensiones
+            if size(X,2) > 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+            
+            X1 = X(:,1);
+            X2 = X(:,2); 
+            
+            % Se le adicionaron estos offsets a las coordenadas X y Y, para
+            % que el centro de la función no se ubicara en aproximadamente
+            % (6.5, 6.9) sino que en (0,0). La función benchmark original
+            % no cuenta con estos offsets.
+            X1 = X1 + 7.1;
+            X2 = X2 + 7.1;
+            
+            Costo = (1-(abs((sin(pi*(X1-2)).*sin(pi*(X2-2)))./(pi*pi.*(X1-2).*(X2-2)))).^5).*(2+(X1-7).^2+2*(X2-7).^2);
+            
+            % Mínimo global
+            varargout{1} = [-5.1 -5.1];     % Coordenadas de mínimo global
+            varargout{2} = 0;               % Costo de mínimo global
+            
+        % Cross Leg Table Function
+        % Fuente: https://al-roomi.org/benchmarks/unconstrained/2-dimensions/45-cross-leg-table-function
+        case "CrossLegTable"
+            
+            % Error en caso se alimenten coordenadas de más de 2
+            % dimensiones
+            if size(X,2) > 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+            
+            X1 = X(:,1);
+            X2 = X(:,2); 
+            Costo = -1 ./ ((abs(exp(abs(100-(sqrt(X1.^2+X2.^2)/pi))).*sin(X1).*sin(X2))+1).^0.1);
+            
+            % Mínimo global
+            varargout{1} = [0 0];       % Coordenadas de mínimo global
+            varargout{2} = -1;          % Costo de mínimo global
+        
+        % XinSheYang N3 Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_X.html#go_benchmark.XinSheYang03
+        case "XinSheYang N3"
+            
+            % Parámetros de función
+            m = 5;
+            Beta = 15;
+            
+            % Por la forma de la función de costo se recomienda que la
+            % región de búsqueda abarque entre -20 y 20 en X y Y.
+            Costo = exp(-sum((X/Beta).^(2*m), 2)) - (2 * exp(-sum(X.^2, 2)) .* prod(cos(X).^2, 2));
+            
+            % Mínimo global
+            varargout{1} = zeros(1,size(X,2));  % Coordenadas de mínimo global
+            varargout{2} = -1;                  % Costo de mínimo global
+        
+        % Sine Envelope Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_S.html#go_benchmark.SineEnvelope
+        case "Sine Envelope"
+            
+            % Error en caso X tenga menos de 2 dimensiones
+            if size(X,2) < 2
+               error("Error: La función de costo " + FunctionName + " no acepta coordenadas unidimensionales"); 
+            end
+            
+            Xi = X(:,1:end-1);          % Dimensiones X_i   (Ejemplo 2D: Coords X)
+            Xi_1 = X(:, 2:end);         % Dimensiones X_i+1 (Ejemplo 2D: Coords Y)
+            
+            Num = sin(sqrt(Xi_1.^2 + Xi.^2) - 0.5).^2;
+            Den = (0.001 * (Xi_1.^2 + Xi.^2) + 1).^2;
+            Costo = -sum((Num ./ Den) + 0.5, 2);
+            
+            % Mínimo global
+            varargout{1} = zeros(1,size(X,2));  % Coordenadas de mínimo global
+            varargout{2} = 0;                   % Costo de mínimo global
+            
+        % Whitley Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_W.html#go_benchmark.Whitley
+        case "Whitley"
+            
+            % Cantidad de dimensiones (columnas) de X
+            NoDims = size(X,2);
+            
+            % Copias de las coordenadas de cada dimensión una a la par de
+            % otra. El número de copias está dado por la cantidad de
+            % dimensiones.
+            %   Ejemplo: Original = [X Y Z]
+            %                  Xi = [X X X Y Y Y Z Z Z]
+            Xi = repelem(X,1,NoDims); 
+            
+            % Copias de las columnas de X una a la par de otra. El número
+            % de copias está dado por la cantidad de dimensiones.
+            %   Ejemplo: Original = [X Y Z]
+            %                  Xj = [X Y Z X Y Z X Y Z]
+            Xj = repmat(X,1,NoDims);
+            
+            % Numerador de fracción
+            Num = (100 * (Xi.^2 - Xj).^2 + (1 - Xj).^2).^2;
+            
+            % Costo
+            Costo = sum((Num ./ 4000) - cos(100*(Xi.^2 - Xj).^2 + (1 - Xj).^2) + 1, 2);
+           
+            % Mínimo global
+            varargout{1} = ones(1,size(X,2));   % Coordenadas de mínimo global
+            varargout{2} = 0;                   % Costo de mínimo global
+        
+        % Zimmerman Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_Z.html#go_benchmark.Zimmerman
+        case "Zimmerman"
+            
+            % Error en caso X no tenga 2 dimensiones
+            if size(X,2) ~= 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+            
+            error("Esta función no está correctamente implementada. Se desconocen las coordenadas o costo del mínimo global");
+            
+            X1 = X(:,1);
+            X2 = X(:,2);
+            
+            Zh1 = 9 - X1 - X2;
+            Zh2 = (X1-3).^2 + (X2-2).^2;
+            Zh3 = X1.*X2 - 14;
+            Zp = @(t) 100*(1+t);
+            
+            A = [Zh1 ...
+                 Zp(Zh2).*sign(Zh2) ...
+                 Zp(Zh3).*sign(Zh3) ...
+                 Zp(-X1).*sign(X1) ...
+                 Zp(-X2).*sign(X2)];
+            Costo = max(A,[],2);
+            
+            % Mínimo global
+            varargout{1} = [NaN NaN];   % Coordenadas de mínimo global
+            varargout{2} = 0;           % Costo de mínimo global
+        
+        % Trefethen Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_T.html#go_benchmark.Trefethen
+        case "Trefethen"
+            
+            % Error en caso X no tenga 2 dimensiones
+            if size(X,2) ~= 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+
+            X1 = X(:,1);
+            X2 = X(:,2);
+            
+            Costo = 0.25*X1.^2 + 0.25*X2.^2 + exp(sin(50*X1)) - sin(10*X1 + 10*X2) ...
+                               + sin(60*exp(X2)) + sin(70*sin(X1)) + sin(sin(80*X2));
+            
+            % Mínimo global
+            varargout{1} = [-0.02440307923 0.2106124261];  	% Coordenadas de mínimo global
+            varargout{2} = -3.3068686474;                   % Costo de mínimo global
+        
+        % Crowned Cross Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_C.html#go_benchmark.CrownedCr
+        case "Crowned Cross"
+        
+            % Error en caso X no tenga 2 dimensiones
+            if size(X,2) ~= 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+
+            X1 = X(:,1);
+            X2 = X(:,2);
+            
+            Costo = 0.0001 * (abs(exp(abs(100-(sqrt(X1.^2 + X2.^2) / pi))) .* sin(X1) .* sin(X2)) + 1).^(0.1);
+            
+            % Mínimo global
+            varargout{1} = [NaN NaN];  	% Coordenadas de mínimo global
+            varargout{2} = 0.0001;     	% Costo de mínimo global
+        
+        % Plateau Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_P.html#go_benchmark.PowerSum
+        case {"Plateau", "Maincra"}
+            
+            Costo = 30 + sum(floor(X).^2,2);
+            
+            % Mínimo global
+            varargout{1} = [NaN NaN];       % Coordenadas de mínimo global
+            varargout{2} = 30;              % Costo de mínimo global
+        
+        % New Function 02 Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_N.html#go_benchmark.NewFunction02
+        case "NewFunction02"
+            
+            % Error en caso X no tenga 2 dimensiones
+            if size(X,2) ~= 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+
+            X1 = X(:,1);
+            X2 = X(:,2);
+            
+            Costo = abs(sin(sqrt(abs(X1.^2 + X2)))).^(0.5) + (X1 + X2)/100;
+            
+            % Mínimo global
+            varargout{1} = [-9.94112 -9.99952];   	% Coordenadas de mínimo global
+            varargout{2} = -0.1971881059905;        % Costo de mínimo global
+            
+        % Mishra 04 Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_M.html#go_benchmark.Mishra04
+        case "Mishra04"
+            
+            % Error en caso X no tenga 2 dimensiones
+            if size(X,2) ~= 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+
+            X1 = X(:,1);
+            X2 = X(:,2);
+            
+            Costo = sqrt(abs(sin(sqrt(abs(X1.^2 + X2.^2))))) + 0.01*(X1 + X2);
+            
+            % Mínimo global
+            varargout{1} = [-10 -10];       % Coordenadas de mínimo global
+            varargout{2} = -0.199409;     	% Costo de mínimo global
+        
+        % Stochastic Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_S.html#go_benchmark.Stochast
+        case "Stochastic"
+            
+            % Tamaño del array X
+            NoDims = size(X,2);
+            NoPuntos = size(X,1);
+            
+            persistent Eps
+            
+            % Variable aleatoria uniformemente distribuida. La variable
+            % aleatoria es persitente entre llamadas a la función para que
+            % su valor no cambie entre llamadas del algoritmo PSO.
+            if isempty(Eps) || size(Eps,1) ~= size(X,1)
+                Eps = rand(NoPuntos,NoDims);
+            end
+            
+            % Vector secuencial con tantos números como dimensiones
+            %   Ejemplo: Si NoDims = 3 -> i = [1 2 3];
+            i = 1:NoDims;
+            
+            % El vector secuencial se repite tantas veces "hacia abajo"
+            % (agregando filas) como puntos hay en X
+            i = repmat(i,NoPuntos,1);
+            
+            Costo = sum(Eps.*abs(X - (1./i)),2);
+            
+            % Mínimo global
+            % varargout{1} = (1/NoDims)*ones(1,NoDims);     % Teorícamente las coordenadas del mínimo global
+            varargout{1} = [NaN NaN];                       % No se utilizan las coordenadas porque no parecen coincidir con lo obtenido experimentalmente
+            varargout{2} = 0;                               % Costo de mínimo global
+        
+        % Price N2 Function
+        % Fuente: http://infinity77.net/global_optimization/test_functions_nd_P.html#go_benchmark.Price02
+        case "Price N2"
+            
+            % Error en caso X no tenga 2 dimensiones
+            if size(X,2) ~= 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+
+            X1 = X(:,1);
+            X2 = X(:,2);
+            
+            Costo = 1 + sin(X1).^2 + sin(X2).^2 - 0.1*exp(-X1.^2 - X2.^2);
+            
+            % Mínimo global
+            % varargout{1} = [0 0];       	% Coordenadas de mínimo global
+            varargout{1} = [NaN NaN];       % No se utilizan las coordenadas porque no parecen coincidir con lo obtenido experimentalmente
+            varargout{2} = 0.9;         	% Costo de mínimo global
+        
+        % Shubert Function
+        % Fuente: https://www.sfu.ca/~ssurjano/shubert.html
+        case "Shubert"
+            
+            % Error en caso X no tenga 2 dimensiones
+            if size(X,2) ~= 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+            
+            NoPuntos = size(X,1);
+            X1 = X(:,1);
+            X2 = X(:,2);
+            
+            % Vector secuencial con números de 1 a 5
+            %   Ejemplo: i = [1 2 3 4 5];
+            i = 1:5;
+            
+            % El vector secuencial se repite tantas veces "hacia abajo"
+            % (agregando filas) como puntos hay en X
+            i = repmat(i,NoPuntos,1);
+            
+            Costo = sum(i.*cos((i+1).*X1 + i),2) .* sum(i.*cos((i+1).*X2 + i),2); 
+            
+            % Mínimo global
+            varargout{1} = [NaN NaN];       % No se utilizan las coordenadas del mínimo global
+            varargout{2} = -186.7309;     	% Costo de mínimo global
+        
+        % Holder Table Function
+        % Fuente: https://www.sfu.ca/~ssurjano/holder.html
+        case "Holder Table"
+            
+            % Error en caso X no tenga 2 dimensiones
+            if size(X,2) ~= 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+            
+            X1 = X(:,1);
+            X2 = X(:,2);
+            
+            Costo = -abs(sin(X1).*cos(X2).*exp(abs(1 - (sqrt(X1.^2 + X2.^2)/pi))));
+            
+            % Mínimo global
+            varargout{1} = [ 8.05502  9.66459;      % No se utilizan las coordenadas del mínimo global
+                             8.05502 -9.66459;
+                            -8.05502  9.66459;
+                            -8.05502 -9.66459];       
+            varargout{2} = -19.2085;                % Costo de mínimo global
+            
+        % Cross-in-Tray Function
+        % Fuente: https://www.sfu.ca/~ssurjano/crossit.html
+        case "Cross-in-Tray"
+            
+            % Error en caso X no tenga 2 dimensiones
+            if size(X,2) ~= 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+            
+            X1 = X(:,1);
+            X2 = X(:,2);
+            
+            Costo = -0.0001*(abs(sin(X1).*sin(X2).*exp(abs(100 - (sqrt(X1.^2 + X2.^2)/pi)))) + 1).^(0.1);
+            
+            % Mínimo global
+            varargout{1} = [ 1.3491  -1.3491;  	% No se utilizan las coordenadas del mínimo global
+                             1.3491   1.3491;
+                            -1.3491   1.3491;
+                            -1.3491  -1.3491];       
+            varargout{2} = -2.06261;        	% Costo de mínimo global
+        
+        % Beale Function
+        % Fuente: https://en.wikipedia.org/wiki/Test_functions_for_optimization
+        case "Beale"
+            
+            % Error en caso X no tenga 2 dimensiones
+            if size(X,2) ~= 2
+               error("Error: La función de costo " + FunctionName + " únicamente acepta coordenadas bidimensionales"); 
+            end
+            
+            X1 = X(:,1);
+            X2 = X(:,2);
+            
+            Costo = (1.5 - X1 + X1.*X2).^2 + (2.25 - X1 + X1.*X2.^2).^2 + (2.625 - X1 + X1.*X2.^3).^2;
+            
+            % Mínimo global
+            varargout{1} = [3 0.5];     % Coords de mínimo global          
+            varargout{2} = 0;           % Costo de mínimo global
+            
+        % FUNCIONES DE COSTO NO ESTÁNDAR ==========   
             
         % Función basada en paper publicado por Jabandzic y Velagic (2016)
         case "Jabandzic"
