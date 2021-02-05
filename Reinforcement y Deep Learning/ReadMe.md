@@ -22,6 +22,12 @@
 5. [Swarm Robotics Toolbox](#swarm-robotics-toolbox)
 6. [Pruebas PSO Tuner](#pruebas-pso-tuner)
 
+## Video Explicativo
+
+¿No quieres leer la tesis o la documentación? Este video ""corto"" explica las ideas principales de la tesis. Aquí se explica el planificador de trayectorias y el PSO Tuner. Desgraciadamente, no había suficiente tiempo para el SR Toolbox (ese lo tendrás que entender leyendo la documentación).
+
+[![](http://img.youtube.com/vi/uOVFa47GldQ/0.jpg)](http://www.youtube.com/watch?v=uOVFa47GldQ "Tesis Video")
+
 ## Estructura de Carpetas
 
 Estructura general de las carpetas existentes en el repositorio.
