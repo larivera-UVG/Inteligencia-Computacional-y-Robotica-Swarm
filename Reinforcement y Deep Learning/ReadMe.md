@@ -12,15 +12,24 @@
 
 ## Índice
 
-1. [Estructura de Carpetas](#estructura-de-carpetas)
-2. [Antecedentes](#antecedentes)
+1. [Video](#video)
+2. [Estructura de Carpetas](#estructura-de-carpetas)
+3. [Antecedentes](#antecedentes)
    - [Aldo Aguilar (2019)](#aldo-aguilar-2019)
    - [Juan Pablo Cahueque (2019)](#juan-pablo-cahueque-2019)
    - [Eduardo Santizo (2020)](#eduardo-santizo-2020)
-3. [Guía de Uso](#guía-de-uso)
-4. [Hardware y Software](#hardware-y-software)
-5. [Swarm Robotics Toolbox](#swarm-robotics-toolbox)
-6. [Pruebas PSO Tuner](#pruebas-pso-tuner)
+4. [Guía de Uso](#guía-de-uso)
+5. [Hardware y Software](#hardware-y-software)
+6. [Swarm Robotics Toolbox](#swarm-robotics-toolbox)
+7. [Pruebas PSO Tuner](#pruebas-pso-tuner)
+
+## Video
+
+¿No quieres leer la tesis? Este video ""corto"" explica las ideas principales del planificador de trayectorias y el PSO Tuner (hacer click en la imagen). Para entender el SR Toolbox si será necesario leer la documentación, lo siento 😓.
+
+<p align="center"><a href="http://www.youtube.com/watch?v=uOVFa47GldQ">
+   <img src="http://img.youtube.com/vi/uOVFa47GldQ/0.jpg" alt="Video Youtube" width="60%">
+</a></p>
 
 ## Estructura de Carpetas
 
